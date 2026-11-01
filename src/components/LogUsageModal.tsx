@@ -62,6 +62,7 @@ export const LogUsageModal: React.FC<LogUsageModalProps> = ({
     const wins = limitWindows.filter((w) => w.serviceId === accServices[0].id && !w.archived);
     return wins.map((w) => w.id);
   });
+
   const [amount, setAmount] = useState<string>('1');
   const [isPercentage, setIsPercentage] = useState<boolean>(false);
   const [timestamp, setTimestamp] = useState<string>(toLocalDatetimeInputValue());
@@ -77,7 +78,7 @@ export const LogUsageModal: React.FC<LogUsageModalProps> = ({
   const activeAccounts = useMemo(() => accounts.filter((a) => !a.archived), [accounts]);
   const activeProjects = useMemo(() => projects.filter((p) => !p.archived), [projects]);
 
-  // Initialize or update when opening
+  // Synchronize when opening
   useEffect(() => {
     if (!isOpen) return;
 
@@ -133,7 +134,7 @@ export const LogUsageModal: React.FC<LogUsageModalProps> = ({
     if (accServices.length > 0) {
       setSelectedServiceId(accServices[0].id);
       const wins = limitWindows.filter((w) => w.serviceId === accServices[0].id && !w.archived);
-      setSelectedWindowIds(wins.map((w) => w.id)); // select all windows by default for convenient multi-window tracking
+      setSelectedWindowIds(wins.map((w) => w.id));
     } else {
       setSelectedServiceId('');
       setSelectedWindowIds([]);
@@ -154,7 +155,7 @@ export const LogUsageModal: React.FC<LogUsageModalProps> = ({
     );
   };
 
-  // Select all / Deselect all
+  // Select all
   const selectAllServiceWindows = () => {
     setSelectedWindowIds(availableWindows.map((w) => w.id));
   };
@@ -234,43 +235,43 @@ export const LogUsageModal: React.FC<LogUsageModalProps> = ({
 
   return (
     <div
-      className="modal-overlay"
+      className="fixed inset-0 bg-[#0C0A09]/80 backdrop-blur-md flex items-center justify-center z-50 p-4"
       role="dialog"
       aria-modal="true"
       aria-labelledby="log-usage-modal-title"
       onClick={onClose}
     >
       <div
-        className="modal-window max-w-xl p-6 bg-[#1C1917] border border-[rgba(255,255,255,0.1)] text-[#E7E5E4]"
+        className="bg-[#1C1917] border border-[rgba(255,255,255,0.12)] rounded-[24px] p-6 sm:p-8 max-w-xl w-full max-h-[90vh] overflow-y-auto shadow-[0_25px_50px_-12px_rgba(0,0,0,0.85)] text-[#E7E5E4]"
         onClick={(e) => e.stopPropagation()}
       >
         {/* Header */}
-        <div className="flex items-center justify-between pb-4 mb-4 border-b border-[rgba(255,255,255,0.1)]">
-          <div className="flex items-center gap-2">
-            <div className="p-1.5 rounded-md bg-[#141210] border border-[#D4F268] text-[#D4F268]">
-              <Layers className="w-4 h-4" />
+        <div className="flex items-start justify-between gap-4 pb-4 mb-6 border-b border-[rgba(255,255,255,0.1)]">
+          <div className="flex items-center gap-3">
+            <div className="p-2 rounded-full bg-[#141210] border border-[rgba(255,255,255,0.1)] text-[#D4F268]">
+              <Layers className="w-5 h-5" />
             </div>
             <div>
-              <h3 id="log-usage-modal-title" className="text-sm font-semibold text-[#E7E5E4]">
+              <h2 id="log-usage-modal-title" className="font-serif font-light text-2xl text-[#E7E5E4] tracking-tight">
                 Log Usage Event
-              </h3>
-              <p className="text-[11px] text-[#A8A29E] font-mono">
+              </h2>
+              <p className="text-xs text-[#A8A29E] font-sans mt-0.5">
                 Multi-window effects are tracked without double-counting
               </p>
             </div>
           </div>
           <button
             onClick={onClose}
-            className="text-[#A8A29E] hover:text-[#E7E5E4] bg-transparent border-0 cursor-pointer p-1 rounded hover:bg-[rgba(255,255,255,0.1)]"
+            className="p-1.5 rounded-full text-[#A8A29E] hover:text-[#E7E5E4] hover:bg-[#292524] transition-all cursor-pointer border-0 bg-transparent shrink-0"
             aria-label="Close"
           >
             <X className="w-4 h-4" />
           </button>
         </div>
 
-        <form onSubmit={handleSubmit} className="space-y-4">
+        <form onSubmit={handleSubmit} className="space-y-5">
           {error && (
-            <div className="p-2.5 rounded bg-[rgba(239,68,68,0.1)] border border-[rgba(239,68,68,0.3)] text-[#ef4444] text-xs font-mono flex items-center gap-2">
+            <div className="p-3 rounded-xl bg-[rgba(248,113,113,0.12)] border border-[rgba(248,113,113,0.3)] text-[#f87171] text-xs font-mono flex items-center gap-2">
               <AlertCircle className="w-4 h-4 shrink-0" />
               <span>{error}</span>
             </div>
@@ -279,12 +280,12 @@ export const LogUsageModal: React.FC<LogUsageModalProps> = ({
           {/* Account and Service Selectors */}
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
             <div>
-              <label htmlFor="log-account" className="label-text">
+              <label htmlFor="log-account" className="text-xs font-sans font-medium text-[#A8A29E] uppercase tracking-wider block mb-1.5">
                 Account <span className="text-[#D4F268]">*</span>
               </label>
               <select
                 id="log-account"
-                className="input-control text-xs"
+                className="w-full bg-[#141210] border border-[rgba(255,255,255,0.12)] text-[#E7E5E4] rounded-xl px-3.5 py-2.5 text-sm font-sans outline-none focus:border-[#D4F268] focus:ring-1 focus:ring-[#D4F268] transition-all cursor-pointer"
                 value={selectedAccountId}
                 onChange={(e) => handleAccountChange(e.target.value)}
                 required
@@ -302,12 +303,12 @@ export const LogUsageModal: React.FC<LogUsageModalProps> = ({
             </div>
 
             <div>
-              <label htmlFor="log-service" className="label-text">
+              <label htmlFor="log-service" className="text-xs font-sans font-medium text-[#A8A29E] uppercase tracking-wider block mb-1.5">
                 Service <span className="text-[#D4F268]">*</span>
               </label>
               <select
                 id="log-service"
-                className="input-control text-xs"
+                className="w-full bg-[#141210] border border-[rgba(255,255,255,0.12)] text-[#E7E5E4] rounded-xl px-3.5 py-2.5 text-sm font-sans outline-none focus:border-[#D4F268] focus:ring-1 focus:ring-[#D4F268] transition-all cursor-pointer"
                 value={selectedServiceId}
                 onChange={(e) => handleServiceChange(e.target.value)}
                 required
@@ -328,17 +329,17 @@ export const LogUsageModal: React.FC<LogUsageModalProps> = ({
 
           {/* Project Selector with Inline Quick Add */}
           <div>
-            <div className="flex items-center justify-between mb-1">
-              <label htmlFor="log-project" className="label-text mb-0">
+            <div className="flex items-center justify-between mb-1.5">
+              <label htmlFor="log-project" className="text-xs font-sans font-medium text-[#A8A29E] uppercase tracking-wider block mb-0">
                 Project <span className="text-[#D4F268]">*</span>
               </label>
               {onQuickAddProject && !isAddingProject && (
                 <button
                   type="button"
                   onClick={() => setIsAddingProject(true)}
-                  className="text-[10px] text-[#D4F268] hover:underline flex items-center gap-1 bg-transparent border-0 cursor-pointer"
+                  className="text-xs text-[#D4F268] hover:text-[#c4e450] flex items-center gap-1 bg-transparent border-0 cursor-pointer font-sans"
                 >
-                  <Plus className="w-3 h-3" />
+                  <Plus className="w-3.5 h-3.5" />
                   <span>Quick Add Project</span>
                 </button>
               )}
@@ -349,7 +350,7 @@ export const LogUsageModal: React.FC<LogUsageModalProps> = ({
                 <input
                   type="text"
                   placeholder="New project name..."
-                  className="input-control text-xs flex-1"
+                  className="flex-1 bg-[#141210] border border-[rgba(255,255,255,0.12)] text-[#E7E5E4] rounded-xl px-3.5 py-2 text-sm font-sans outline-none focus:border-[#D4F268] focus:ring-1 focus:ring-[#D4F268] transition-all"
                   value={newProjectName}
                   onChange={(e) => setNewProjectName(e.target.value)}
                   autoFocus
@@ -357,7 +358,7 @@ export const LogUsageModal: React.FC<LogUsageModalProps> = ({
                 <button
                   type="button"
                   onClick={handleCreateProjectInline}
-                  className="btn-primary-cream text-xs h-8 px-3"
+                  className="btn-primary-lime bg-[#D4F268] text-[#0C0A09] font-semibold px-4 py-2 rounded-full text-xs hover:bg-[#c4e450] transition-all shadow-[0_0_12px_rgba(212,242,104,0.2)] font-sans cursor-pointer"
                 >
                   Add
                 </button>
@@ -367,7 +368,7 @@ export const LogUsageModal: React.FC<LogUsageModalProps> = ({
                     setIsAddingProject(false);
                     setNewProjectName('');
                   }}
-                  className="btn-dark-solid text-xs h-8 px-2"
+                  className="btn-dark-solid bg-[#292524] text-[#E7E5E4] px-3.5 py-2 rounded-full text-xs border border-[rgba(255,255,255,0.1)] hover:bg-[#383431] transition-all font-sans cursor-pointer"
                 >
                   Cancel
                 </button>
@@ -375,7 +376,7 @@ export const LogUsageModal: React.FC<LogUsageModalProps> = ({
             ) : (
               <select
                 id="log-project"
-                className="input-control text-xs"
+                className="w-full bg-[#141210] border border-[rgba(255,255,255,0.12)] text-[#E7E5E4] rounded-xl px-3.5 py-2.5 text-sm font-sans outline-none focus:border-[#D4F268] focus:ring-1 focus:ring-[#D4F268] transition-all cursor-pointer"
                 value={selectedProjectId}
                 onChange={(e) => setSelectedProjectId(e.target.value)}
                 required
@@ -395,15 +396,15 @@ export const LogUsageModal: React.FC<LogUsageModalProps> = ({
 
           {/* Affected Limit Windows Checkbox List */}
           <div>
-            <div className="flex items-center justify-between mb-1.5">
-              <label className="label-text mb-0">
+            <div className="flex items-center justify-between mb-2">
+              <label className="text-xs font-sans font-medium text-[#A8A29E] uppercase tracking-wider block mb-0">
                 Affected Windows in this Service <span className="text-[#D4F268]">*</span>
               </label>
               {availableWindows.length > 1 && (
                 <button
                   type="button"
                   onClick={selectAllServiceWindows}
-                  className="text-[10px] text-[#A8A29E] hover:text-[#E7E5E4] bg-transparent border-0 cursor-pointer underline"
+                  className="text-xs text-[#A8A29E] hover:text-[#E7E5E4] bg-transparent border-0 cursor-pointer underline font-sans"
                 >
                   Select all ({availableWindows.length})
                 </button>
@@ -411,11 +412,11 @@ export const LogUsageModal: React.FC<LogUsageModalProps> = ({
             </div>
 
             {availableWindows.length === 0 ? (
-              <div className="p-3 bg-[#141210] border border-[rgba(255,255,255,0.1)] rounded text-center text-xs text-[#A8A29E]">
+              <div className="p-4 bg-[#141210] border border-[rgba(255,255,255,0.08)] rounded-xl text-center text-xs text-[#A8A29E] font-mono">
                 No limit windows configured for this service.
               </div>
             ) : (
-              <div className="grid grid-cols-1 sm:grid-cols-2 gap-2">
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-2.5">
                 {availableWindows.map((win) => {
                   const isChecked = selectedWindowIds.includes(win.id);
                   const unitDisplay = win.unit === 'custom' ? win.customUnitName || 'custom' : win.unit;
@@ -423,25 +424,25 @@ export const LogUsageModal: React.FC<LogUsageModalProps> = ({
                     <div
                       key={win.id}
                       onClick={() => toggleWindowSelection(win.id)}
-                      className={`p-2.5 rounded border cursor-pointer flex items-center justify-between transition-all ${
+                      className={`p-3 rounded-xl border cursor-pointer flex items-center justify-between transition-all ${
                         isChecked
-                          ? 'bg-[#141210] border-[#D4F268] text-[#E7E5E4]'
-                          : 'bg-[#1c1b19] border-[rgba(255,255,255,0.1)] text-[#A8A29E] hover:border-[#45433f]'
+                          ? 'bg-[#141210] border-[#D4F268] text-[#E7E5E4] shadow-[0_0_12px_rgba(212,242,104,0.15)]'
+                          : 'bg-[#141210]/60 border-[rgba(255,255,255,0.08)] text-[#A8A29E] hover:border-[rgba(255,255,255,0.2)]'
                       }`}
                     >
-                      <div className="flex items-center gap-2 min-w-0">
+                      <div className="flex items-center gap-3 min-w-0">
                         <div
-                          className={`w-4 h-4 rounded flex items-center justify-center border ${
+                          className={`w-4 h-4 rounded flex items-center justify-center border transition-all ${
                             isChecked
-                              ? 'bg-[#D4F268] border-[#D4F268] text-white'
-                              : 'border-[#45433f] bg-[#0C0A09]'
+                              ? 'bg-[#D4F268] border-[#D4F268] text-[#0C0A09]'
+                              : 'border-[rgba(255,255,255,0.2)] bg-[#0C0A09]'
                           }`}
                         >
                           {isChecked && <Check className="w-3 h-3 stroke-[3]" />}
                         </div>
                         <div className="truncate">
-                          <div className="font-medium text-xs truncate">{win.name}</div>
-                          <div className="text-[10px] text-[#A8A29E] font-mono">
+                          <div className="font-medium text-xs truncate text-[#E7E5E4]">{win.name}</div>
+                          <div className="text-[10px] text-[#A8A29E] font-mono mt-0.5">
                             {win.cadence} • cap {formatNumber(win.capacity)} {unitDisplay}
                           </div>
                         </div>
@@ -456,7 +457,7 @@ export const LogUsageModal: React.FC<LogUsageModalProps> = ({
           {/* Amount and Unit Mode */}
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
             <div>
-              <label htmlFor="log-amount" className="label-text">
+              <label htmlFor="log-amount" className="text-xs font-sans font-medium text-[#A8A29E] uppercase tracking-wider block mb-1.5">
                 Amount Used <span className="text-[#D4F268]">*</span>
               </label>
               <input
@@ -464,7 +465,7 @@ export const LogUsageModal: React.FC<LogUsageModalProps> = ({
                 type="number"
                 min="0.001"
                 step="any"
-                className="input-control text-xs"
+                className="w-full bg-[#141210] border border-[rgba(255,255,255,0.12)] text-[#E7E5E4] rounded-xl px-3.5 py-2.5 text-sm font-sans outline-none focus:border-[#D4F268] focus:ring-1 focus:ring-[#D4F268] transition-all"
                 value={amount}
                 onChange={(e) => setAmount(e.target.value)}
                 placeholder="e.g., 25"
@@ -473,14 +474,16 @@ export const LogUsageModal: React.FC<LogUsageModalProps> = ({
             </div>
 
             <div>
-              <label className="label-text">Amount Format</label>
-              <div className="grid grid-cols-2 gap-1 bg-[#141210] p-1 rounded-md border border-[rgba(255,255,255,0.1)]">
+              <label className="text-xs font-sans font-medium text-[#A8A29E] uppercase tracking-wider block mb-1.5">
+                Amount Format
+              </label>
+              <div className="grid grid-cols-2 gap-1 bg-[#141210] p-1 rounded-xl border border-[rgba(255,255,255,0.12)] h-[42px] items-center">
                 <button
                   type="button"
                   onClick={() => setIsPercentage(false)}
-                  className={`py-1 text-xs font-mono rounded transition-colors border-0 cursor-pointer ${
+                  className={`h-full text-xs font-mono rounded-lg transition-all border-0 cursor-pointer flex items-center justify-center ${
                     !isPercentage
-                      ? 'bg-[#1C1917] text-[#E7E5E4] font-medium'
+                      ? 'bg-[#1C1917] text-[#D4F268] font-semibold border border-[rgba(255,255,255,0.08)]'
                       : 'bg-transparent text-[#A8A29E] hover:text-[#E7E5E4]'
                   }`}
                 >
@@ -489,9 +492,9 @@ export const LogUsageModal: React.FC<LogUsageModalProps> = ({
                 <button
                   type="button"
                   onClick={() => setIsPercentage(true)}
-                  className={`py-1 text-xs font-mono rounded transition-colors border-0 cursor-pointer ${
+                  className={`h-full text-xs font-mono rounded-lg transition-all border-0 cursor-pointer flex items-center justify-center ${
                     isPercentage
-                      ? 'bg-[#1C1917] text-[#E7E5E4] font-medium'
+                      ? 'bg-[#1C1917] text-[#D4F268] font-semibold border border-[rgba(255,255,255,0.08)]'
                       : 'bg-transparent text-[#A8A29E] hover:text-[#E7E5E4]'
                   }`}
                 >
@@ -504,13 +507,13 @@ export const LogUsageModal: React.FC<LogUsageModalProps> = ({
           {/* Date & Time Picker + Optional Note */}
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
             <div>
-              <label htmlFor="log-timestamp" className="label-text">
+              <label htmlFor="log-timestamp" className="text-xs font-sans font-medium text-[#A8A29E] uppercase tracking-wider block mb-1.5">
                 Event Date & Time
               </label>
               <input
                 id="log-timestamp"
                 type="datetime-local"
-                className="input-control text-xs"
+                className="w-full bg-[#141210] border border-[rgba(255,255,255,0.12)] text-[#E7E5E4] rounded-xl px-3.5 py-2.5 text-sm font-sans outline-none focus:border-[#D4F268] focus:ring-1 focus:ring-[#D4F268] transition-all"
                 value={timestamp}
                 onChange={(e) => setTimestamp(e.target.value)}
                 required
@@ -518,13 +521,13 @@ export const LogUsageModal: React.FC<LogUsageModalProps> = ({
             </div>
 
             <div>
-              <label htmlFor="log-note" className="label-text">
+              <label htmlFor="log-note" className="text-xs font-sans font-medium text-[#A8A29E] uppercase tracking-wider block mb-1.5">
                 Note (Optional)
               </label>
               <input
                 id="log-note"
                 type="text"
-                className="input-control text-xs"
+                className="w-full bg-[#141210] border border-[rgba(255,255,255,0.12)] text-[#E7E5E4] rounded-xl px-3.5 py-2.5 text-sm font-sans outline-none focus:border-[#D4F268] focus:ring-1 focus:ring-[#D4F268] transition-all"
                 placeholder="e.g., Batch benchmark run, research crawl"
                 value={note}
                 onChange={(e) => setNote(e.target.value)}
@@ -534,27 +537,27 @@ export const LogUsageModal: React.FC<LogUsageModalProps> = ({
 
           {/* LIVE BALANCE PREVIEW BEFORE SAVING */}
           {livePreviews.length > 0 && (
-            <div className="p-3 bg-[#141210] border border-[rgba(255,255,255,0.1)] rounded-lg space-y-2">
-              <div className="flex items-center justify-between border-b border-[rgba(255,255,255,0.1)] pb-1.5">
-                <span className="text-[11px] font-mono uppercase tracking-wider text-[#D4F268] font-semibold">
+            <div className="font-mono text-xs bg-[#141210] p-4 rounded-xl border border-[rgba(255,255,255,0.08)] space-y-3">
+              <div className="flex items-center justify-between border-b border-[rgba(255,255,255,0.08)] pb-2">
+                <span className="text-xs uppercase tracking-wider text-[#D4F268] font-semibold flex items-center gap-1.5">
                   Live Balance Preview Before Saving
                 </span>
-                <span className="text-[10px] text-[#A8A29E] font-mono">
+                <span className="text-[11px] text-[#A8A29E]">
                   {isPercentage ? `${amount}% applied` : `+${amount} applied`}
                 </span>
               </div>
 
-              <div className="space-y-2 pt-1">
+              <div className="space-y-3 pt-1">
                 {livePreviews.map(({ window: win, preview }) => {
                   const unitDisplay = win.unit === 'custom' ? win.customUnitName || 'custom' : win.unit;
                   const prevRemaining = Math.max(0, win.capacity - win.currentUsed);
                   return (
                     <div
                       key={win.id}
-                      className="p-2 bg-[#1C1917] rounded border border-[rgba(255,255,255,0.1)] text-xs font-mono space-y-1.5"
+                      className="p-3 bg-[#1C1917] rounded-xl border border-[rgba(255,255,255,0.08)] space-y-2"
                     >
                       <div className="flex items-center justify-between">
-                        <span className="font-medium text-[#E7E5E4]">{win.name}</span>
+                        <span className="font-semibold text-[#E7E5E4]">{win.name}</span>
                         {preview.exceedsCapacity ? (
                           <span className="badge badge-danger text-[10px]">
                             Exceeds Capacity ({Math.round(preview.percentUsed)}%)
@@ -566,12 +569,15 @@ export const LogUsageModal: React.FC<LogUsageModalProps> = ({
                         )}
                       </div>
 
-                      <div className="flex items-center justify-between text-[11px] text-[#A8A29E]">
+                      {/* Technical Readout: Previous Used -> Incremental -> New Used */}
+                      <div className="flex items-center justify-between text-[11px] text-[#A8A29E] bg-[#141210] p-2 rounded-lg">
                         <span>Used:</span>
-                        <div className="flex items-center gap-1.5 font-medium text-[#E7E5E4]">
+                        <div className="flex items-center gap-1.5 font-medium">
                           <span>{formatNumber(preview.previousUsed)}</span>
-                          <ArrowRight className="w-3 h-3 text-[#D4F268]" />
-                          <span className="text-[#D4F268]">
+                          <span className="text-[#78716C]">&rarr;</span>
+                          <span className="text-[#D4F268]">+{formatNumber(preview.delta)}</span>
+                          <span className="text-[#78716C]">&rarr;</span>
+                          <span className="text-[#E7E5E4] font-semibold">
                             {formatNumber(preview.newUsed)} {unitDisplay}
                           </span>
                         </div>
@@ -579,24 +585,24 @@ export const LogUsageModal: React.FC<LogUsageModalProps> = ({
 
                       <div className="flex items-center justify-between text-[11px] text-[#A8A29E]">
                         <span>Remaining:</span>
-                        <div className="flex items-center gap-1.5 font-medium text-[#E7E5E4]">
+                        <div className="flex items-center gap-1.5 font-medium">
                           <span>{formatNumber(prevRemaining)}</span>
                           <ArrowRight className="w-3 h-3 text-[#10b981]" />
-                          <span className={preview.remaining <= 0 ? 'text-[#ef4444]' : 'text-[#10b981]'}>
+                          <span className={preview.remaining <= 0 ? 'text-[#f87171] font-semibold' : 'text-[#10b981] font-semibold'}>
                             {formatNumber(preview.remaining)} {unitDisplay}
                           </span>
                         </div>
                       </div>
 
-                      {/* Mini progress bar */}
-                      <div className="progress-track h-1.5 mt-1">
+                      {/* Percentage Bar */}
+                      <div className="w-full h-1.5 bg-[#0C0A09] border border-[rgba(255,255,255,0.08)] rounded-full overflow-hidden mt-1">
                         <div
-                          className={`progress-fill ${
+                          className={`h-full rounded-full transition-all ${
                             preview.percentUsed >= 100
-                              ? 'progress-fill-danger'
+                              ? 'bg-[#f87171]'
                               : preview.percentUsed >= 80
-                              ? 'progress-fill-warning'
-                              : 'progress-fill-normal'
+                              ? 'bg-[#fbbf24]'
+                              : 'bg-[#D4F268]'
                           }`}
                           style={{ width: `${Math.min(100, Math.max(0, preview.percentUsed))}%` }}
                         />
@@ -613,13 +619,13 @@ export const LogUsageModal: React.FC<LogUsageModalProps> = ({
             <button
               type="button"
               onClick={onClose}
-              className="btn-dark-solid text-xs"
+              className="btn-dark-solid bg-[#292524] text-[#E7E5E4] px-4 py-2 rounded-full text-sm border border-[rgba(255,255,255,0.1)] hover:bg-[#383431] transition-all font-sans cursor-pointer"
             >
               Cancel
             </button>
             <button
               type="submit"
-              className="btn-nav-coral text-xs font-semibold"
+              className="btn-primary-lime bg-[#D4F268] text-[#0C0A09] font-semibold px-5 py-2 rounded-full text-sm hover:bg-[#c4e450] transition-all shadow-[0_0_12px_rgba(212,242,104,0.2)] font-sans cursor-pointer"
               disabled={selectedWindowIds.length === 0}
             >
               Confirm & Save Usage

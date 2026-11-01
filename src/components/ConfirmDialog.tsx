@@ -36,61 +36,63 @@ export const ConfirmDialog: React.FC<ConfirmDialogProps> = ({
 
   return (
     <div
-      className="modal-overlay"
+      className="fixed inset-0 bg-[#0C0A09]/80 backdrop-blur-md flex items-center justify-center z-50 p-4"
       role="dialog"
       aria-modal="true"
       aria-labelledby="confirm-dialog-title"
       onClick={onCancel}
     >
       <div
-        className="modal-window max-w-md p-6 bg-[#1C1917] border border-[rgba(255,255,255,0.1)] text-[#E7E5E4]"
+        className="bg-[#1C1917] border border-[rgba(255,255,255,0.12)] rounded-[24px] p-6 sm:p-8 max-w-md w-full max-h-[90vh] overflow-y-auto shadow-[0_25px_50px_-12px_rgba(0,0,0,0.85)] text-[#E7E5E4]"
         onClick={(e) => e.stopPropagation()}
       >
-        <div className="flex items-start gap-4">
-          <div
-            className={`p-2.5 rounded-full shrink-0 ${
-              isDestructive
-                ? 'bg-[rgba(239,68,68,0.15)] text-[#ef4444] border border-[rgba(239,68,68,0.3)]'
-                : 'bg-[rgba(245,158,11,0.15)] text-[#f59e0b] border border-[rgba(245,158,11,0.3)]'
-            }`}
+        <div className="flex items-start justify-between gap-4 mb-4">
+          <div className="flex items-center gap-3">
+            <div
+              className={`p-2.5 rounded-full shrink-0 ${
+                isDestructive
+                  ? 'bg-[rgba(248,113,113,0.15)] text-[#f87171] border border-[rgba(248,113,113,0.3)]'
+                  : 'bg-[rgba(212,242,104,0.15)] text-[#D4F268] border border-[rgba(212,242,104,0.3)]'
+              }`}
+            >
+              <AlertTriangle className="w-5 h-5" />
+            </div>
+            <h2 id="confirm-dialog-title" className="font-serif font-light text-2xl text-[#E7E5E4] tracking-tight">
+              {title}
+            </h2>
+          </div>
+          <button
+            onClick={onCancel}
+            className="p-1.5 rounded-full text-[#A8A29E] hover:text-[#E7E5E4] hover:bg-[#292524] transition-all cursor-pointer border-0 bg-transparent shrink-0"
+            aria-label="Close dialog"
           >
-            <AlertTriangle className="w-5 h-5" />
-          </div>
+            <X className="w-4 h-4" />
+          </button>
+        </div>
 
-          <div className="flex-1 min-w-0">
-            <div className="flex items-center justify-between mb-2">
-              <h3 id="confirm-dialog-title" className="text-base font-semibold text-[#E7E5E4]">
-                {title}
-              </h3>
-              <button
-                onClick={onCancel}
-                className="text-[#A8A29E] hover:text-[#E7E5E4] bg-transparent border-0 cursor-pointer p-1 rounded hover:bg-[rgba(255,255,255,0.1)]"
-                aria-label="Close dialog"
-              >
-                <X className="w-4 h-4" />
-              </button>
-            </div>
-            <p className="text-xs text-[#A8A29E] leading-relaxed mb-6 font-mono whitespace-pre-wrap">
-              {message}
-            </p>
+        <div className="p-4 bg-[#141210] rounded-xl border border-[rgba(255,255,255,0.08)] mb-6 text-xs text-[#A8A29E] font-mono leading-relaxed whitespace-pre-wrap">
+          {message}
+        </div>
 
-            <div className="flex items-center justify-end gap-3">
-              <button
-                type="button"
-                onClick={onCancel}
-                className="btn-dark-solid text-xs"
-              >
-                {cancelLabel}
-              </button>
-              <button
-                type="button"
-                onClick={onConfirm}
-                className={isDestructive ? 'btn-danger text-xs' : 'btn-nav-coral text-xs'}
-              >
-                {confirmLabel}
-              </button>
-            </div>
-          </div>
+        <div className="flex items-center justify-end gap-3 pt-4 border-t border-[rgba(255,255,255,0.1)]">
+          <button
+            type="button"
+            onClick={onCancel}
+            className="btn-dark-solid bg-[#292524] text-[#E7E5E4] px-4 py-2 rounded-full text-sm border border-[rgba(255,255,255,0.1)] hover:bg-[#383431] transition-all font-sans cursor-pointer"
+          >
+            {cancelLabel}
+          </button>
+          <button
+            type="button"
+            onClick={onConfirm}
+            className={
+              isDestructive
+                ? 'btn-danger bg-[rgba(248,113,113,0.15)] text-[#f87171] border border-[rgba(248,113,113,0.3)] px-5 py-2 rounded-full text-sm hover:bg-[rgba(248,113,113,0.25)] transition-all font-sans font-semibold cursor-pointer'
+                : 'btn-primary-lime bg-[#D4F268] text-[#0C0A09] font-semibold px-5 py-2 rounded-full text-sm hover:bg-[#c4e450] transition-all shadow-[0_0_12px_rgba(212,242,104,0.2)] font-sans cursor-pointer'
+            }
+          >
+            {confirmLabel}
+          </button>
         </div>
       </div>
     </div>

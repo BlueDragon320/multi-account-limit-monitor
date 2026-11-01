@@ -165,10 +165,10 @@ export const OverviewScreen: React.FC<OverviewScreenProps> = ({
         {/* Top Stats Summary */}
         <section
           aria-label="Quota Summary Metrics"
-          className="grid grid-cols-2 lg:grid-cols-4 gap-4"
+          className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4"
         >
-          <div className="card-panel-deep p-5 border border-[rgba(255,255,255,0.08)] rounded-[24px] flex flex-col justify-between">
-            <div className="text-[12px] text-[#A8A29E] uppercase tracking-wider font-sans font-medium">
+          <div className="bg-[#141210] border border-[rgba(255,255,255,0.08)] rounded-[24px] p-5 flex flex-col justify-between">
+            <div className="text-[11px] text-[#A8A29E] font-medium tracking-wider uppercase font-sans">
               Active Accounts
             </div>
             <div className="text-3xl font-light font-mono text-[#E7E5E4] mt-2">
@@ -179,8 +179,8 @@ export const OverviewScreen: React.FC<OverviewScreenProps> = ({
             </div>
           </div>
 
-          <div className="card-panel-deep p-5 border border-[rgba(255,255,255,0.08)] rounded-[24px] flex flex-col justify-between">
-            <div className="text-[12px] text-[#A8A29E] uppercase tracking-wider font-sans font-medium">
+          <div className="bg-[#141210] border border-[rgba(255,255,255,0.08)] rounded-[24px] p-5 flex flex-col justify-between">
+            <div className="text-[11px] text-[#A8A29E] font-medium tracking-wider uppercase font-sans">
               Active Windows
             </div>
             <div className="text-3xl font-light font-mono text-[#E7E5E4] mt-2">
@@ -191,11 +191,11 @@ export const OverviewScreen: React.FC<OverviewScreenProps> = ({
             </div>
           </div>
 
-          <div className="card-panel-deep p-5 border border-[rgba(255,255,255,0.08)] rounded-[24px] flex flex-col justify-between">
-            <div className="text-[12px] text-[#A8A29E] uppercase tracking-wider font-sans font-medium flex items-center gap-1.5">
+          <div className="bg-[#141210] border border-[rgba(255,255,255,0.08)] rounded-[24px] p-5 flex flex-col justify-between">
+            <div className="text-[11px] text-[#A8A29E] font-medium tracking-wider uppercase font-sans flex items-center justify-between">
               <span>Near Limit (&ge;{settings.lowCapacityThresholdPercent}%)</span>
               {lowCapacityWindows.length > 0 && (
-                <span className="w-2 h-2 rounded-full bg-[#f87171]" />
+                <span className="w-2 h-2 rounded-full bg-[#f87171] shadow-[0_0_6px_#f87171]" />
               )}
             </div>
             <div
@@ -210,11 +210,11 @@ export const OverviewScreen: React.FC<OverviewScreenProps> = ({
             </div>
           </div>
 
-          <div className="card-panel-deep p-5 border border-[rgba(255,255,255,0.08)] rounded-[24px] flex flex-col justify-between">
-            <div className="text-[12px] text-[#A8A29E] uppercase tracking-wider font-sans font-medium flex items-center gap-1.5">
+          <div className="bg-[#141210] border border-[rgba(255,255,255,0.08)] rounded-[24px] p-5 flex flex-col justify-between">
+            <div className="text-[11px] text-[#A8A29E] font-medium tracking-wider uppercase font-sans flex items-center justify-between">
               <span>Stale (&gt;{settings.staleDataThresholdHours}h)</span>
               {staleWindows.length > 0 && (
-                <span className="w-2 h-2 rounded-full bg-[#fbbf24]" />
+                <span className="w-2 h-2 rounded-full bg-[#fbbf24] shadow-[0_0_6px_#fbbf24]" />
               )}
             </div>
             <div
@@ -251,7 +251,7 @@ export const OverviewScreen: React.FC<OverviewScreenProps> = ({
                 setSelectedAccountId(e.target.value);
                 setSelectedServiceId('all');
               }}
-              className="bg-[#141210] border border-[rgba(255,255,255,0.1)] text-[#E7E5E4] rounded-full px-3 py-1.5 text-xs outline-none focus:border-[#D4F268]"
+              className="bg-[#141210] text-[#E7E5E4] border border-[rgba(255,255,255,0.12)] rounded-full px-3.5 py-1.5 text-xs font-sans outline-none focus:border-[#D4F268] focus:ring-1 focus:ring-[#D4F268] cursor-pointer"
               aria-label="Filter by account"
             >
               <option value="all">All Accounts ({accounts.filter((a) => !a.archived).length})</option>
@@ -268,7 +268,7 @@ export const OverviewScreen: React.FC<OverviewScreenProps> = ({
             <select
               value={selectedServiceId}
               onChange={(e) => setSelectedServiceId(e.target.value)}
-              className="bg-[#141210] border border-[rgba(255,255,255,0.1)] text-[#E7E5E4] rounded-full px-3 py-1.5 text-xs outline-none focus:border-[#D4F268]"
+              className="bg-[#141210] text-[#E7E5E4] border border-[rgba(255,255,255,0.12)] rounded-full px-3.5 py-1.5 text-xs font-sans outline-none focus:border-[#D4F268] focus:ring-1 focus:ring-[#D4F268] cursor-pointer"
               aria-label="Filter by service"
             >
               <option value="all">All Services</option>
@@ -284,10 +284,10 @@ export const OverviewScreen: React.FC<OverviewScreenProps> = ({
               <button
                 type="button"
                 onClick={() => setStatusFilter('all')}
-                className={`px-3 py-1 rounded-full text-[11px] font-sans transition-all border-0 cursor-pointer ${
+                className={`cursor-pointer ${
                   statusFilter === 'all'
-                    ? 'bg-[#1C1917] text-[#E7E5E4] font-medium border border-[rgba(255,255,255,0.12)]'
-                    : 'bg-transparent text-[#A8A29E] hover:text-[#E7E5E4]'
+                    ? 'bg-[#292524] text-[#E7E5E4] border border-[rgba(255,255,255,0.2)] px-3 py-1 rounded-full text-xs font-medium'
+                    : 'bg-transparent text-[#A8A29E] hover:text-[#E7E5E4] px-3 py-1 rounded-full text-xs font-medium transition-all border border-transparent'
                 }`}
               >
                 All
@@ -295,10 +295,10 @@ export const OverviewScreen: React.FC<OverviewScreenProps> = ({
               <button
                 type="button"
                 onClick={() => setStatusFilter('low')}
-                className={`px-3 py-1 rounded-full text-[11px] font-sans transition-all border-0 cursor-pointer ${
+                className={`cursor-pointer ${
                   statusFilter === 'low'
-                    ? 'bg-[#D4F268] text-[#0C0A09] font-semibold'
-                    : 'bg-transparent text-[#A8A29E] hover:text-[#E7E5E4]'
+                    ? 'bg-[rgba(248,113,113,0.18)] text-[#f87171] border border-[rgba(248,113,113,0.4)] px-3 py-1 rounded-full text-xs font-semibold'
+                    : 'bg-transparent text-[#A8A29E] hover:text-[#f87171] px-3 py-1 rounded-full text-xs font-medium transition-all border border-transparent'
                 }`}
               >
                 Near Limit ({lowCapacityWindows.length})
@@ -306,10 +306,10 @@ export const OverviewScreen: React.FC<OverviewScreenProps> = ({
               <button
                 type="button"
                 onClick={() => setStatusFilter('stale')}
-                className={`px-3 py-1 rounded-full text-[11px] font-sans transition-all border-0 cursor-pointer ${
+                className={`cursor-pointer ${
                   statusFilter === 'stale'
-                    ? 'bg-[#fbbf24] text-[#0C0A09] font-semibold'
-                    : 'bg-transparent text-[#A8A29E] hover:text-[#E7E5E4]'
+                    ? 'bg-[rgba(251,191,36,0.18)] text-[#fbbf24] border border-[rgba(251,191,36,0.4)] px-3 py-1 rounded-full text-xs font-semibold'
+                    : 'bg-transparent text-[#A8A29E] hover:text-[#fbbf24] px-3 py-1 rounded-full text-xs font-medium transition-all border border-transparent'
                 }`}
               >
                 Stale ({staleWindows.length})
@@ -326,7 +326,7 @@ export const OverviewScreen: React.FC<OverviewScreenProps> = ({
             <select
               value={sortBy}
               onChange={(e) => setSortBy(e.target.value as any)}
-              className="bg-[#141210] border border-[rgba(255,255,255,0.1)] text-[#E7E5E4] rounded-full px-3 py-1.5 text-xs outline-none focus:border-[#D4F268]"
+              className="bg-[#141210] text-[#E7E5E4] border border-[rgba(255,255,255,0.12)] rounded-full px-3.5 py-1.5 text-xs font-sans outline-none focus:border-[#D4F268] focus:ring-1 focus:ring-[#D4F268] cursor-pointer"
               aria-label="Sort limit windows"
             >
               <option value="reset">Next Reset (Soonest first)</option>
@@ -341,8 +341,8 @@ export const OverviewScreen: React.FC<OverviewScreenProps> = ({
         <section aria-label="Limit Windows" className="space-y-6">
           {processedItems.length === 0 ? (
             /* Clean polite sample-free empty state */
-            <div className="card-panel-deep p-16 text-center border border-[rgba(255,255,255,0.08)] rounded-[24px] space-y-4">
-              <div className="w-14 h-14 rounded-full bg-[#1C1917] border border-[#D4F268] text-[#D4F268] shadow-[0_0_16px_rgba(212,242,104,0.2)] mx-auto flex items-center justify-center">
+            <div className="card-panel-deep bg-[#141210] p-12 text-center border border-[rgba(255,255,255,0.08)] rounded-[24px] flex flex-col items-center justify-center space-y-4">
+              <div className="w-14 h-14 rounded-full bg-[#1C1917] border border-[#D4F268] text-[#D4F268] shadow-[0_0_16px_rgba(212,242,104,0.2)] flex items-center justify-center">
                 <Sparkles className="w-7 h-7" />
               </div>
               <div className="space-y-2">
@@ -359,19 +359,19 @@ export const OverviewScreen: React.FC<OverviewScreenProps> = ({
               </div>
 
               {activeWindowsCount === 0 && (
-                <div className="pt-2 flex items-center justify-center gap-3">
+                <div className="pt-2 flex flex-wrap items-center justify-center gap-3">
                   <button
                     onClick={onOpenAddAccount}
-                    className="btn-nav-coral text-xs"
+                    className="btn-primary-lime text-xs font-sans font-semibold cursor-pointer"
                   >
                     <Plus className="w-3.5 h-3.5" />
                     <span>Add First Account</span>
                   </button>
                   <button
                     onClick={onNavigateToAccounts}
-                    className="btn-dark-solid text-xs"
+                    className="btn-dark-solid text-xs font-sans cursor-pointer"
                   >
-                    <span>View Accounts & Presets</span>
+                    <span>View Accounts &amp; Presets</span>
                   </button>
                 </div>
               )}
@@ -443,8 +443,11 @@ export const OverviewScreen: React.FC<OverviewScreenProps> = ({
                             </span>
                           </div>
 
-                          <div className="text-[11px] text-[#A8A29E] font-mono">
-                            Service: <span className="text-[#E7E5E4]">{service ? service.name : 'Custom'}</span>
+                          <div className="text-[11px] text-[#A8A29E] font-mono flex items-center gap-1.5">
+                            <span>Service:</span>
+                            <span className="text-[#E7E5E4] bg-[#141210] px-2 py-0.5 rounded-md border border-[rgba(255,255,255,0.08)] font-sans text-xs">
+                              {service ? service.name : 'Custom'}
+                            </span>
                           </div>
                         </div>
 
@@ -490,10 +493,10 @@ export const OverviewScreen: React.FC<OverviewScreenProps> = ({
                               <span>Next Reset:</span>
                             </span>
                             <span
-                              className={`font-semibold ${
+                              className={`font-mono font-semibold ${
                                 resetResult.isPastDue
                                   ? 'text-[#f87171]'
-                                  : 'text-[#E7E5E4]'
+                                  : 'text-[#D4F268]'
                               }`}
                             >
                               {resetResult.isPastDue ? 'Past Due (advancing)' : `in ${countdown}`}
@@ -517,19 +520,19 @@ export const OverviewScreen: React.FC<OverviewScreenProps> = ({
                       <div className="grid grid-cols-2 gap-2 pt-4 mt-2 border-t border-[rgba(255,255,255,0.08)]">
                         <button
                           onClick={() => onOpenLogUsage(win.id)}
-                          className="btn-dark-solid text-xs justify-center h-9 rounded-full"
+                          className="btn-dark-solid text-xs justify-center h-9 rounded-full cursor-pointer hover:border-[rgba(212,242,104,0.4)]"
                           title="Log usage for this window"
                         >
-                          <Plus className="w-3 h-3 text-[#D4F268]" />
-                          <span>Log Usage</span>
+                          <Plus className="w-3.5 h-3.5 text-[#D4F268]" />
+                          <span>Log</span>
                         </button>
                         <button
                           onClick={() => onOpenCorrectBalance(win.id)}
-                          className="btn-secondary-square text-xs justify-center h-9 rounded-full"
+                          className="btn-secondary-square text-xs justify-center h-9 rounded-full cursor-pointer hover:border-[#D4F268]"
                           title="Calibrate balance to match provider console"
                         >
-                          <RotateCcw className="w-3 h-3" />
-                          <span>Correct</span>
+                          <RotateCcw className="w-3.5 h-3.5" />
+                          <span>Calibrate</span>
                         </button>
                       </div>
                     </article>

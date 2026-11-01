@@ -30,7 +30,7 @@ export const Navbar: React.FC<NavbarProps> = ({
         {/* Brand / Logo */}
         <button
           onClick={() => onSelectTab('overview')}
-          className="flex items-center gap-3 text-left border-0 bg-transparent cursor-pointer p-1 group focus:outline-none"
+          className="flex items-center gap-3 text-left border-0 bg-transparent cursor-pointer p-1 group outline-none focus:outline-none appearance-none"
           aria-label="Quota Ember Home"
         >
           <div className="w-8 h-8 rounded-full bg-[#1C1917] border border-[#D4F268] flex items-center justify-center text-[#D4F268] shadow-[0_0_14px_rgba(212,242,104,0.25)] transition-all group-hover:scale-105">
@@ -49,7 +49,7 @@ export const Navbar: React.FC<NavbarProps> = ({
         {/* Tab Navigation */}
         <div
           role="tablist"
-          className="flex items-center gap-1 bg-[#141210] p-1 rounded-full border border-[rgba(255,255,255,0.08)]"
+          className="flex items-center gap-1 bg-[#141210] p-1 rounded-full border border-[rgba(255,255,255,0.08)] overflow-x-auto"
         >
           {TABS.map((tab) => {
             const isActive = activeTab === tab.id;
@@ -60,10 +60,10 @@ export const Navbar: React.FC<NavbarProps> = ({
                 role="tab"
                 aria-selected={isActive}
                 onClick={() => onSelectTab(tab.id)}
-                className={`relative flex items-center gap-2 px-3.5 py-1.5 rounded-full text-[13px] font-sans transition-all border-0 cursor-pointer ${
+                className={`relative flex items-center gap-2 text-[13px] font-sans cursor-pointer ${
                   isActive
-                    ? 'bg-[#1C1917] text-[#E7E5E4] font-medium shadow-sm border border-[rgba(255,255,255,0.12)]'
-                    : 'text-[#A8A29E] hover:text-[#E7E5E4] hover:bg-[#1C1917] bg-transparent'
+                    ? 'bg-[#292524] text-[#E7E5E4] border border-[rgba(212,242,104,0.4)] shadow-[0_0_10px_rgba(212,242,104,0.15)] font-medium px-4 py-2 rounded-full'
+                    : 'text-[#A8A29E] hover:text-[#E7E5E4] hover:bg-[#1C1917] px-3.5 py-1.5 rounded-full transition-all border border-transparent bg-transparent'
                 }`}
               >
                 {isActive && (

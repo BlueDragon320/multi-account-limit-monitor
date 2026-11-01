@@ -130,55 +130,55 @@ export const LimitWindowModal: React.FC<LimitWindowModalProps> = ({
 
   return (
     <div
-      className="modal-overlay"
+      className="fixed inset-0 bg-[#0C0A09]/80 backdrop-blur-md flex items-center justify-center z-50 p-4"
       role="dialog"
       aria-modal="true"
       aria-labelledby="window-modal-title"
       onClick={onClose}
     >
       <div
-        className="modal-window max-w-lg p-6 bg-[#1C1917] border border-[rgba(255,255,255,0.1)] text-[#E7E5E4]"
+        className="bg-[#1C1917] border border-[rgba(255,255,255,0.12)] rounded-[24px] p-6 sm:p-8 max-w-lg w-full max-h-[90vh] overflow-y-auto shadow-[0_25px_50px_-12px_rgba(0,0,0,0.85)] text-[#E7E5E4]"
         onClick={(e) => e.stopPropagation()}
       >
         {/* Header */}
-        <div className="flex items-center justify-between pb-4 mb-4 border-b border-[rgba(255,255,255,0.1)]">
-          <div className="flex items-center gap-2">
-            <div className="p-1.5 rounded-md bg-[#141210] border border-[rgba(255,255,255,0.1)] text-[#D4F268]">
-              <Clock className="w-4 h-4" />
+        <div className="flex items-start justify-between gap-4 pb-4 mb-6 border-b border-[rgba(255,255,255,0.1)]">
+          <div className="flex items-center gap-3">
+            <div className="p-2 rounded-full bg-[#141210] border border-[rgba(255,255,255,0.1)] text-[#D4F268]">
+              <Clock className="w-5 h-5" />
             </div>
             <div>
-              <h3 id="window-modal-title" className="text-sm font-semibold text-[#E7E5E4]">
+              <h2 id="window-modal-title" className="font-serif font-light text-2xl text-[#E7E5E4] tracking-tight">
                 {windowItem ? 'Edit Limit Window' : 'Add Limit Window'}
-              </h3>
-              <p className="text-[11px] text-[#A8A29E] font-mono">
+              </h2>
+              <p className="text-xs text-[#A8A29E] font-sans mt-0.5">
                 Service: <span className="text-[#E7E5E4] font-medium">{serviceName}</span>
               </p>
             </div>
           </div>
           <button
             onClick={onClose}
-            className="text-[#A8A29E] hover:text-[#E7E5E4] bg-transparent border-0 cursor-pointer p-1 rounded hover:bg-[rgba(255,255,255,0.1)]"
+            className="p-1.5 rounded-full text-[#A8A29E] hover:text-[#E7E5E4] hover:bg-[#292524] transition-all cursor-pointer border-0 bg-transparent shrink-0"
             aria-label="Close"
           >
             <X className="w-4 h-4" />
           </button>
         </div>
 
-        <form onSubmit={handleSubmit} className="space-y-4">
+        <form onSubmit={handleSubmit} className="space-y-5">
           {error && (
-            <div className="p-2.5 rounded bg-[rgba(239,68,68,0.1)] border border-[rgba(239,68,68,0.3)] text-[#ef4444] text-xs font-mono">
+            <div className="p-3 rounded-xl bg-[rgba(248,113,113,0.12)] border border-[rgba(248,113,113,0.3)] text-[#f87171] text-xs font-mono">
               {error}
             </div>
           )}
 
           <div>
-            <label htmlFor="win-name" className="label-text">
+            <label htmlFor="win-name" className="text-xs font-sans font-medium text-[#A8A29E] uppercase tracking-wider block mb-1.5">
               Window Name <span className="text-[#D4F268]">*</span>
             </label>
             <input
               id="win-name"
               type="text"
-              className="input-control"
+              className="w-full bg-[#141210] border border-[rgba(255,255,255,0.12)] text-[#E7E5E4] rounded-xl px-3.5 py-2.5 text-sm font-sans outline-none focus:border-[#D4F268] focus:ring-1 focus:ring-[#D4F268] transition-all"
               placeholder="e.g., Hourly Burst, Weekly Quota, Daily Prompts"
               value={name}
               onChange={(e) => setName(e.target.value)}
@@ -189,7 +189,7 @@ export const LimitWindowModal: React.FC<LimitWindowModalProps> = ({
 
           <div className="grid grid-cols-2 gap-3">
             <div>
-              <label htmlFor="win-cap" className="label-text">
+              <label htmlFor="win-cap" className="text-xs font-sans font-medium text-[#A8A29E] uppercase tracking-wider block mb-1.5">
                 Capacity <span className="text-[#D4F268]">*</span>
               </label>
               <input
@@ -197,7 +197,7 @@ export const LimitWindowModal: React.FC<LimitWindowModalProps> = ({
                 type="number"
                 min="0.001"
                 step="any"
-                className="input-control"
+                className="w-full bg-[#141210] border border-[rgba(255,255,255,0.12)] text-[#E7E5E4] rounded-xl px-3.5 py-2.5 text-sm font-sans outline-none focus:border-[#D4F268] focus:ring-1 focus:ring-[#D4F268] transition-all"
                 value={capacity}
                 onChange={(e) => setCapacity(parseFloat(e.target.value) || 0)}
                 required
@@ -205,12 +205,12 @@ export const LimitWindowModal: React.FC<LimitWindowModalProps> = ({
             </div>
 
             <div>
-              <label htmlFor="win-unit" className="label-text">
+              <label htmlFor="win-unit" className="text-xs font-sans font-medium text-[#A8A29E] uppercase tracking-wider block mb-1.5">
                 Unit
               </label>
               <select
                 id="win-unit"
-                className="input-control"
+                className="w-full bg-[#141210] border border-[rgba(255,255,255,0.12)] text-[#E7E5E4] rounded-xl px-3.5 py-2.5 text-sm font-sans outline-none focus:border-[#D4F268] focus:ring-1 focus:ring-[#D4F268] transition-all cursor-pointer"
                 value={unit}
                 onChange={(e) => setUnit(e.target.value as UnitType)}
               >
@@ -224,13 +224,13 @@ export const LimitWindowModal: React.FC<LimitWindowModalProps> = ({
 
           {unit === 'custom' && (
             <div>
-              <label htmlFor="win-custom-unit" className="label-text">
+              <label htmlFor="win-custom-unit" className="text-xs font-sans font-medium text-[#A8A29E] uppercase tracking-wider block mb-1.5">
                 Custom Unit Name <span className="text-[#D4F268]">*</span>
               </label>
               <input
                 id="win-custom-unit"
                 type="text"
-                className="input-control"
+                className="w-full bg-[#141210] border border-[rgba(255,255,255,0.12)] text-[#E7E5E4] rounded-xl px-3.5 py-2.5 text-sm font-sans outline-none focus:border-[#D4F268] focus:ring-1 focus:ring-[#D4F268] transition-all"
                 placeholder="e.g., tokens, transactions, calls"
                 value={customUnitName}
                 onChange={(e) => setCustomUnitName(e.target.value)}
@@ -241,12 +241,12 @@ export const LimitWindowModal: React.FC<LimitWindowModalProps> = ({
 
           <div className="grid grid-cols-2 gap-3">
             <div>
-              <label htmlFor="win-cadence" className="label-text">
+              <label htmlFor="win-cadence" className="text-xs font-sans font-medium text-[#A8A29E] uppercase tracking-wider block mb-1.5">
                 Reset Cadence
               </label>
               <select
                 id="win-cadence"
-                className="input-control"
+                className="w-full bg-[#141210] border border-[rgba(255,255,255,0.12)] text-[#E7E5E4] rounded-xl px-3.5 py-2.5 text-sm font-sans outline-none focus:border-[#D4F268] focus:ring-1 focus:ring-[#D4F268] transition-all cursor-pointer"
                 value={cadence}
                 onChange={(e) => setCadence(e.target.value as CadenceType)}
               >
@@ -260,14 +260,14 @@ export const LimitWindowModal: React.FC<LimitWindowModalProps> = ({
 
             {cadence === 'custom' ? (
               <div>
-                <label htmlFor="win-interval" className="label-text">
+                <label htmlFor="win-interval" className="text-xs font-sans font-medium text-[#A8A29E] uppercase tracking-wider block mb-1.5">
                   Interval Hours <span className="text-[#D4F268]">*</span>
                 </label>
                 <input
                   id="win-interval"
                   type="number"
                   min="1"
-                  className="input-control"
+                  className="w-full bg-[#141210] border border-[rgba(255,255,255,0.12)] text-[#E7E5E4] rounded-xl px-3.5 py-2.5 text-sm font-sans outline-none focus:border-[#D4F268] focus:ring-1 focus:ring-[#D4F268] transition-all"
                   value={customIntervalHours}
                   onChange={(e) => setCustomIntervalHours(parseInt(e.target.value, 10) || 1)}
                   required
@@ -275,13 +275,13 @@ export const LimitWindowModal: React.FC<LimitWindowModalProps> = ({
               </div>
             ) : (
               <div>
-                <label htmlFor="win-anchor" className="label-text">
+                <label htmlFor="win-anchor" className="text-xs font-sans font-medium text-[#A8A29E] uppercase tracking-wider block mb-1.5">
                   Reset Anchor
                 </label>
                 <input
                   id="win-anchor"
                   type="datetime-local"
-                  className="input-control"
+                  className="w-full bg-[#141210] border border-[rgba(255,255,255,0.12)] text-[#E7E5E4] rounded-xl px-3.5 py-2.5 text-sm font-sans outline-none focus:border-[#D4F268] focus:ring-1 focus:ring-[#D4F268] transition-all"
                   value={toLocalDatetimeInputValue(new Date(resetAnchor))}
                   onChange={(e) => {
                     const dt = new Date(e.target.value);
@@ -296,12 +296,12 @@ export const LimitWindowModal: React.FC<LimitWindowModalProps> = ({
           </div>
 
           <div>
-            <label htmlFor="win-tz" className="label-text">
+            <label htmlFor="win-tz" className="text-xs font-sans font-medium text-[#A8A29E] uppercase tracking-wider block mb-1.5">
               Time Zone
             </label>
             <select
               id="win-tz"
-              className="input-control"
+              className="w-full bg-[#141210] border border-[rgba(255,255,255,0.12)] text-[#E7E5E4] rounded-xl px-3.5 py-2.5 text-sm font-sans outline-none focus:border-[#D4F268] focus:ring-1 focus:ring-[#D4F268] transition-all cursor-pointer"
               value={timeZone}
               onChange={(e) => setTimeZone(e.target.value)}
             >
@@ -314,19 +314,19 @@ export const LimitWindowModal: React.FC<LimitWindowModalProps> = ({
                 </option>
               ))}
             </select>
-            <p className="text-[10px] text-[#A8A29E] mt-1 font-mono">
+            <p className="text-[11px] text-[#A8A29E] mt-1.5 font-mono">
               Wall-clock time and DST transitions will be preserved in this zone.
             </p>
           </div>
 
           {windowItem && (
-            <div className="pt-2">
-              <label className="flex items-center gap-2 cursor-pointer text-xs font-mono text-[#E7E5E4]">
+            <div className="p-3 bg-[#141210] rounded-xl border border-[rgba(255,255,255,0.08)]">
+              <label className="flex items-center gap-3 cursor-pointer text-xs font-mono text-[#E7E5E4]">
                 <input
                   type="checkbox"
                   checked={archived}
                   onChange={(e) => setArchived(e.target.checked)}
-                  className="rounded bg-[#0C0A09] border-[rgba(255,255,255,0.1)] text-[#D4F268]"
+                  className="w-4 h-4 rounded bg-[#0C0A09] border border-[rgba(255,255,255,0.2)] text-[#D4F268] accent-[#D4F268] focus:ring-0 cursor-pointer"
                 />
                 <span>Archive this window (hides from overview calculations)</span>
               </label>
@@ -337,13 +337,13 @@ export const LimitWindowModal: React.FC<LimitWindowModalProps> = ({
             <button
               type="button"
               onClick={onClose}
-              className="btn-dark-solid text-xs"
+              className="btn-dark-solid bg-[#292524] text-[#E7E5E4] px-4 py-2 rounded-full text-sm border border-[rgba(255,255,255,0.1)] hover:bg-[#383431] transition-all font-sans cursor-pointer"
             >
               Cancel
             </button>
             <button
               type="submit"
-              className="btn-primary-cream text-xs font-semibold"
+              className="btn-primary-lime bg-[#D4F268] text-[#0C0A09] font-semibold px-5 py-2 rounded-full text-sm hover:bg-[#c4e450] transition-all shadow-[0_0_12px_rgba(212,242,104,0.2)] font-sans cursor-pointer"
             >
               {windowItem ? 'Save Window' : 'Create Window'}
             </button>

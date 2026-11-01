@@ -56,15 +56,35 @@ export const ServiceModal: React.FC<ServiceModalProps> = ({
   onSave,
   onClose,
 }) => {
-  const [accountId, setAccountId] = useState('');
-  const [name, setName] = useState('');
-  const [notes, setNotes] = useState('');
-  const [archived, setArchived] = useState(false);
-  const [selectedPresetName, setSelectedPresetName] = useState<string>('Antigravity');
-  const [windows, setWindows] = useState<WindowDraft[]>([]);
+  const [accountId, setAccountId] = useState(() => {
+    if (service) return service.accountId;
+    return selectedAccountId || (accounts.length > 0 ? accounts[0].id : '');
+  });
+  const [name, setName] = useState(() => {
+    if (service) return service.name;
+    const preset = getPresetByName('Antigravity');
+    return preset ? preset.name : 'Antigravity';
+  });
+  const [notes, setNotes] = useState(() => (service ? service.notes || '' : ''));
+  const [archived, setArchived] = useState(() => (service ? service.archived : false));
+  const [selectedPresetName, setSelectedPresetName] = useState<string>(() => (service ? '' : 'Antigravity'));
+  const [windows, setWindows] = useState<WindowDraft[]>(() => {
+    if (service) return [];
+    const preset = getPresetByName('Antigravity');
+    if (!preset) return [];
+    const nowIso = new Date().toISOString();
+    return preset.suggestedWindows.map((sw) => ({
+      name: sw.name,
+      capacity: sw.defaultCapacity ?? 100,
+      unit: sw.unit,
+      cadence: sw.cadence,
+      resetAnchor: nowIso,
+      timeZone: defaultTimeZone || 'UTC',
+    }));
+  });
   const [error, setError] = useState<string | null>(null);
 
-  // Initialize or reset form
+  // Sync state if service/accounts/isOpen change
   useEffect(() => {
     if (!isOpen) return;
 
@@ -73,7 +93,7 @@ export const ServiceModal: React.FC<ServiceModalProps> = ({
       setName(service.name);
       setNotes(service.notes || '');
       setArchived(service.archived);
-      setWindows([]); // Editing service metadata; existing windows managed on account screen
+      setWindows([]);
       setSelectedPresetName('');
     } else {
       const initialAccId = selectedAccountId || (accounts.length > 0 ? accounts[0].id : '');
@@ -81,7 +101,6 @@ export const ServiceModal: React.FC<ServiceModalProps> = ({
       setNotes('');
       setArchived(false);
       setError(null);
-      // Pre-select first preset
       applyPreset('Antigravity', defaultTimeZone);
     }
   }, [isOpen, service, selectedAccountId, accounts, defaultTimeZone]);
@@ -176,55 +195,55 @@ export const ServiceModal: React.FC<ServiceModalProps> = ({
 
   return (
     <div
-      className="modal-overlay"
+      className="fixed inset-0 bg-[#0C0A09]/80 backdrop-blur-md flex items-center justify-center z-50 p-4"
       role="dialog"
       aria-modal="true"
       aria-labelledby="service-modal-title"
       onClick={onClose}
     >
       <div
-        className="modal-window max-w-2xl p-6 bg-[#1C1917] border border-[rgba(255,255,255,0.1)] text-[#E7E5E4]"
+        className="bg-[#1C1917] border border-[rgba(255,255,255,0.12)] rounded-[24px] p-6 sm:p-8 max-w-2xl w-full max-h-[90vh] overflow-y-auto shadow-[0_25px_50px_-12px_rgba(0,0,0,0.85)] text-[#E7E5E4]"
         onClick={(e) => e.stopPropagation()}
       >
         {/* Header */}
-        <div className="flex items-center justify-between pb-4 mb-4 border-b border-[rgba(255,255,255,0.1)]">
-          <div className="flex items-center gap-2">
-            <div className="p-1.5 rounded-md bg-[#141210] border border-[rgba(255,255,255,0.1)] text-[#D4F268]">
-              <Server className="w-4 h-4" />
+        <div className="flex items-start justify-between gap-4 pb-4 mb-6 border-b border-[rgba(255,255,255,0.1)]">
+          <div className="flex items-center gap-3">
+            <div className="p-2 rounded-full bg-[#141210] border border-[rgba(255,255,255,0.1)] text-[#D4F268]">
+              <Server className="w-5 h-5" />
             </div>
             <div>
-              <h3 id="service-modal-title" className="text-sm font-semibold text-[#E7E5E4]">
+              <h2 id="service-modal-title" className="font-serif font-light text-2xl text-[#E7E5E4] tracking-tight">
                 {service ? 'Edit Service' : 'Add Service & Limit Windows'}
-              </h3>
-              <p className="text-[11px] text-[#A8A29E] font-mono">
-                {service ? 'Update service metadata' : 'Select a preset or configure custom tracking windows'}
+              </h2>
+              <p className="text-xs text-[#A8A29E] font-sans mt-0.5">
+                {service ? 'Update service metadata & tracking preferences' : 'Select a preset or configure custom tracking windows'}
               </p>
             </div>
           </div>
           <button
             onClick={onClose}
-            className="text-[#A8A29E] hover:text-[#E7E5E4] bg-transparent border-0 cursor-pointer p-1 rounded hover:bg-[rgba(255,255,255,0.1)]"
+            className="p-1.5 rounded-full text-[#A8A29E] hover:text-[#E7E5E4] hover:bg-[#292524] transition-all cursor-pointer border-0 bg-transparent shrink-0"
             aria-label="Close"
           >
             <X className="w-4 h-4" />
           </button>
         </div>
 
-        <form onSubmit={handleSubmit} className="space-y-4">
+        <form onSubmit={handleSubmit} className="space-y-5">
           {error && (
-            <div className="p-2.5 rounded bg-[rgba(239,68,68,0.1)] border border-[rgba(239,68,68,0.3)] text-[#ef4444] text-xs font-mono">
+            <div className="p-3 rounded-xl bg-[rgba(248,113,113,0.12)] border border-[rgba(248,113,113,0.3)] text-[#f87171] text-xs font-mono">
               {error}
             </div>
           )}
 
           {/* Account Selection */}
           <div>
-            <label htmlFor="svc-account" className="label-text">
+            <label htmlFor="svc-account" className="text-xs font-sans font-medium text-[#A8A29E] uppercase tracking-wider block mb-1.5">
               Associated Account <span className="text-[#D4F268]">*</span>
             </label>
             <select
               id="svc-account"
-              className="input-control"
+              className="w-full bg-[#141210] border border-[rgba(255,255,255,0.12)] text-[#E7E5E4] rounded-xl px-3.5 py-2.5 text-sm font-sans outline-none focus:border-[#D4F268] focus:ring-1 focus:ring-[#D4F268] transition-all cursor-pointer"
               value={accountId}
               disabled={!!service}
               onChange={(e) => setAccountId(e.target.value)}
@@ -245,7 +264,7 @@ export const ServiceModal: React.FC<ServiceModalProps> = ({
           {/* Presets Row (Only in Creation Mode) */}
           {!service && (
             <div>
-              <label className="label-text flex items-center gap-1.5 mb-2">
+              <label className="text-xs font-sans font-medium text-[#A8A29E] uppercase tracking-wider flex items-center gap-1.5 mb-2">
                 <Sparkles className="w-3.5 h-3.5 text-[#D4F268]" />
                 <span>Quick-Fill Service Preset</span>
               </label>
@@ -257,14 +276,14 @@ export const ServiceModal: React.FC<ServiceModalProps> = ({
                       key={preset.name}
                       type="button"
                       onClick={() => applyPreset(preset.name, defaultTimeZone)}
-                      className={`px-2.5 py-2 rounded-md text-[11px] font-mono text-center border transition-all cursor-pointer ${
+                      className={`px-3 py-2.5 rounded-xl text-xs font-mono text-center border transition-all cursor-pointer ${
                         isSelected
-                          ? 'bg-[#141210] border-[#D4F268] text-[#E7E5E4] shadow-[0_0_8px_rgba(212,242,104,0.2)]'
-                          : 'bg-[#1c1b19] border-[rgba(255,255,255,0.1)] text-[#A8A29E] hover:text-[#E7E5E4] hover:bg-[#1C1917]'
+                          ? 'bg-[#141210] border-[#D4F268] text-[#E7E5E4] shadow-[0_0_12px_rgba(212,242,104,0.18)]'
+                          : 'bg-[#141210]/60 border-[rgba(255,255,255,0.08)] text-[#A8A29E] hover:text-[#E7E5E4] hover:bg-[#141210] hover:border-[rgba(255,255,255,0.16)]'
                       }`}
                     >
                       <div className="font-semibold truncate">{preset.name}</div>
-                      <div className="text-[9px] text-[#66635f] mt-0.5 truncate">
+                      <div className="text-[10px] text-[#78716C] mt-1 truncate">
                         {preset.suggestedWindows.map((w) => w.cadence).join(' + ')}
                       </div>
                     </button>
@@ -276,13 +295,13 @@ export const ServiceModal: React.FC<ServiceModalProps> = ({
 
           {/* Service Name */}
           <div>
-            <label htmlFor="svc-name" className="label-text">
+            <label htmlFor="svc-name" className="text-xs font-sans font-medium text-[#A8A29E] uppercase tracking-wider block mb-1.5">
               Service Name <span className="text-[#D4F268]">*</span>
             </label>
             <input
               id="svc-name"
               type="text"
-              className="input-control"
+              className="w-full bg-[#141210] border border-[rgba(255,255,255,0.12)] text-[#E7E5E4] rounded-xl px-3.5 py-2.5 text-sm font-sans outline-none focus:border-[#D4F268] focus:ring-1 focus:ring-[#D4F268] transition-all"
               placeholder="e.g., Antigravity, Google AI Studio, Gemini, Vertex AI"
               value={name}
               onChange={(e) => setName(e.target.value)}
@@ -292,13 +311,13 @@ export const ServiceModal: React.FC<ServiceModalProps> = ({
 
           {/* Notes */}
           <div>
-            <label htmlFor="svc-notes" className="label-text">
+            <label htmlFor="svc-notes" className="text-xs font-sans font-medium text-[#A8A29E] uppercase tracking-wider block mb-1.5">
               Notes (Optional)
             </label>
             <input
               id="svc-notes"
               type="text"
-              className="input-control"
+              className="w-full bg-[#141210] border border-[rgba(255,255,255,0.12)] text-[#E7E5E4] rounded-xl px-3.5 py-2.5 text-sm font-sans outline-none focus:border-[#D4F268] focus:ring-1 focus:ring-[#D4F268] transition-all"
               placeholder="e.g., Tier limits, shared project token, daily quotas"
               value={notes}
               onChange={(e) => setNotes(e.target.value)}
@@ -306,13 +325,13 @@ export const ServiceModal: React.FC<ServiceModalProps> = ({
           </div>
 
           {service && (
-            <div className="pt-2">
-              <label className="flex items-center gap-2 cursor-pointer text-xs font-mono text-[#E7E5E4]">
+            <div className="p-3 bg-[#141210] rounded-xl border border-[rgba(255,255,255,0.08)]">
+              <label className="flex items-center gap-3 cursor-pointer text-xs font-mono text-[#E7E5E4]">
                 <input
                   type="checkbox"
                   checked={archived}
                   onChange={(e) => setArchived(e.target.checked)}
-                  className="rounded bg-[#0C0A09] border-[rgba(255,255,255,0.1)] text-[#D4F268]"
+                  className="w-4 h-4 rounded bg-[#0C0A09] border border-[rgba(255,255,255,0.2)] text-[#D4F268] accent-[#D4F268] focus:ring-0 cursor-pointer"
                 />
                 <span>Archive this service (hides associated windows)</span>
               </label>
@@ -322,40 +341,40 @@ export const ServiceModal: React.FC<ServiceModalProps> = ({
           {/* Initial Limit Windows Configurator (Creation Mode) */}
           {!service && (
             <div className="pt-2">
-              <div className="flex items-center justify-between mb-2">
+              <div className="flex items-center justify-between mb-3">
                 <div>
                   <h4 className="text-xs font-semibold uppercase tracking-wider text-[#E7E5E4] font-mono">
                     Limit Windows ({windows.length})
                   </h4>
-                  <p className="text-[10px] text-[#A8A29E] font-mono">
+                  <p className="text-[11px] text-[#A8A29E] font-sans">
                     Multiple windows (e.g. hourly burst + weekly allotment) can coexist and reset independently.
                   </p>
                 </div>
                 <button
                   type="button"
                   onClick={handleAddCustomWindow}
-                  className="btn-dark-solid text-[11px] h-7 px-2.5"
+                  className="btn-dark-solid bg-[#292524] text-[#E7E5E4] px-3.5 py-1.5 rounded-full text-xs border border-[rgba(255,255,255,0.1)] hover:bg-[#383431] transition-all font-sans cursor-pointer flex items-center gap-1.5"
                 >
-                  <Plus className="w-3 h-3" />
+                  <Plus className="w-3.5 h-3.5 text-[#D4F268]" />
                   <span>Add Window</span>
                 </button>
               </div>
 
-              <div className="space-y-3 max-h-[280px] overflow-y-auto pr-1">
+              <div className="space-y-3 max-h-[300px] overflow-y-auto pr-1">
                 {windows.map((win, idx) => (
                   <div
                     key={idx}
-                    className="p-3 bg-[#141210] border border-[rgba(255,255,255,0.1)] rounded-lg text-xs space-y-3 relative group"
+                    className="p-4 bg-[#141210] border border-[rgba(255,255,255,0.08)] rounded-2xl text-xs space-y-3 relative group"
                   >
-                    <div className="flex items-center justify-between">
-                      <span className="font-mono text-[11px] text-[#D4F268] font-semibold">
+                    <div className="flex items-center justify-between border-b border-[rgba(255,255,255,0.06)] pb-2">
+                      <span className="font-mono text-xs text-[#D4F268] font-semibold">
                         Window #{idx + 1}
                       </span>
                       {windows.length > 1 && (
                         <button
                           type="button"
                           onClick={() => handleRemoveWindow(idx)}
-                          className="text-[#ef4444] hover:text-[#ff6b6b] bg-transparent border-0 cursor-pointer p-0.5 rounded"
+                          className="p-1 rounded text-[#f87171] hover:bg-[rgba(248,113,113,0.15)] transition-all bg-transparent border-0 cursor-pointer"
                           title="Remove window"
                         >
                           <Trash2 className="w-3.5 h-3.5" />
@@ -363,26 +382,30 @@ export const ServiceModal: React.FC<ServiceModalProps> = ({
                       )}
                     </div>
 
-                    <div className="grid grid-cols-1 sm:grid-cols-2 gap-2">
+                    <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
                       <div>
-                        <label className="label-text">Window Name</label>
+                        <label className="text-[11px] font-sans font-medium text-[#A8A29E] uppercase tracking-wider block mb-1">
+                          Window Name
+                        </label>
                         <input
                           type="text"
-                          className="input-control text-xs py-1.5"
+                          className="w-full bg-[#0C0A09] border border-[rgba(255,255,255,0.12)] text-[#E7E5E4] rounded-xl px-3 py-2 text-xs font-sans outline-none focus:border-[#D4F268] focus:ring-1 focus:ring-[#D4F268] transition-all"
                           value={win.name}
                           onChange={(e) => handleWindowChange(idx, { name: e.target.value })}
                           required
                         />
                       </div>
 
-                      <div className="grid grid-cols-2 gap-1.5">
+                      <div className="grid grid-cols-2 gap-2">
                         <div>
-                          <label className="label-text">Capacity</label>
+                          <label className="text-[11px] font-sans font-medium text-[#A8A29E] uppercase tracking-wider block mb-1">
+                            Capacity
+                          </label>
                           <input
                             type="number"
                             min="0.01"
                             step="any"
-                            className="input-control text-xs py-1.5"
+                            className="w-full bg-[#0C0A09] border border-[rgba(255,255,255,0.12)] text-[#E7E5E4] rounded-xl px-3 py-2 text-xs font-sans outline-none focus:border-[#D4F268] focus:ring-1 focus:ring-[#D4F268] transition-all"
                             value={win.capacity}
                             onChange={(e) =>
                               handleWindowChange(idx, { capacity: parseFloat(e.target.value) || 0 })
@@ -392,9 +415,11 @@ export const ServiceModal: React.FC<ServiceModalProps> = ({
                         </div>
 
                         <div>
-                          <label className="label-text">Unit</label>
+                          <label className="text-[11px] font-sans font-medium text-[#A8A29E] uppercase tracking-wider block mb-1">
+                            Unit
+                          </label>
                           <select
-                            className="input-control text-xs py-1.5"
+                            className="w-full bg-[#0C0A09] border border-[rgba(255,255,255,0.12)] text-[#E7E5E4] rounded-xl px-3 py-2 text-xs font-sans outline-none focus:border-[#D4F268] focus:ring-1 focus:ring-[#D4F268] transition-all cursor-pointer"
                             value={win.unit}
                             onChange={(e) =>
                               handleWindowChange(idx, { unit: e.target.value as UnitType })
@@ -411,10 +436,12 @@ export const ServiceModal: React.FC<ServiceModalProps> = ({
 
                     {win.unit === 'custom' && (
                       <div>
-                        <label className="label-text">Custom Unit Name</label>
+                        <label className="text-[11px] font-sans font-medium text-[#A8A29E] uppercase tracking-wider block mb-1">
+                          Custom Unit Name
+                        </label>
                         <input
                           type="text"
-                          className="input-control text-xs py-1.5"
+                          className="w-full bg-[#0C0A09] border border-[rgba(255,255,255,0.12)] text-[#E7E5E4] rounded-xl px-3 py-2 text-xs font-sans outline-none focus:border-[#D4F268] focus:ring-1 focus:ring-[#D4F268] transition-all"
                           placeholder="e.g., tokens, calls, megabytes"
                           value={win.customUnitName || ''}
                           onChange={(e) => handleWindowChange(idx, { customUnitName: e.target.value })}
@@ -424,9 +451,11 @@ export const ServiceModal: React.FC<ServiceModalProps> = ({
 
                     <div className="grid grid-cols-1 sm:grid-cols-3 gap-2">
                       <div>
-                        <label className="label-text">Cadence</label>
+                        <label className="text-[11px] font-sans font-medium text-[#A8A29E] uppercase tracking-wider block mb-1">
+                          Cadence
+                        </label>
                         <select
-                          className="input-control text-xs py-1.5"
+                          className="w-full bg-[#0C0A09] border border-[rgba(255,255,255,0.12)] text-[#E7E5E4] rounded-xl px-3 py-2 text-xs font-sans outline-none focus:border-[#D4F268] focus:ring-1 focus:ring-[#D4F268] transition-all cursor-pointer"
                           value={win.cadence}
                           onChange={(e) =>
                             handleWindowChange(idx, { cadence: e.target.value as CadenceType })
@@ -442,11 +471,13 @@ export const ServiceModal: React.FC<ServiceModalProps> = ({
 
                       {win.cadence === 'custom' ? (
                         <div>
-                          <label className="label-text">Interval (Hours)</label>
+                          <label className="text-[11px] font-sans font-medium text-[#A8A29E] uppercase tracking-wider block mb-1">
+                            Interval (Hours)
+                          </label>
                           <input
                             type="number"
                             min="1"
-                            className="input-control text-xs py-1.5"
+                            className="w-full bg-[#0C0A09] border border-[rgba(255,255,255,0.12)] text-[#E7E5E4] rounded-xl px-3 py-2 text-xs font-sans outline-none focus:border-[#D4F268] focus:ring-1 focus:ring-[#D4F268] transition-all"
                             value={win.customIntervalHours || 12}
                             onChange={(e) =>
                               handleWindowChange(idx, {
@@ -457,10 +488,12 @@ export const ServiceModal: React.FC<ServiceModalProps> = ({
                         </div>
                       ) : (
                         <div>
-                          <label className="label-text">Reset Anchor</label>
+                          <label className="text-[11px] font-sans font-medium text-[#A8A29E] uppercase tracking-wider block mb-1">
+                            Reset Anchor
+                          </label>
                           <input
                             type="datetime-local"
-                            className="input-control text-xs py-1.5"
+                            className="w-full bg-[#0C0A09] border border-[rgba(255,255,255,0.12)] text-[#E7E5E4] rounded-xl px-3 py-2 text-xs font-sans outline-none focus:border-[#D4F268] focus:ring-1 focus:ring-[#D4F268] transition-all"
                             value={toLocalDatetimeInputValue(new Date(win.resetAnchor))}
                             onChange={(e) => {
                               const dt = new Date(e.target.value);
@@ -473,9 +506,11 @@ export const ServiceModal: React.FC<ServiceModalProps> = ({
                       )}
 
                       <div>
-                        <label className="label-text">Time Zone</label>
+                        <label className="text-[11px] font-sans font-medium text-[#A8A29E] uppercase tracking-wider block mb-1">
+                          Time Zone
+                        </label>
                         <select
-                          className="input-control text-xs py-1.5"
+                          className="w-full bg-[#0C0A09] border border-[rgba(255,255,255,0.12)] text-[#E7E5E4] rounded-xl px-3 py-2 text-xs font-sans outline-none focus:border-[#D4F268] focus:ring-1 focus:ring-[#D4F268] transition-all cursor-pointer"
                           value={win.timeZone}
                           onChange={(e) => handleWindowChange(idx, { timeZone: e.target.value })}
                         >
@@ -501,13 +536,13 @@ export const ServiceModal: React.FC<ServiceModalProps> = ({
             <button
               type="button"
               onClick={onClose}
-              className="btn-dark-solid text-xs"
+              className="btn-dark-solid bg-[#292524] text-[#E7E5E4] px-4 py-2 rounded-full text-sm border border-[rgba(255,255,255,0.1)] hover:bg-[#383431] transition-all font-sans cursor-pointer"
             >
               Cancel
             </button>
             <button
               type="submit"
-              className="btn-primary-cream text-xs font-semibold"
+              className="btn-primary-lime bg-[#D4F268] text-[#0C0A09] font-semibold px-5 py-2 rounded-full text-sm hover:bg-[#c4e450] transition-all shadow-[0_0_12px_rgba(212,242,104,0.2)] font-sans cursor-pointer"
             >
               {service ? 'Save Service' : 'Create Service & Windows'}
             </button>

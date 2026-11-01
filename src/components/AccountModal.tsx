@@ -57,84 +57,89 @@ export const AccountModal: React.FC<AccountModalProps> = ({
 
   return (
     <div
-      className="modal-overlay"
+      className="fixed inset-0 bg-[#0C0A09]/80 backdrop-blur-md flex items-center justify-center z-50 p-4"
       role="dialog"
       aria-modal="true"
       aria-labelledby="account-modal-title"
       onClick={onClose}
     >
       <div
-        className="modal-window max-w-lg p-6 bg-[#1C1917] border border-[rgba(255,255,255,0.1)] text-[#E7E5E4]"
+        className="bg-[#1C1917] border border-[rgba(255,255,255,0.12)] rounded-[24px] p-6 sm:p-8 max-w-lg w-full max-h-[90vh] overflow-y-auto shadow-[0_25px_50px_-12px_rgba(0,0,0,0.85)] text-[#E7E5E4]"
         onClick={(e) => e.stopPropagation()}
       >
-        <div className="flex items-center justify-between pb-4 mb-4 border-b border-[rgba(255,255,255,0.1)]">
-          <div className="flex items-center gap-2">
-            <div className="p-1.5 rounded-md bg-[#141210] border border-[rgba(255,255,255,0.1)] text-[#D4F268]">
-              <User className="w-4 h-4" />
+        <div className="flex items-start justify-between gap-4 pb-4 mb-6 border-b border-[rgba(255,255,255,0.1)]">
+          <div className="flex items-center gap-3">
+            <div className="p-2 rounded-full bg-[#141210] border border-[rgba(255,255,255,0.1)] text-[#D4F268]">
+              <User className="w-5 h-5" />
             </div>
-            <h3 id="account-modal-title" className="text-sm font-semibold text-[#E7E5E4]">
-              {account ? 'Edit Account' : 'Add New Account'}
-            </h3>
+            <div>
+              <h2 id="account-modal-title" className="font-serif font-light text-2xl text-[#E7E5E4] tracking-tight">
+                {account ? 'Edit Account' : 'Add New Account'}
+              </h2>
+              <p className="text-xs text-[#A8A29E] font-sans mt-0.5">
+                {account ? 'Modify identity attributes & organizational notes' : 'Register an account tier or organizational workspace'}
+              </p>
+            </div>
           </div>
           <button
             onClick={onClose}
-            className="text-[#A8A29E] hover:text-[#E7E5E4] bg-transparent border-0 cursor-pointer p-1 rounded hover:bg-[rgba(255,255,255,0.1)]"
+            className="p-1.5 rounded-full text-[#A8A29E] hover:text-[#E7E5E4] hover:bg-[#292524] transition-all cursor-pointer border-0 bg-transparent shrink-0"
             aria-label="Close"
           >
             <X className="w-4 h-4" />
           </button>
         </div>
 
-        <form onSubmit={handleSubmit} className="space-y-4">
+        <form onSubmit={handleSubmit} className="space-y-5">
           {error && (
-            <div className="p-2.5 rounded bg-[rgba(239,68,68,0.1)] border border-[rgba(239,68,68,0.3)] text-[#ef4444] text-xs font-mono">
+            <div className="p-3 rounded-xl bg-[rgba(248,113,113,0.12)] border border-[rgba(248,113,113,0.3)] text-[#f87171] text-xs font-mono">
               {error}
             </div>
           )}
 
           <div>
-            <label htmlFor="acc-name" className="label-text">
+            <label htmlFor="acc-name" className="text-xs font-sans font-medium text-[#A8A29E] uppercase tracking-wider block mb-1.5">
               Account Display Name <span className="text-[#D4F268]">*</span>
             </label>
             <input
               id="acc-name"
               type="text"
-              className="input-control"
+              className="w-full bg-[#141210] border border-[rgba(255,255,255,0.12)] text-[#E7E5E4] rounded-xl px-3.5 py-2.5 text-sm font-sans outline-none focus:border-[#D4F268] focus:ring-1 focus:ring-[#D4F268] transition-all"
               placeholder="e.g., Personal Google Workspace, Production Cloud"
               value={name}
               onChange={(e) => setName(e.target.value)}
               autoFocus
               required
             />
-            <p className="text-[11px] text-[#A8A29E] mt-1 font-mono">
+            <p className="text-[11px] text-[#A8A29E] mt-1.5 font-mono">
               A friendly label to distinguish this account across limit windows.
             </p>
           </div>
 
           <div>
-            <label htmlFor="acc-email" className="label-text">
+            <label htmlFor="acc-email" className="text-xs font-sans font-medium text-[#A8A29E] uppercase tracking-wider block mb-1.5">
               Email / Identifier (Optional)
             </label>
             <input
               id="acc-email"
               type="email"
-              className="input-control"
+              className="w-full bg-[#141210] border border-[rgba(255,255,255,0.12)] text-[#E7E5E4] rounded-xl px-3.5 py-2.5 text-sm font-sans outline-none focus:border-[#D4F268] focus:ring-1 focus:ring-[#D4F268] transition-all"
               placeholder="e.g., developer@example.com"
               value={email}
               onChange={(e) => setEmail(e.target.value)}
             />
-            <p className="text-[11px] text-[#A8A29E] mt-1 font-mono">
+            <p className="text-[11px] text-[#A8A29E] mt-1.5 font-mono">
               Never used for authentication. Strictly an offline reference identifier.
             </p>
           </div>
 
           <div>
-            <label htmlFor="acc-notes" className="label-text">
+            <label htmlFor="acc-notes" className="text-xs font-sans font-medium text-[#A8A29E] uppercase tracking-wider block mb-1.5">
               Notes (Optional)
             </label>
             <textarea
               id="acc-notes"
-              className="input-control min-h-[70px] resize-y"
+              className="w-full bg-[#141210] border border-[rgba(255,255,255,0.12)] text-[#E7E5E4] rounded-xl px-3.5 py-2.5 text-sm font-sans outline-none focus:border-[#D4F268] focus:ring-1 focus:ring-[#D4F268] transition-all min-h-[85px] resize-y"
               placeholder="Tier details, billing dates, or specific quota notes..."
               value={notes}
               onChange={(e) => setNotes(e.target.value)}
@@ -142,13 +147,13 @@ export const AccountModal: React.FC<AccountModalProps> = ({
           </div>
 
           {account && (
-            <div className="pt-2">
-              <label className="flex items-center gap-2 cursor-pointer text-xs font-mono text-[#E7E5E4]">
+            <div className="p-3 bg-[#141210] rounded-xl border border-[rgba(255,255,255,0.08)]">
+              <label className="flex items-center gap-3 cursor-pointer text-xs font-mono text-[#E7E5E4]">
                 <input
                   type="checkbox"
                   checked={archived}
                   onChange={(e) => setArchived(e.target.checked)}
-                  className="rounded bg-[#0C0A09] border-[rgba(255,255,255,0.1)] text-[#D4F268] focus:ring-0"
+                  className="w-4 h-4 rounded bg-[#0C0A09] border border-[rgba(255,255,255,0.2)] text-[#D4F268] accent-[#D4F268] focus:ring-0 cursor-pointer"
                 />
                 <span>Archive this account (hides from active overview)</span>
               </label>
@@ -159,13 +164,13 @@ export const AccountModal: React.FC<AccountModalProps> = ({
             <button
               type="button"
               onClick={onClose}
-              className="btn-dark-solid text-xs"
+              className="btn-dark-solid bg-[#292524] text-[#E7E5E4] px-4 py-2 rounded-full text-sm border border-[rgba(255,255,255,0.1)] hover:bg-[#383431] transition-all font-sans cursor-pointer"
             >
               Cancel
             </button>
             <button
               type="submit"
-              className="btn-primary-cream text-xs font-semibold"
+              className="btn-primary-lime bg-[#D4F268] text-[#0C0A09] font-semibold px-5 py-2 rounded-full text-sm hover:bg-[#c4e450] transition-all shadow-[0_0_12px_rgba(212,242,104,0.2)] font-sans cursor-pointer"
             >
               {account ? 'Save Changes' : 'Create Account'}
             </button>

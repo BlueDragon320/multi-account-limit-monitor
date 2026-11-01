@@ -30,7 +30,10 @@ export function formatRelativeTime(dateOrIso?: string | Date): string {
   return `${Math.floor(diffDays / 365)}y ago`;
 }
 
-export function formatNumber(num: number, maximumFractionDigits = 2): string {
+export function formatNumber(num: number | undefined | null, maximumFractionDigits = 2): string {
+  if (num === undefined || num === null || typeof num !== 'number' || isNaN(num)) {
+    return '0';
+  }
   if (Number.isInteger(num)) {
     return num.toLocaleString();
   }

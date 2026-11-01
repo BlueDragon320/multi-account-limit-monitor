@@ -10,6 +10,7 @@ import {
   Info,
   Layers,
   RotateCcw,
+  X,
 } from 'lucide-react';
 import { AppState, Project, UsageEvent } from '../domain/types';
 import { getProjectTotals, calculateProjectTotals } from '../domain/calculations';
@@ -35,6 +36,7 @@ export const ProjectsScreen: React.FC<ProjectsScreenProps> = ({
   const { projects, usageEvents, limitWindows, accounts, services } = state;
 
   const [selectedProjectId, setSelectedProjectId] = useState<string>('all');
+  const [filterWindowId, setFilterWindowId] = useState<string>('all');
   const [filterAccountId, setFilterAccountId] = useState<string>('all');
   const [filterServiceId, setFilterServiceId] = useState<string>('all');
   const [filterType, setFilterType] = useState<'all' | 'usage' | 'correction'>('all');
@@ -69,6 +71,9 @@ export const ProjectsScreen: React.FC<ProjectsScreenProps> = ({
         if (selectedProjectId !== 'all' && evt.projectId !== selectedProjectId) {
           return false;
         }
+        if (filterWindowId !== 'all' && !evt.effects.some((eff) => eff.windowId === filterWindowId)) {
+          return false;
+        }
         if (filterAccountId !== 'all' && evt.accountId !== filterAccountId) {
           return false;
         }
@@ -83,35 +88,66 @@ export const ProjectsScreen: React.FC<ProjectsScreenProps> = ({
           if (new Date(evt.timestamp).getTime() < startMs) return false;
         }
         if (endDate) {
-          // Set to end of the day
           const endMs = new Date(endDate).getTime() + 86400000;
           if (new Date(evt.timestamp).getTime() >= endMs) return false;
         }
         return true;
       })
       .sort((a, b) => new Date(b.timestamp).getTime() - new Date(a.timestamp).getTime());
-  }, [usageEvents, selectedProjectId, filterAccountId, filterServiceId, filterType, startDate, endDate]);
+  }, [
+    usageEvents,
+    selectedProjectId,
+    filterWindowId,
+    filterAccountId,
+    filterServiceId,
+    filterType,
+    startDate,
+    endDate,
+  ]);
+
+  const hasActiveFilters =
+    selectedProjectId !== 'all' ||
+    filterWindowId !== 'all' ||
+    filterAccountId !== 'all' ||
+    filterServiceId !== 'all' ||
+    filterType !== 'all' ||
+    Boolean(startDate) ||
+    Boolean(endDate);
+
+  const resetAllFilters = () => {
+    setSelectedProjectId('all');
+    setFilterWindowId('all');
+    setFilterAccountId('all');
+    setFilterServiceId('all');
+    setFilterType('all');
+    setStartDate('');
+    setEndDate('');
+  };
 
   return (
-    <div className="max-w-[1200px] mx-auto px-4 py-6 space-y-8 font-sans">
+    <div className="max-w-[1200px] mx-auto px-4 py-8 space-y-8 font-sans">
       {/* Top Header */}
-      <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 border-b border-[rgba(255,255,255,0.1)] pb-4">
+      <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 border-b border-[rgba(255,255,255,0.1)] pb-6">
         <div>
+          <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-[#1C1917] border border-[rgba(255,255,255,0.1)] text-[11px] font-mono text-[#A8A29E] mb-2">
+            <span className="w-2 h-2 rounded-full bg-[#D4F268] shadow-[0_0_8px_#D4F268]" />
+            <span className="tech-tag text-[#E7E5E4]">Fig. 03 • Attribution & Ledger</span>
+          </div>
           <h1 className="text-3xl sm:text-4xl font-serif font-light tracking-tight text-[#E7E5E4]">
             Projects & <em>Usage History</em>
           </h1>
-          <p className="text-sm text-[#A8A29E] mt-1 font-sans">
+          <p className="text-sm text-[#A8A29E] font-sans mt-1 max-w-xl">
             Audit trail of quota consumption and balance calibrations with strict unit segregation.
           </p>
         </div>
 
-        <div className="flex items-center gap-3">
-          <label className="flex items-center gap-2 cursor-pointer text-xs text-[#A8A29E] hover:text-[#E7E5E4] font-sans">
+        <div className="flex items-center gap-4">
+          <label className="flex items-center gap-2 cursor-pointer text-xs font-sans text-[#A8A29E] hover:text-[#E7E5E4] select-none">
             <input
               type="checkbox"
               checked={showArchivedProjects}
               onChange={(e) => setShowArchivedProjects(e.target.checked)}
-              className="rounded bg-[#0C0A09] border-[rgba(255,255,255,0.1)] text-[#D4F268]"
+              className="rounded bg-[#0C0A09] border-[rgba(255,255,255,0.15)] text-[#D4F268] focus:ring-0 cursor-pointer"
             />
             <span>Show Archived Projects</span>
           </label>
@@ -127,56 +163,67 @@ export const ProjectsScreen: React.FC<ProjectsScreenProps> = ({
       </div>
 
       {/* Projects Grid / Selector */}
-      <section aria-label="Projects Management" className="space-y-3">
+      <section aria-label="Projects Management" className="space-y-4">
         <div className="flex items-center justify-between">
-          <span className="text-xs uppercase tracking-wider text-[#A8A29E] font-semibold flex items-center gap-2">
+          <div className="text-xs uppercase tracking-wider text-[#A8A29E] font-mono font-medium flex items-center gap-2">
             <Folder className="w-3.5 h-3.5 text-[#D4F268]" />
-            <span>Projects ({visibleProjects.length})</span>
-          </span>
+            <span>Project Allocations ({visibleProjects.length})</span>
+          </div>
           {selectedProjectId !== 'all' && (
             <button
               onClick={() => setSelectedProjectId('all')}
-              className="text-[11px] text-[#D4F268] hover:underline bg-transparent border-0 cursor-pointer"
+              className="text-[11px] text-[#D4F268] hover:underline bg-transparent border-0 cursor-pointer font-mono"
             >
-              Show All Projects Overview
+              &larr; View Aggregated Totals
             </button>
           )}
         </div>
 
         {visibleProjects.length === 0 ? (
-          <div className="card-panel-deep p-8 text-center border border-[rgba(255,255,255,0.1)] rounded-xl space-y-2">
+          <div className="card-panel-deep p-8 text-center border border-[rgba(255,255,255,0.1)] rounded-[24px] space-y-3">
+            <div className="w-10 h-10 rounded-full bg-[#1C1917] border border-[rgba(255,255,255,0.1)] text-[#D4F268] mx-auto flex items-center justify-center">
+              <Folder className="w-5 h-5" />
+            </div>
             <p className="text-xs text-[#A8A29E]">No projects created yet.</p>
             <button
               onClick={onOpenAddProject}
-              className="btn-primary-cream text-xs h-7 px-3"
+              className="btn-primary-cream text-xs h-8 px-4 rounded-full"
             >
               <Plus className="w-3 h-3" />
               <span>Create First Project</span>
             </button>
           </div>
         ) : (
-          <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-3">
-            {/* All Projects Card */}
+          <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-3.5">
+            {/* All Projects Overview Card */}
             <div
               onClick={() => setSelectedProjectId('all')}
-              className={`p-3 rounded-lg border cursor-pointer transition-all ${
+              className={`p-4 rounded-[20px] border cursor-pointer transition-all duration-200 flex flex-col justify-between ${
                 selectedProjectId === 'all'
-                  ? 'bg-[#1C1917] border-[#D4F268] shadow-[0_0_8px_rgba(212,242,104,0.2)]'
-                  : 'bg-[#1c1b19] border-[rgba(255,255,255,0.1)] hover:bg-[#1C1917]'
+                  ? 'bg-[#1C1917] border-[#D4F268] shadow-[0_0_12px_rgba(212,242,104,0.18)]'
+                  : 'bg-[#141210] border-[rgba(255,255,255,0.08)] hover:bg-[#1C1917] hover:border-[rgba(255,255,255,0.15)]'
               }`}
             >
-              <div className="flex items-center justify-between mb-1">
-                <span className="font-semibold text-xs text-[#E7E5E4]">All Projects</span>
-                <span className="text-[10px] text-[#A8A29E]">
-                  {usageEvents.filter((e) => e.type === 'usage').length} events
-                </span>
+              <div>
+                <div className="flex items-center justify-between mb-1.5">
+                  <span className="font-semibold text-xs sm:text-sm text-[#E7E5E4] font-mono">
+                    All Projects
+                  </span>
+                  <span className="tech-tag text-[10px] text-[#D4F268]">
+                    {usageEvents.filter((e) => e.type === 'usage').length} logs
+                  </span>
+                </div>
+                <div className="text-[11px] text-[#A8A29E] font-sans">
+                  Aggregated multi-unit portfolio view
+                </div>
               </div>
-              <div className="text-[11px] text-[#A8A29E] truncate">
-                Aggregated breakdown view
+              <div className="pt-3 border-t border-[rgba(255,255,255,0.06)] text-[10px] text-[#78716C] font-mono flex items-center justify-between">
+                <span>Scope: Global</span>
+                <span className="text-[#D4F268] font-medium">Select &rarr;</span>
               </div>
             </div>
 
-            {/* Individual Projects */}
+            {/* Individual Project Cards */}
             {visibleProjects.map((project) => {
               const isSelected = selectedProjectId === project.id;
               const projectEvts = usageEvents.filter((e) => e.projectId === project.id);
@@ -185,47 +232,57 @@ export const ProjectsScreen: React.FC<ProjectsScreenProps> = ({
                 <div
                   key={project.id}
                   onClick={() => setSelectedProjectId(project.id)}
-                  className={`p-3 rounded-lg border cursor-pointer transition-all flex flex-col justify-between ${
+                  className={`p-4 rounded-[20px] border cursor-pointer transition-all duration-200 flex flex-col justify-between ${
                     isSelected
-                      ? 'bg-[#1C1917] border-[#D4F268] shadow-[0_0_8px_rgba(212,242,104,0.2)]'
-                      : 'bg-[#1c1b19] border-[rgba(255,255,255,0.1)] hover:bg-[#1C1917]'
-                  } ${project.archived ? 'opacity-60' : ''}`}
+                      ? 'bg-[#1C1917] border-[#D4F268] shadow-[0_0_12px_rgba(212,242,104,0.18)]'
+                      : 'bg-[#141210] border-[rgba(255,255,255,0.08)] hover:bg-[#1C1917] hover:border-[rgba(255,255,255,0.15)]'
+                  } ${project.archived ? 'opacity-65' : ''}`}
                 >
                   <div>
-                    <div className="flex items-center justify-between mb-1">
-                      <span className="font-semibold text-xs text-[#E7E5E4] truncate" title={project.name}>
+                    <div className="flex items-center justify-between mb-1.5">
+                      <span
+                        className="font-semibold text-xs sm:text-sm text-[#E7E5E4] font-mono truncate max-w-[160px]"
+                        title={project.name}
+                      >
                         {project.name}
                       </span>
                       {project.archived && (
                         <span className="badge badge-muted text-[8px]">Archived</span>
                       )}
                     </div>
-                    {project.notes && (
-                      <p className="text-[10px] text-[#A8A29E] line-clamp-1 mb-2">
+                    {project.notes ? (
+                      <p className="text-[11px] text-[#A8A29E] font-sans line-clamp-2 mb-2 leading-relaxed">
                         {project.notes}
+                      </p>
+                    ) : (
+                      <p className="text-[11px] text-[#78716C] italic font-mono mb-2">
+                        No description
                       </p>
                     )}
                   </div>
 
-                  <div className="flex items-center justify-between pt-2 border-t border-[#1C1917] text-[10px] text-[#A8A29E]">
-                    <span>{projectEvts.length} log event(s)</span>
-                    <div className="flex items-center gap-1" onClick={(e) => e.stopPropagation()}>
+                  <div className="flex items-center justify-between pt-2.5 border-t border-[rgba(255,255,255,0.06)] text-[11px] text-[#A8A29E] font-mono">
+                    <span>{projectEvts.length} events</span>
+                    <div
+                      className="flex items-center gap-1"
+                      onClick={(e) => e.stopPropagation()}
+                    >
                       <button
                         onClick={() => onOpenEditProject(project)}
-                        className="text-[#A8A29E] hover:text-[#E7E5E4] p-1 bg-transparent border-0 cursor-pointer"
+                        className="w-6 h-6 rounded-full bg-[#1C1917] hover:bg-[#292524] text-[#A8A29E] hover:text-[#E7E5E4] border border-[rgba(255,255,255,0.08)] flex items-center justify-center transition-colors cursor-pointer"
                         title="Edit project"
                       >
-                        <Edit2 className="w-3 h-3" />
+                        <Edit2 className="w-2.5 h-2.5" />
                       </button>
                       <button
                         onClick={() => onArchiveProject(project.id, !project.archived)}
-                        className="text-[#A8A29E] hover:text-[#D4F268] p-1 bg-transparent border-0 cursor-pointer"
+                        className="w-6 h-6 rounded-full bg-[#1C1917] hover:bg-[rgba(248,113,113,0.15)] text-[#A8A29E] hover:text-[#f87171] border border-[rgba(255,255,255,0.08)] flex items-center justify-center transition-colors cursor-pointer"
                         title={project.archived ? 'Restore project' : 'Archive project'}
                       >
                         {project.archived ? (
-                          <ArchiveRestore className="w-3 h-3" />
+                          <ArchiveRestore className="w-2.5 h-2.5" />
                         ) : (
-                          <Archive className="w-3 h-3" />
+                          <Archive className="w-2.5 h-2.5" />
                         )}
                       </button>
                     </div>
@@ -238,28 +295,28 @@ export const ProjectsScreen: React.FC<ProjectsScreenProps> = ({
       </section>
 
       {/* STRICTLY SEGREGATED PROJECT TOTALS BREAKDOWN */}
-      <section aria-label="Segregated Project Totals" className="space-y-3">
+      <section aria-label="Segregated Project Totals" className="space-y-4">
         <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2">
           <div>
-            <h2 className="text-sm font-semibold text-[#E7E5E4] flex items-center gap-2">
+            <h2 className="text-base font-semibold text-[#E7E5E4] flex items-center gap-2">
               <Layers className="w-4 h-4 text-[#D4F268]" />
               <span>
                 {selectedProjectId === 'all'
                   ? 'All Projects — Segregated Totals Breakdown'
-                  : `Project Totals: ${projectMap.get(selectedProjectId)?.name || 'Selected Project'}`}
+                  : `Project Totals: ${projectMap.get(selectedProjectId)?.name || 'Selected Project'} — Segregated Totals Breakdown`}
               </span>
             </h2>
-            <p className="text-[11px] text-[#A8A29E] mt-0.5">
-              Strictly keeps units and capacities isolated to avoid misleading arithmetic sums.
+            <p className="text-xs text-[#A8A29E] mt-0.5">
+              Strictly keeps units and capacities isolated into discrete dimensional buckets to eliminate misleading arithmetic sums.
             </p>
           </div>
         </div>
 
-        {/* Dimension Segregation Disclaimer Banner */}
-        <div className="p-3 bg-[#141210] border border-[rgba(255,255,255,0.1)] rounded-lg text-xs text-[#A8A29E] flex items-start gap-2.5">
+        {/* Dimensional Integrity Notice Banner */}
+        <div className="p-4 bg-[#141210] border border-[rgba(255,255,255,0.1)] rounded-[20px] text-xs text-[#A8A29E] flex items-start gap-3">
           <Info className="w-4 h-4 text-[#D4F268] shrink-0 mt-0.5" />
           <div className="leading-relaxed">
-            <span className="text-[#E7E5E4] font-medium">Dimensional Integrity Notice:</span>{' '}
+            <strong className="text-[#E7E5E4] font-medium font-sans">Dimensional Integrity Notice:</strong>{' '}
             Requests, credits, tokens, and percentages cannot be summed together. Furthermore, percentages across differing capacities represent entirely different quantities (e.g. 50% of 100 &ne; 50% of 1,000). Quota Ember preserves each window bucket independently.
           </div>
         </div>
@@ -267,9 +324,9 @@ export const ProjectsScreen: React.FC<ProjectsScreenProps> = ({
         {/* Breakdown Buckets Display */}
         {selectedProjectId === 'all' ? (
           /* Multi-project breakdown view */
-          <div className="space-y-3">
+          <div className="space-y-4">
             {allProjectReports.length === 0 ? (
-              <div className="card-panel-deep p-6 text-center text-xs text-[#A8A29E]">
+              <div className="card-panel-deep p-8 text-center text-xs text-[#A8A29E] rounded-[24px]">
                 No project usage has been logged yet.
               </div>
             ) : (
@@ -278,13 +335,16 @@ export const ProjectsScreen: React.FC<ProjectsScreenProps> = ({
                 return (
                   <div
                     key={report.projectId}
-                    className="card-panel p-4 bg-[#1C1917] border border-[rgba(255,255,255,0.1)] rounded-xl space-y-3"
+                    className="card-panel p-5 bg-[#1C1917] border border-[rgba(255,255,255,0.1)] rounded-[24px] space-y-4"
                   >
-                    <div className="flex items-center justify-between border-b border-[#1C1917] pb-2">
-                      <span className="font-semibold text-xs text-[#E7E5E4]">
-                        {proj ? proj.name : 'Unknown Project'}
-                      </span>
-                      <span className="text-[11px] text-[#A8A29E]">
+                    <div className="flex items-center justify-between border-b border-[rgba(255,255,255,0.06)] pb-3">
+                      <div className="flex items-center gap-2">
+                        <Folder className="w-4 h-4 text-[#D4F268]" />
+                        <span className="font-semibold text-sm text-[#E7E5E4] font-mono">
+                          {proj ? proj.name : 'Unknown Project'}
+                        </span>
+                      </div>
+                      <span className="tech-tag text-[10px] text-[#A8A29E]">
                         {report.segregatedTotals.length} active quota bucket(s)
                       </span>
                     </div>
@@ -299,16 +359,27 @@ export const ProjectsScreen: React.FC<ProjectsScreenProps> = ({
                         return (
                           <div
                             key={bucket.bucketKey}
-                            className="p-3 bg-[#141210] border border-[rgba(255,255,255,0.1)] rounded-lg text-xs space-y-1"
+                            className="p-4 bg-[#141210] border border-[rgba(255,255,255,0.08)] hover:border-[rgba(255,255,255,0.14)] rounded-[16px] text-xs font-mono space-y-2 transition-colors"
                           >
                             <div className="text-[11px] text-[#A8A29E] truncate font-medium">
                               {bucket.windowName}
                             </div>
-                            <div className="text-base font-bold text-[#D4F268]">
-                              {formatNumber(bucket.totalAmount)} {unitName}
+                            <div className="text-xl font-light text-[#D4F268] tracking-tight">
+                              {formatNumber(bucket.totalAmount)}{' '}
+                              <span className="text-xs font-normal text-[#E7E5E4]">{unitName}</span>
                             </div>
-                            <div className="text-[10px] text-[#66635f]">
-                              {Math.round(pctOfCap)}% of {formatNumber(bucket.capacity)} capacity • {bucket.eventCount} event(s)
+                            {/* Capacity mini progress */}
+                            <div className="progress-track h-1.5 bg-[#0C0A09] rounded-full overflow-hidden border border-[rgba(255,255,255,0.06)]">
+                              <div
+                                className="h-full bg-[#D4F268] rounded-full"
+                                style={{ width: `${Math.min(100, Math.max(0, pctOfCap))}%` }}
+                              />
+                            </div>
+                            <div className="text-[10px] text-[#78716C] flex items-center justify-between">
+                              <span>
+                                {Math.round(pctOfCap)}% of {formatNumber(bucket.capacity)} capacity
+                              </span>
+                              <span>{bucket.eventCount} event(s)</span>
                             </div>
                           </div>
                         );
@@ -321,9 +392,9 @@ export const ProjectsScreen: React.FC<ProjectsScreenProps> = ({
           </div>
         ) : (
           /* Selected single project breakdown */
-          <div className="card-panel p-4 bg-[#1C1917] border border-[rgba(255,255,255,0.1)] rounded-xl space-y-3">
+          <div className="card-panel p-6 bg-[#1C1917] border border-[rgba(255,255,255,0.1)] rounded-[24px] space-y-4">
             {selectedProjectReport && selectedProjectReport.segregatedTotals.length > 0 ? (
-              <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-3">
+              <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-3.5">
                 {selectedProjectReport.segregatedTotals.map((bucket) => {
                   const unitName =
                     bucket.unit === 'custom' ? bucket.customUnitName || 'custom' : bucket.unit;
@@ -333,23 +404,34 @@ export const ProjectsScreen: React.FC<ProjectsScreenProps> = ({
                   return (
                     <div
                       key={bucket.bucketKey}
-                      className="p-3 bg-[#141210] border border-[rgba(255,255,255,0.1)] rounded-lg text-xs space-y-1"
+                      className="p-4 bg-[#141210] border border-[rgba(255,255,255,0.08)] hover:border-[rgba(255,255,255,0.14)] rounded-[16px] text-xs font-mono space-y-2 transition-colors"
                     >
                       <div className="text-[11px] text-[#A8A29E] truncate font-medium">
                         {bucket.windowName}
                       </div>
-                      <div className="text-lg font-bold text-[#D4F268]">
-                        {formatNumber(bucket.totalAmount)} {unitName}
+                      <div className="text-2xl font-light text-[#D4F268] tracking-tight">
+                        {formatNumber(bucket.totalAmount)}{' '}
+                        <span className="text-sm font-normal text-[#E7E5E4]">{unitName}</span>
                       </div>
-                      <div className="text-[10px] text-[#66635f]">
-                        {Math.round(pctOfCap)}% of {formatNumber(bucket.capacity)} capacity ({bucket.eventCount} events)
+                      {/* Capacity mini progress */}
+                      <div className="progress-track h-1.5 bg-[#0C0A09] rounded-full overflow-hidden border border-[rgba(255,255,255,0.06)]">
+                        <div
+                          className="h-full bg-[#D4F268] rounded-full"
+                          style={{ width: `${Math.min(100, Math.max(0, pctOfCap))}%` }}
+                        />
+                      </div>
+                      <div className="text-[10px] text-[#78716C] flex items-center justify-between">
+                        <span>
+                          {Math.round(pctOfCap)}% of {formatNumber(bucket.capacity)} capacity
+                        </span>
+                        <span>{bucket.eventCount} event(s)</span>
                       </div>
                     </div>
                   );
                 })}
               </div>
             ) : (
-              <div className="text-center text-xs text-[#A8A29E] py-4">
+              <div className="text-center text-xs text-[#A8A29E] py-8 font-mono">
                 No recorded usage for this project yet.
               </div>
             )}
@@ -357,113 +439,130 @@ export const ProjectsScreen: React.FC<ProjectsScreenProps> = ({
         )}
       </section>
 
-      {/* USAGE HISTORY TABLE / LIST */}
+      {/* USAGE HISTORY & AUDIT TRAIL */}
       <section aria-label="Usage History Table" className="space-y-4">
-        {/* Filter Bar */}
-        <div className="card-panel p-3 bg-[#1C1917] border border-[rgba(255,255,255,0.1)] rounded-xl space-y-3">
-          <div className="flex items-center justify-between">
-            <span className="text-xs uppercase tracking-wider text-[#A8A29E] font-semibold flex items-center gap-1.5">
+        {/* Filter Toolbar with Dark Styled Select Dropdowns */}
+        <div className="card-panel p-5 bg-[#1C1917] border border-[rgba(255,255,255,0.1)] rounded-[24px] space-y-3">
+          <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2">
+            <span className="text-xs uppercase tracking-wider text-[#A8A29E] font-mono font-medium flex items-center gap-2">
               <History className="w-3.5 h-3.5 text-[#D4F268]" />
-              <span>Usage & Correction History ({filteredHistory.length})</span>
+              <span>Audit Trail Filters ({filteredHistory.length} events)</span>
             </span>
-            <div className="text-[11px] text-[#A8A29E]">
-              Showing all recorded events
-            </div>
+
+            {hasActiveFilters && (
+              <button
+                type="button"
+                onClick={resetAllFilters}
+                className="text-xs text-[#D4F268] hover:underline flex items-center gap-1 bg-transparent border-0 cursor-pointer self-start sm:self-auto font-mono"
+              >
+                <X className="w-3 h-3" />
+                <span>Reset Filters</span>
+              </button>
+            )}
           </div>
 
-          <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-5 gap-2.5 text-xs">
-            {/* Filter Account */}
-            <div>
-              <label className="label-text">Account</label>
-              <select
-                value={filterAccountId}
-                onChange={(e) => setFilterAccountId(e.target.value)}
-                className="input-control text-xs py-1"
-              >
-                <option value="all">All Accounts</option>
-                {accounts.map((a) => (
-                  <option key={a.id} value={a.id}>
-                    {a.name}
-                  </option>
-                ))}
-              </select>
-            </div>
+          {/* Dark Styled Dropdowns Toolbar */}
+          <div className="flex flex-wrap items-center gap-2.5 pt-1">
+            {/* Filter by Project */}
+            <select
+              value={selectedProjectId}
+              onChange={(e) => setSelectedProjectId(e.target.value)}
+              className="bg-[#141210] border border-[rgba(255,255,255,0.12)] text-[#E7E5E4] rounded-full px-3 py-1.5 text-xs focus:outline-none focus:border-[#D4F268] cursor-pointer"
+              aria-label="Filter by project"
+            >
+              <option value="all">All Projects</option>
+              {projects.map((p) => (
+                <option key={p.id} value={p.id}>
+                  Project: {p.name}
+                </option>
+              ))}
+            </select>
 
-            {/* Filter Service */}
-            <div>
-              <label className="label-text">Service</label>
-              <select
-                value={filterServiceId}
-                onChange={(e) => setFilterServiceId(e.target.value)}
-                className="input-control text-xs py-1"
-              >
-                <option value="all">All Services</option>
-                {services.map((s) => (
-                  <option key={s.id} value={s.id}>
-                    {s.name}
-                  </option>
-                ))}
-              </select>
-            </div>
+            {/* Filter by Limit Window */}
+            <select
+              value={filterWindowId}
+              onChange={(e) => setFilterWindowId(e.target.value)}
+              className="bg-[#141210] border border-[rgba(255,255,255,0.12)] text-[#E7E5E4] rounded-full px-3 py-1.5 text-xs focus:outline-none focus:border-[#D4F268] cursor-pointer"
+              aria-label="Filter by limit window"
+            >
+              <option value="all">All Limit Windows</option>
+              {limitWindows.map((w) => (
+                <option key={w.id} value={w.id}>
+                  Window: {w.name} ({w.cadence})
+                </option>
+              ))}
+            </select>
 
-            {/* Filter Type */}
-            <div>
-              <label className="label-text">Entry Type</label>
-              <select
-                value={filterType}
-                onChange={(e) => setFilterType(e.target.value as any)}
-                className="input-control text-xs py-1"
-              >
-                <option value="all">All Types</option>
-                <option value="usage">Project Usage Only</option>
-                <option value="correction">Manual Corrections Only</option>
-              </select>
-            </div>
+            {/* Filter by Event Type */}
+            <select
+              value={filterType}
+              onChange={(e) => setFilterType(e.target.value as any)}
+              className="bg-[#141210] border border-[rgba(255,255,255,0.12)] text-[#E7E5E4] rounded-full px-3 py-1.5 text-xs focus:outline-none focus:border-[#D4F268] cursor-pointer"
+              aria-label="Filter by event type"
+            >
+              <option value="all">All Event Types</option>
+              <option value="usage">Usage Events Only</option>
+              <option value="correction">Manual Corrections Only</option>
+            </select>
 
-            {/* Start Date */}
-            <div>
-              <label className="label-text">From Date</label>
+            {/* Filter by Account */}
+            <select
+              value={filterAccountId}
+              onChange={(e) => setFilterAccountId(e.target.value)}
+              className="bg-[#141210] border border-[rgba(255,255,255,0.12)] text-[#E7E5E4] rounded-full px-3 py-1.5 text-xs focus:outline-none focus:border-[#D4F268] cursor-pointer"
+              aria-label="Filter by account"
+            >
+              <option value="all">All Accounts</option>
+              {accounts.map((a) => (
+                <option key={a.id} value={a.id}>
+                  Account: {a.name}
+                </option>
+              ))}
+            </select>
+
+            {/* Date Pickers */}
+            <div className="flex items-center gap-1.5 text-xs text-[#A8A29E]">
+              <span className="text-[11px] font-mono">From:</span>
               <input
                 type="date"
                 value={startDate}
                 onChange={(e) => setStartDate(e.target.value)}
-                className="input-control text-xs py-1"
+                className="bg-[#141210] border border-[rgba(255,255,255,0.12)] text-[#E7E5E4] rounded-full px-3 py-1 text-xs focus:outline-none focus:border-[#D4F268]"
               />
             </div>
 
-            {/* End Date */}
-            <div>
-              <label className="label-text">To Date</label>
+            <div className="flex items-center gap-1.5 text-xs text-[#A8A29E]">
+              <span className="text-[11px] font-mono">To:</span>
               <input
                 type="date"
                 value={endDate}
                 onChange={(e) => setEndDate(e.target.value)}
-                className="input-control text-xs py-1"
+                className="bg-[#141210] border border-[rgba(255,255,255,0.12)] text-[#E7E5E4] rounded-full px-3 py-1 text-xs focus:outline-none focus:border-[#D4F268]"
               />
             </div>
           </div>
         </div>
 
-        {/* History Table */}
+        {/* Sleek Dark Event Table */}
         {filteredHistory.length === 0 ? (
-          <div className="card-panel-deep p-10 text-center border border-[rgba(255,255,255,0.1)] rounded-xl text-xs text-[#A8A29E]">
-            No usage or correction records found matching the active filters.
+          <div className="card-panel-deep p-12 text-center border border-[rgba(255,255,255,0.1)] rounded-[24px] text-xs text-[#A8A29E] font-mono">
+            No usage or correction records found matching the active filter criteria.
           </div>
         ) : (
-          <div className="card-panel p-0 bg-[#1C1917] border border-[rgba(255,255,255,0.1)] rounded-xl overflow-hidden">
+          <div className="card-panel p-0 bg-[#1C1917] border border-[rgba(255,255,255,0.1)] rounded-[24px] overflow-hidden shadow-[0_8px_32px_rgba(0,0,0,0.5)]">
             <div className="overflow-x-auto">
-              <table className="w-full text-left text-xs">
-                <thead className="bg-[#141210] text-[#A8A29E] border-b border-[rgba(255,255,255,0.1)] text-[11px] uppercase tracking-wider">
+              <table className="w-full text-left text-xs border-collapse">
+                <thead className="bg-[#141210] text-[#A8A29E] border-b border-[rgba(255,255,255,0.1)] text-[11px] font-mono uppercase tracking-wider">
                   <tr>
-                    <th className="py-2.5 px-3 font-medium">Type</th>
-                    <th className="py-2.5 px-3 font-medium">Timestamp</th>
-                    <th className="py-2.5 px-3 font-medium">Project / Identity</th>
-                    <th className="py-2.5 px-3 font-medium">Service & Window Effects</th>
-                    <th className="py-2.5 px-3 font-medium">Notes / Reason</th>
-                    <th className="py-2.5 px-3 font-medium text-right">Actions</th>
+                    <th className="py-3 px-4 font-medium">Type</th>
+                    <th className="py-3 px-4 font-medium">Timestamp</th>
+                    <th className="py-3 px-4 font-medium">Project / Identity</th>
+                    <th className="py-3 px-4 font-medium">Window & Allocation Effects</th>
+                    <th className="py-3 px-4 font-medium">Notes / Reason</th>
+                    <th className="py-3 px-4 font-medium text-right">Actions</th>
                   </tr>
                 </thead>
-                <tbody className="divide-y divide-[rgba(255,255,255,0.1)]">
+                <tbody className="divide-y divide-[rgba(255,255,255,0.06)] font-sans">
                   {filteredHistory.map((evt) => {
                     const isCorrection = evt.type === 'correction';
                     const proj = evt.projectId ? projectMap.get(evt.projectId) : null;
@@ -471,47 +570,53 @@ export const ProjectsScreen: React.FC<ProjectsScreenProps> = ({
                     const svc = serviceMap.get(evt.serviceId);
 
                     return (
-                      <tr key={evt.id} className="hover:bg-[#1C1917] transition-colors">
-                        {/* Type Badge */}
-                        <td className="py-3 px-3 align-top whitespace-nowrap">
+                      <tr
+                        key={evt.id}
+                        className="hover:bg-[#141210] transition-colors"
+                      >
+                        {/* Event Type Badge: Distinct USAGE vs MANUAL CORRECTION styling */}
+                        <td className="py-3.5 px-4 align-top whitespace-nowrap">
                           {isCorrection ? (
-                            <span className="badge badge-warning text-[10px] flex items-center gap-1">
-                              <RotateCcw className="w-3 h-3" />
-                              <span>Correction</span>
+                            <span className="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full text-[10px] font-mono font-medium uppercase tracking-wider bg-[rgba(251,191,36,0.15)] text-[#fbbf24] border border-[rgba(251,191,36,0.3)]">
+                              <RotateCcw className="w-3 h-3 text-[#fbbf24]" />
+                              <span>Manual Correction</span>
                             </span>
                           ) : (
-                            <span className="badge badge-coral text-[10px]">
+                            <span className="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full text-[10px] font-mono font-medium uppercase tracking-wider bg-[rgba(212,242,104,0.15)] text-[#D4F268] border border-[rgba(212,242,104,0.3)]">
+                              <span className="w-1.5 h-1.5 rounded-full bg-[#D4F268]" />
                               <span>Usage</span>
                             </span>
                           )}
                         </td>
 
-                        {/* Timestamp */}
-                        <td className="py-3 px-3 align-top whitespace-nowrap text-[#E7E5E4]">
-                          <div>{new Date(evt.timestamp).toLocaleString()}</div>
-                          <div className="text-[10px] text-[#66635f]">
+                        {/* Monospace Timestamp */}
+                        <td className="py-3.5 px-4 align-top whitespace-nowrap font-mono text-[#E7E5E4]">
+                          <div className="text-xs">
+                            {new Date(evt.timestamp).toLocaleString()}
+                          </div>
+                          <div className="text-[10px] text-[#78716C] mt-0.5">
                             {formatRelativeTime(evt.timestamp)}
                           </div>
                         </td>
 
                         {/* Project / Identity */}
-                        <td className="py-3 px-3 align-top">
+                        <td className="py-3.5 px-4 align-top">
                           {isCorrection ? (
-                            <span className="text-[#A8A29E] italic">
+                            <span className="text-xs text-[#A8A29E] italic font-mono">
                               Console Calibration
                             </span>
                           ) : (
-                            <span className="font-semibold text-[#E7E5E4]">
+                            <span className="font-semibold text-xs text-[#E7E5E4] font-mono">
                               {proj ? proj.name : 'Unknown Project'}
                             </span>
                           )}
-                          <div className="text-[10px] text-[#66635f]">
+                          <div className="text-[10px] text-[#78716C] font-mono mt-0.5">
                             {acc ? acc.name : ''} {svc ? `> ${svc.name}` : ''}
                           </div>
                         </td>
 
-                        {/* Window Effects */}
-                        <td className="py-3 px-3 align-top">
+                        {/* Window & Allocation Effects (Monospace numbers) */}
+                        <td className="py-3.5 px-4 align-top font-mono">
                           <div className="space-y-1.5">
                             {evt.effects.map((eff, i) => {
                               const win = windowMap.get(eff.windowId);
@@ -521,7 +626,7 @@ export const ProjectsScreen: React.FC<ProjectsScreenProps> = ({
                                   : win.unit
                                 : '';
                               return (
-                                <div key={i} className="text-[11px] leading-tight">
+                                <div key={i} className="text-xs leading-snug">
                                   <span className="text-[#A8A29E]">
                                     {win ? win.name : 'Window'}:
                                   </span>{' '}
@@ -532,7 +637,7 @@ export const ProjectsScreen: React.FC<ProjectsScreenProps> = ({
                                   >
                                     {eff.amount > 0 ? `+${formatNumber(eff.amount)}` : formatNumber(eff.amount)} {unitName}
                                   </span>{' '}
-                                  <span className="text-[10px] text-[#66635f]">
+                                  <span className="text-[10px] text-[#78716C]">
                                     ({formatNumber(eff.previousUsed)} &rarr; {formatNumber(eff.newUsed)})
                                   </span>
                                 </div>
@@ -542,32 +647,32 @@ export const ProjectsScreen: React.FC<ProjectsScreenProps> = ({
                         </td>
 
                         {/* Notes / Reason */}
-                        <td className="py-3 px-3 align-top max-w-xs">
+                        <td className="py-3.5 px-4 align-top max-w-xs">
                           {evt.note ? (
-                            <span className="text-[#E7E5E4] text-xs break-words">
+                            <span className="text-[#E7E5E4] text-xs break-words font-mono">
                               {evt.note}
                             </span>
                           ) : (
-                            <span className="text-[#66635f] italic">—</span>
+                            <span className="text-[#78716C] italic font-mono">—</span>
                           )}
                         </td>
 
-                        {/* Actions */}
-                        <td className="py-3 px-3 align-top text-right whitespace-nowrap">
-                          <div className="flex items-center justify-end gap-1">
+                        {/* Actions with Clean Icon Button Styling */}
+                        <td className="py-3.5 px-4 align-top text-right whitespace-nowrap">
+                          <div className="flex items-center justify-end gap-1.5">
                             <button
                               onClick={() => onOpenEditHistory(evt)}
-                              className="text-[#A8A29E] hover:text-[#E7E5E4] p-1 rounded hover:bg-[#141210] bg-transparent border-0 cursor-pointer"
-                              title="Edit timestamp or note"
+                              className="w-7 h-7 rounded-full bg-[#141210] hover:bg-[#292524] text-[#A8A29E] hover:text-[#E7E5E4] border border-[rgba(255,255,255,0.08)] flex items-center justify-center transition-colors cursor-pointer"
+                              title="Edit note or timestamp"
                             >
-                              <Edit2 className="w-3.5 h-3.5" />
+                              <Edit2 className="w-3 h-3" />
                             </button>
                             <button
                               onClick={() => onOpenDeleteHistory(evt)}
-                              className="text-[#A8A29E] hover:text-[#ef4444] p-1 rounded hover:bg-[#141210] bg-transparent border-0 cursor-pointer"
+                              className="w-7 h-7 rounded-full bg-[#141210] hover:bg-[rgba(248,113,113,0.15)] text-[#A8A29E] hover:text-[#f87171] border border-[rgba(255,255,255,0.08)] flex items-center justify-center transition-colors cursor-pointer"
                               title="Delete history record"
                             >
-                              <Trash2 className="w-3.5 h-3.5" />
+                              <Trash2 className="w-3 h-3" />
                             </button>
                           </div>
                         </td>
