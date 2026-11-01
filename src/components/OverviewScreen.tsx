@@ -149,15 +149,15 @@ export const OverviewScreen: React.FC<OverviewScreenProps> = ({
 
       <main className="max-w-[1200px] mx-auto px-4 pt-6 space-y-8 relative z-10">
         {/* Top Hero / Header Section */}
-        <section className="text-center space-y-2 pt-2">
-          <div className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-[#201f1d] border border-[#2e2c29] text-[11px] font-mono text-[#898580] mb-2">
-            <span className="w-2 h-2 rounded-full bg-[#FF6542] animate-pulse" />
-            <span>Local-first manual quota & cadence intelligence</span>
+        <section className="text-center space-y-3 pt-2">
+          <div className="inline-flex items-center gap-2 px-3.5 py-1 rounded-full bg-[#1C1917] border border-[rgba(255,255,255,0.1)] text-[12px] font-sans text-[#A8A29E] mb-1">
+            <span className="w-2 h-2 rounded-full bg-[#D4F268] shadow-[0_0_8px_#D4F268] animate-pulse" />
+            <span className="tech-tag">Fig. 01 • Cadence Intelligence</span>
           </div>
-          <h1 className="text-2xl sm:text-3xl font-semibold tracking-tight text-[#FBFAF9]">
-            Active Limit Windows & Quota Health
+          <h1 className="text-3xl sm:text-5xl font-serif font-light tracking-tight text-[#E7E5E4]">
+            Active Limit Windows & <em>Quota Health</em>
           </h1>
-          <p className="text-xs sm:text-sm text-[#898580] max-w-2xl mx-auto font-mono">
+          <p className="text-sm sm:text-base text-[#A8A29E] max-w-2xl mx-auto font-sans leading-relaxed">
             Calm, unified visibility across Google Cloud, Antigravity, and AI Studio quotas without automated third-party telemetry scraping.
           </p>
         </section>
@@ -165,79 +165,82 @@ export const OverviewScreen: React.FC<OverviewScreenProps> = ({
         {/* Top Stats Summary */}
         <section
           aria-label="Quota Summary Metrics"
-          className="grid grid-cols-2 lg:grid-cols-4 gap-3 sm:gap-4"
+          className="grid grid-cols-2 lg:grid-cols-4 gap-4"
         >
-          <div className="card-panel-deep p-4 border border-[#2e2c29] flex flex-col justify-between">
-            <div className="text-[11px] text-[#898580] uppercase tracking-wider font-mono">
+          <div className="card-panel-deep p-5 border border-[rgba(255,255,255,0.08)] rounded-[24px] flex flex-col justify-between">
+            <div className="text-[12px] text-[#A8A29E] uppercase tracking-wider font-sans font-medium">
               Active Accounts
             </div>
-            <div className="text-2xl font-bold font-mono text-[#FBFAF9] mt-2">
+            <div className="text-3xl font-light font-mono text-[#E7E5E4] mt-2">
               {activeAccountsCount}
             </div>
-            <div className="text-[10px] text-[#66635f] mt-1 font-mono">
+            <div className="text-[12px] text-[#78716C] mt-1 font-sans">
               Independent identities tracked
             </div>
           </div>
 
-          <div className="card-panel-deep p-4 border border-[#2e2c29] flex flex-col justify-between">
-            <div className="text-[11px] text-[#898580] uppercase tracking-wider font-mono">
+          <div className="card-panel-deep p-5 border border-[rgba(255,255,255,0.08)] rounded-[24px] flex flex-col justify-between">
+            <div className="text-[12px] text-[#A8A29E] uppercase tracking-wider font-sans font-medium">
               Active Windows
             </div>
-            <div className="text-2xl font-bold font-mono text-[#FBFAF9] mt-2">
+            <div className="text-3xl font-light font-mono text-[#E7E5E4] mt-2">
               {activeWindowsCount}
             </div>
-            <div className="text-[10px] text-[#66635f] mt-1 font-mono">
+            <div className="text-[12px] text-[#78716C] mt-1 font-sans">
               Independent reset cadences
             </div>
           </div>
 
-          <div className="card-panel-deep p-4 border border-[#2e2c29] flex flex-col justify-between">
-            <div className="text-[11px] text-[#898580] uppercase tracking-wider font-mono flex items-center gap-1.5">
+          <div className="card-panel-deep p-5 border border-[rgba(255,255,255,0.08)] rounded-[24px] flex flex-col justify-between">
+            <div className="text-[12px] text-[#A8A29E] uppercase tracking-wider font-sans font-medium flex items-center gap-1.5">
               <span>Near Limit (&ge;{settings.lowCapacityThresholdPercent}%)</span>
               {lowCapacityWindows.length > 0 && (
-                <span className="w-2 h-2 rounded-full bg-[#FF6542]" />
+                <span className="w-2 h-2 rounded-full bg-[#f87171]" />
               )}
             </div>
             <div
-              className={`text-2xl font-bold font-mono mt-2 ${
-                lowCapacityWindows.length > 0 ? 'text-[#FF6542]' : 'text-[#FBFAF9]'
+              className={`text-3xl font-light font-mono mt-2 ${
+                lowCapacityWindows.length > 0 ? 'text-[#f87171]' : 'text-[#E7E5E4]'
               }`}
             >
               {lowCapacityWindows.length}
             </div>
-            <div className="text-[10px] text-[#66635f] mt-1 font-mono">
+            <div className="text-[12px] text-[#78716C] mt-1 font-sans">
               Requires attention or switch
             </div>
           </div>
 
-          <div className="card-panel-deep p-4 border border-[#2e2c29] flex flex-col justify-between">
-            <div className="text-[11px] text-[#898580] uppercase tracking-wider font-mono flex items-center gap-1.5">
+          <div className="card-panel-deep p-5 border border-[rgba(255,255,255,0.08)] rounded-[24px] flex flex-col justify-between">
+            <div className="text-[12px] text-[#A8A29E] uppercase tracking-wider font-sans font-medium flex items-center gap-1.5">
               <span>Stale (&gt;{settings.staleDataThresholdHours}h)</span>
               {staleWindows.length > 0 && (
-                <span className="w-2 h-2 rounded-full bg-[#f59e0b]" />
+                <span className="w-2 h-2 rounded-full bg-[#fbbf24]" />
               )}
             </div>
             <div
-              className={`text-2xl font-bold font-mono mt-2 ${
-                staleWindows.length > 0 ? 'text-[#f59e0b]' : 'text-[#FBFAF9]'
+              className={`text-3xl font-light font-mono mt-2 ${
+                staleWindows.length > 0 ? 'text-[#fbbf24]' : 'text-[#E7E5E4]'
               }`}
             >
               {staleWindows.length}
             </div>
-            <div className="text-[10px] text-[#66635f] mt-1 font-mono">
+            <div className="text-[12px] text-[#78716C] mt-1 font-sans">
               Needs console balance check
             </div>
           </div>
         </section>
 
+        {/* Serrated Postage-Stamp Tear Effect Divider */}
+        <div className="serrated-divider" aria-hidden="true" />
+
         {/* Filter and Sort Toolbar */}
         <section
           aria-label="Filter and Sort Toolbar"
-          className="card-panel p-3 bg-[#201f1d] border border-[#2e2c29] flex flex-wrap items-center justify-between gap-3 text-xs font-mono"
+          className="card-panel p-4 bg-[#1C1917] border border-[rgba(255,255,255,0.1)] rounded-[24px] flex flex-wrap items-center justify-between gap-3 text-xs font-sans"
         >
           <div className="flex flex-wrap items-center gap-3">
-            <div className="flex items-center gap-1.5 text-[#898580]">
-              <Filter className="w-3.5 h-3.5 text-[#FF6542]" />
+            <div className="flex items-center gap-1.5 text-[#A8A29E]">
+              <Filter className="w-3.5 h-3.5 text-[#D4F268]" />
               <span className="text-[11px] uppercase tracking-wider">Filters:</span>
             </div>
 
@@ -248,7 +251,7 @@ export const OverviewScreen: React.FC<OverviewScreenProps> = ({
                 setSelectedAccountId(e.target.value);
                 setSelectedServiceId('all');
               }}
-              className="bg-[#181818] border border-[#2e2c29] text-[#FBFAF9] rounded px-2.5 py-1 text-xs outline-none focus:border-[#FF6542]"
+              className="bg-[#141210] border border-[rgba(255,255,255,0.1)] text-[#E7E5E4] rounded-full px-3 py-1.5 text-xs outline-none focus:border-[#D4F268]"
               aria-label="Filter by account"
             >
               <option value="all">All Accounts ({accounts.filter((a) => !a.archived).length})</option>
@@ -265,7 +268,7 @@ export const OverviewScreen: React.FC<OverviewScreenProps> = ({
             <select
               value={selectedServiceId}
               onChange={(e) => setSelectedServiceId(e.target.value)}
-              className="bg-[#181818] border border-[#2e2c29] text-[#FBFAF9] rounded px-2.5 py-1 text-xs outline-none focus:border-[#FF6542]"
+              className="bg-[#141210] border border-[rgba(255,255,255,0.1)] text-[#E7E5E4] rounded-full px-3 py-1.5 text-xs outline-none focus:border-[#D4F268]"
               aria-label="Filter by service"
             >
               <option value="all">All Services</option>
@@ -277,14 +280,14 @@ export const OverviewScreen: React.FC<OverviewScreenProps> = ({
             </select>
 
             {/* Filter Status */}
-            <div className="flex items-center gap-1 bg-[#181818] p-0.5 rounded border border-[#2e2c29]">
+            <div className="flex items-center gap-1 bg-[#141210] p-1 rounded-full border border-[rgba(255,255,255,0.08)]">
               <button
                 type="button"
                 onClick={() => setStatusFilter('all')}
-                className={`px-2 py-0.5 rounded text-[11px] transition-colors border-0 cursor-pointer ${
+                className={`px-3 py-1 rounded-full text-[11px] font-sans transition-all border-0 cursor-pointer ${
                   statusFilter === 'all'
-                    ? 'bg-[#252422] text-[#FBFAF9]'
-                    : 'bg-transparent text-[#898580] hover:text-[#FBFAF9]'
+                    ? 'bg-[#1C1917] text-[#E7E5E4] font-medium border border-[rgba(255,255,255,0.12)]'
+                    : 'bg-transparent text-[#A8A29E] hover:text-[#E7E5E4]'
                 }`}
               >
                 All
@@ -292,10 +295,10 @@ export const OverviewScreen: React.FC<OverviewScreenProps> = ({
               <button
                 type="button"
                 onClick={() => setStatusFilter('low')}
-                className={`px-2 py-0.5 rounded text-[11px] transition-colors border-0 cursor-pointer ${
+                className={`px-3 py-1 rounded-full text-[11px] font-sans transition-all border-0 cursor-pointer ${
                   statusFilter === 'low'
-                    ? 'bg-[#FF6542] text-white font-medium'
-                    : 'bg-transparent text-[#898580] hover:text-[#FBFAF9]'
+                    ? 'bg-[#D4F268] text-[#0C0A09] font-semibold'
+                    : 'bg-transparent text-[#A8A29E] hover:text-[#E7E5E4]'
                 }`}
               >
                 Near Limit ({lowCapacityWindows.length})
@@ -303,10 +306,10 @@ export const OverviewScreen: React.FC<OverviewScreenProps> = ({
               <button
                 type="button"
                 onClick={() => setStatusFilter('stale')}
-                className={`px-2 py-0.5 rounded text-[11px] transition-colors border-0 cursor-pointer ${
+                className={`px-3 py-1 rounded-full text-[11px] font-sans transition-all border-0 cursor-pointer ${
                   statusFilter === 'stale'
-                    ? 'bg-[#f59e0b] text-[#0C0B09] font-medium'
-                    : 'bg-transparent text-[#898580] hover:text-[#FBFAF9]'
+                    ? 'bg-[#fbbf24] text-[#0C0A09] font-semibold'
+                    : 'bg-transparent text-[#A8A29E] hover:text-[#E7E5E4]'
                 }`}
               >
                 Stale ({staleWindows.length})
@@ -316,14 +319,14 @@ export const OverviewScreen: React.FC<OverviewScreenProps> = ({
 
           {/* Sort By */}
           <div className="flex items-center gap-2">
-            <span className="text-[11px] text-[#898580] flex items-center gap-1">
-              <ArrowUpDown className="w-3 h-3" />
+            <span className="text-[12px] text-[#A8A29E] flex items-center gap-1.5 font-sans">
+              <ArrowUpDown className="w-3.5 h-3.5" />
               <span>Sort:</span>
             </span>
             <select
               value={sortBy}
               onChange={(e) => setSortBy(e.target.value as any)}
-              className="bg-[#181818] border border-[#2e2c29] text-[#FBFAF9] rounded px-2.5 py-1 text-xs outline-none focus:border-[#FF6542]"
+              className="bg-[#141210] border border-[rgba(255,255,255,0.1)] text-[#E7E5E4] rounded-full px-3 py-1.5 text-xs outline-none focus:border-[#D4F268]"
               aria-label="Sort limit windows"
             >
               <option value="reset">Next Reset (Soonest first)</option>
@@ -335,20 +338,20 @@ export const OverviewScreen: React.FC<OverviewScreenProps> = ({
         </section>
 
         {/* Limit Windows Card Grid */}
-        <section aria-label="Limit Windows" className="space-y-4">
+        <section aria-label="Limit Windows" className="space-y-6">
           {processedItems.length === 0 ? (
             /* Clean polite sample-free empty state */
-            <div className="card-panel-deep p-12 text-center border border-[#2e2c29] rounded-xl space-y-4">
-              <div className="w-12 h-12 rounded-full bg-[#181818] border border-[#2e2c29] text-[#FF6542] mx-auto flex items-center justify-center">
-                <Sparkles className="w-6 h-6" />
+            <div className="card-panel-deep p-16 text-center border border-[rgba(255,255,255,0.08)] rounded-[24px] space-y-4">
+              <div className="w-14 h-14 rounded-full bg-[#1C1917] border border-[#D4F268] text-[#D4F268] shadow-[0_0_16px_rgba(212,242,104,0.2)] mx-auto flex items-center justify-center">
+                <Sparkles className="w-7 h-7" />
               </div>
-              <div className="space-y-1">
-                <h3 className="text-base font-semibold text-[#FBFAF9]">
+              <div className="space-y-2">
+                <h3 className="text-xl font-serif font-light text-[#E7E5E4]">
                   {activeWindowsCount === 0
                     ? 'No limit windows configured yet'
                     : 'No limit windows match your filter criteria'}
                 </h3>
-                <p className="text-xs text-[#898580] max-w-md mx-auto font-mono">
+                <p className="text-sm text-[#A8A29E] max-w-md mx-auto font-sans leading-relaxed">
                   {activeWindowsCount === 0
                     ? 'Quota Ember tracks your self-reported limits and reset dates cleanly. Start by adding an account and selecting an Antigravity, Google Flow, or Google AI Studio preset.'
                     : 'Try loosening your account, service, or status filters above to view other windows.'}
@@ -402,14 +405,14 @@ export const OverviewScreen: React.FC<OverviewScreenProps> = ({
                   return (
                     <article
                       key={win.id}
-                      className="card-panel p-5 bg-[#252422] border border-[#2e2c29] rounded-xl flex flex-col justify-between hover:border-[#45433f] transition-all group"
+                      className="card-panel p-6 bg-[#1C1917] border border-[rgba(255,255,255,0.1)] rounded-[24px] flex flex-col justify-between hover:border-[rgba(255,255,255,0.2)] transition-all group"
                       aria-labelledby={`card-title-${win.id}`}
                     >
-                      <div className="space-y-3.5">
+                      <div className="space-y-4">
                         {/* Header: Account & Service path + Badges */}
-                        <div className="space-y-1.5">
+                        <div className="space-y-2">
                           <div className="flex items-center justify-between gap-2">
-                            <span className="text-[11px] text-[#898580] font-mono truncate">
+                            <span className="text-[12px] text-[#A8A29E] font-sans truncate">
                               {account ? account.name : 'Unknown Account'}
                             </span>
                             <div className="flex items-center gap-1.5 shrink-0">
@@ -431,27 +434,27 @@ export const OverviewScreen: React.FC<OverviewScreenProps> = ({
                           <div className="flex items-baseline justify-between gap-2">
                             <h2
                               id={`card-title-${win.id}`}
-                              className="text-base font-semibold text-[#FBFAF9] truncate font-mono"
+                              className="text-xl font-serif font-light text-[#E7E5E4] truncate tracking-tight"
                             >
                               {win.name}
                             </h2>
-                            <span className="text-[11px] font-mono text-[#FF6542] bg-[#181818] px-2 py-0.5 rounded border border-[#2e2c29] shrink-0">
+                            <span className="text-[11px] font-mono text-[#D4F268] bg-[#141210] px-2.5 py-0.5 rounded-full border border-[rgba(212,242,104,0.3)] shrink-0">
                               {win.cadence}
                             </span>
                           </div>
 
-                          <div className="text-[11px] text-[#898580] font-mono">
-                            Service: <span className="text-[#FBFAF9]">{service ? service.name : 'Custom'}</span>
+                          <div className="text-[11px] text-[#A8A29E] font-mono">
+                            Service: <span className="text-[#E7E5E4]">{service ? service.name : 'Custom'}</span>
                           </div>
                         </div>
 
                         {/* Progress Bar & Numeric Labels */}
                         <div className="space-y-1.5 pt-1">
                           <div className="flex items-center justify-between text-xs font-mono">
-                            <span className="text-[#FBFAF9] font-medium">
+                            <span className="text-[#E7E5E4] font-medium">
                               {formatNumber(win.currentUsed)} / {formatNumber(win.capacity)} {unitDisplay}
                             </span>
-                            <span className="font-semibold text-[#898580]">
+                            <span className="font-semibold text-[#A8A29E]">
                               {Math.round(percentUsed)}%
                             </span>
                           </div>
@@ -471,39 +474,39 @@ export const OverviewScreen: React.FC<OverviewScreenProps> = ({
                             />
                           </div>
 
-                          <div className="flex items-center justify-between text-[11px] text-[#898580] font-mono pt-0.5">
+                          <div className="flex items-center justify-between text-[11px] text-[#A8A29E] font-mono pt-0.5">
                             <span>Remaining:</span>
-                            <span className={remaining <= 0 ? 'text-[#ef4444] font-semibold' : 'text-[#10b981] font-semibold'}>
+                            <span className={remaining <= 0 ? 'text-[#f87171] font-semibold' : 'text-[#D4F268] font-semibold'}>
                               {formatNumber(remaining)} {unitDisplay}
                             </span>
                           </div>
                         </div>
 
                         {/* Timing and Reset Info */}
-                        <div className="p-2.5 bg-[#181818] border border-[#2e2c29] rounded-lg text-[11px] font-mono space-y-1.5 text-[#898580]">
+                        <div className="p-3 bg-[#141210] border border-[rgba(255,255,255,0.08)] rounded-[16px] text-[11px] font-mono space-y-2 text-[#A8A29E]">
                           <div className="flex items-center justify-between">
                             <span className="flex items-center gap-1.5">
-                              <RotateCcw className="w-3 h-3 text-[#FF6542]" />
+                              <RotateCcw className="w-3 h-3 text-[#D4F268]" />
                               <span>Next Reset:</span>
                             </span>
                             <span
                               className={`font-semibold ${
                                 resetResult.isPastDue
-                                  ? 'text-[#ef4444]'
-                                  : 'text-[#FBFAF9]'
+                                  ? 'text-[#f87171]'
+                                  : 'text-[#E7E5E4]'
                               }`}
                             >
                               {resetResult.isPastDue ? 'Past Due (advancing)' : `in ${countdown}`}
                             </span>
                           </div>
 
-                          <div className="text-[10px] text-[#66635f] truncate" title={resetFormatted}>
+                          <div className="text-[10px] text-[#78716C] truncate" title={resetFormatted}>
                             {resetFormatted} ({win.timeZone})
                           </div>
 
-                          <div className="flex items-center justify-between pt-1 border-t border-[#252422] text-[10px]">
+                          <div className="flex items-center justify-between pt-1 border-t border-[rgba(255,255,255,0.06)] text-[10px]">
                             <span>Last Updated:</span>
-                            <span className="text-[#898580]" title={win.lastUpdated}>
+                            <span className="text-[#A8A29E]" title={win.lastUpdated}>
                               {formatRelativeTime(win.lastUpdated)}
                             </span>
                           </div>
@@ -511,18 +514,18 @@ export const OverviewScreen: React.FC<OverviewScreenProps> = ({
                       </div>
 
                       {/* Card Action Buttons */}
-                      <div className="grid grid-cols-2 gap-2 pt-4 mt-2 border-t border-[#2e2c29]">
+                      <div className="grid grid-cols-2 gap-2 pt-4 mt-2 border-t border-[rgba(255,255,255,0.08)]">
                         <button
                           onClick={() => onOpenLogUsage(win.id)}
-                          className="btn-dark-solid text-[11px] justify-center h-8"
+                          className="btn-dark-solid text-xs justify-center h-9 rounded-full"
                           title="Log usage for this window"
                         >
-                          <Plus className="w-3 h-3 text-[#FF6542]" />
+                          <Plus className="w-3 h-3 text-[#D4F268]" />
                           <span>Log Usage</span>
                         </button>
                         <button
                           onClick={() => onOpenCorrectBalance(win.id)}
-                          className="btn-secondary-square text-[11px] justify-center h-8"
+                          className="btn-secondary-square text-xs justify-center h-9 rounded-full"
                           title="Calibrate balance to match provider console"
                         >
                           <RotateCcw className="w-3 h-3" />
@@ -537,23 +540,23 @@ export const OverviewScreen: React.FC<OverviewScreenProps> = ({
           )}
         </section>
 
-        {/* Cream Editorial Founder / Owner Note Card */}
+        {/* Editorial Founder / Owner Note Card */}
         <section
           aria-label="Owner Advisory Card"
-          className="founder-note-card relative overflow-hidden"
+          className="founder-note-card relative overflow-hidden bg-[#1C1917] border border-[rgba(255,255,255,0.1)] rounded-[24px] p-8"
         >
-          <div className="flex flex-col sm:flex-row items-start justify-between gap-4">
-            <div className="space-y-2 max-w-2xl">
+          <div className="flex flex-col sm:flex-row items-start justify-between gap-6">
+            <div className="space-y-3 max-w-2xl">
               <div className="flex items-center gap-2">
-                <span className="text-[11px] font-mono uppercase tracking-widest text-[#FF6542] font-bold">
-                  Operational Architecture
+                <span className="tech-tag text-[11px] text-[#D4F268] font-bold">
+                  Fig. 02 • Operational Architecture
                 </span>
-                <span className="script-note text-xs">manual calibration guide</span>
+                <span className="text-xs text-[#A8A29E] font-serif italic">— calibration guide</span>
               </div>
-              <h3 className="text-xl font-bold text-[#0C0B09]">
-                Manual Estimates & Reset Anchor Precision
+              <h3 className="text-2xl sm:text-3xl font-serif font-light text-[#E7E5E4] tracking-tight">
+                Manual Estimates & <em>Reset Anchor Precision</em>
               </h3>
-              <p className="text-[#353431] text-xs leading-relaxed font-mono">
+              <p className="text-[#A8A29E] text-sm leading-relaxed font-sans">
                 Quota Ember runs locally without credentials, background token sniffers, or secret provider API keys.
                 All figures represent your logged usage and manual balance corrections. Reset schedules strictly follow your configured
                 anchors: hourly intervals count from the minute of the hour, daily windows advance at your local wall-clock hour,
@@ -562,7 +565,7 @@ export const OverviewScreen: React.FC<OverviewScreenProps> = ({
             </div>
 
             <div className="sm:text-right shrink-0">
-              <span className="inline-block px-3 py-1.5 rounded-full bg-[#0C0B09] text-[#FBFAF9] text-xs font-mono font-medium">
+              <span className="inline-block px-4 py-1.5 rounded-full bg-[#141210] border border-[rgba(255,255,255,0.1)] text-[#D4F268] text-xs font-mono font-medium">
                 100% Client-Side Local
               </span>
             </div>

@@ -62,21 +62,21 @@ export const ProjectModal: React.FC<ProjectModalProps> = ({
       onClick={onClose}
     >
       <div
-        className="modal-window max-w-md p-6 bg-[#252422] border border-[#2e2c29] text-[#FBFAF9]"
+        className="modal-window max-w-md p-6 bg-[#1C1917] border border-[rgba(255,255,255,0.1)] text-[#E7E5E4]"
         onClick={(e) => e.stopPropagation()}
       >
-        <div className="flex items-center justify-between pb-4 mb-4 border-b border-[#2e2c29]">
+        <div className="flex items-center justify-between pb-4 mb-4 border-b border-[rgba(255,255,255,0.1)]">
           <div className="flex items-center gap-2">
-            <div className="p-1.5 rounded-md bg-[#181818] border border-[#2e2c29] text-[#FF6542]">
+            <div className="p-1.5 rounded-md bg-[#141210] border border-[rgba(255,255,255,0.1)] text-[#D4F268]">
               <Folder className="w-4 h-4" />
             </div>
-            <h3 id="project-modal-title" className="text-sm font-semibold text-[#FBFAF9]">
+            <h3 id="project-modal-title" className="text-sm font-semibold text-[#E7E5E4]">
               {project ? 'Edit Project' : 'Create Project'}
             </h3>
           </div>
           <button
             onClick={onClose}
-            className="text-[#898580] hover:text-[#FBFAF9] bg-transparent border-0 cursor-pointer p-1 rounded hover:bg-[#2e2c29]"
+            className="text-[#A8A29E] hover:text-[#E7E5E4] bg-transparent border-0 cursor-pointer p-1 rounded hover:bg-[rgba(255,255,255,0.1)]"
             aria-label="Close"
           >
             <X className="w-4 h-4" />
@@ -92,7 +92,7 @@ export const ProjectModal: React.FC<ProjectModalProps> = ({
 
           <div>
             <label htmlFor="proj-name" className="label-text">
-              Project Name <span className="text-[#FF6542]">*</span>
+              Project Name <span className="text-[#D4F268]">*</span>
             </label>
             <input
               id="proj-name"
@@ -121,19 +121,19 @@ export const ProjectModal: React.FC<ProjectModalProps> = ({
 
           {project && (
             <div className="pt-2">
-              <label className="flex items-center gap-2 cursor-pointer text-xs font-mono text-[#FBFAF9]">
+              <label className="flex items-center gap-2 cursor-pointer text-xs font-mono text-[#E7E5E4]">
                 <input
                   type="checkbox"
                   checked={archived}
                   onChange={(e) => setArchived(e.target.checked)}
-                  className="rounded bg-[#030302] border-[#2e2c29] text-[#FF6542]"
+                  className="rounded bg-[#0C0A09] border-[rgba(255,255,255,0.1)] text-[#D4F268]"
                 />
                 <span>Archive this project</span>
               </label>
             </div>
           )}
 
-          <div className="flex items-center justify-end gap-3 pt-4 border-t border-[#2e2c29]">
+          <div className="flex items-center justify-end gap-3 pt-4 border-t border-[rgba(255,255,255,0.1)]">
             <button
               type="button"
               onClick={onClose}

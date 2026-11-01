@@ -111,13 +111,13 @@ export const SettingsScreen: React.FC<SettingsScreenProps> = ({
   };
 
   return (
-    <div className="max-w-[1000px] mx-auto px-4 py-6 space-y-8 font-mono">
+    <div className="max-w-[1000px] mx-auto px-4 py-6 space-y-8 font-sans">
       {/* Header */}
-      <div className="border-b border-[#2e2c29] pb-4">
-        <h1 className="text-xl sm:text-2xl font-semibold tracking-tight text-[#FBFAF9]">
-          Settings & Local Data Management
+      <div className="border-b border-[rgba(255,255,255,0.1)] pb-4">
+        <h1 className="text-3xl sm:text-4xl font-serif font-light tracking-tight text-[#E7E5E4]">
+          Settings & <em>Local Data Management</em>
         </h1>
-        <p className="text-xs text-[#898580] mt-0.5">
+        <p className="text-sm text-[#A8A29E] mt-1 font-sans">
           Configure cadence defaults, alert thresholds, and manage versioned JSON state snapshots.
         </p>
       </div>
@@ -139,10 +139,10 @@ export const SettingsScreen: React.FC<SettingsScreenProps> = ({
       {/* Form: Thresholds & Timezone */}
       <form onSubmit={handleSaveSettings} className="space-y-6">
         {/* Time Zone Settings */}
-        <section className="card-panel p-5 bg-[#201f1d] border border-[#2e2c29] rounded-xl space-y-4">
-          <div className="flex items-center gap-2 border-b border-[#252422] pb-2">
-            <Globe className="w-4 h-4 text-[#FF6542]" />
-            <h2 className="text-sm font-semibold text-[#FBFAF9]">Default Time Zone</h2>
+        <section className="card-panel p-5 bg-[#1C1917] border border-[rgba(255,255,255,0.1)] rounded-xl space-y-4">
+          <div className="flex items-center gap-2 border-b border-[#1C1917] pb-2">
+            <Globe className="w-4 h-4 text-[#D4F268]" />
+            <h2 className="text-sm font-semibold text-[#E7E5E4]">Default Time Zone</h2>
           </div>
 
           <div className="grid grid-cols-1 sm:grid-cols-3 gap-3 items-end">
@@ -165,7 +165,7 @@ export const SettingsScreen: React.FC<SettingsScreenProps> = ({
                   </option>
                 ))}
               </select>
-              <p className="text-[10px] text-[#898580] mt-1">
+              <p className="text-[10px] text-[#A8A29E] mt-1">
                 Applied as default for new services and windows. Reset anchors maintain wall-clock fidelity.
               </p>
             </div>
@@ -183,10 +183,10 @@ export const SettingsScreen: React.FC<SettingsScreenProps> = ({
         </section>
 
         {/* Alert Thresholds */}
-        <section className="card-panel p-5 bg-[#201f1d] border border-[#2e2c29] rounded-xl space-y-4">
-          <div className="flex items-center gap-2 border-b border-[#252422] pb-2">
-            <Sliders className="w-4 h-4 text-[#FF6542]" />
-            <h2 className="text-sm font-semibold text-[#FBFAF9]">Health & Warning Thresholds</h2>
+        <section className="card-panel p-5 bg-[#1C1917] border border-[rgba(255,255,255,0.1)] rounded-xl space-y-4">
+          <div className="flex items-center gap-2 border-b border-[#1C1917] pb-2">
+            <Sliders className="w-4 h-4 text-[#D4F268]" />
+            <h2 className="text-sm font-semibold text-[#E7E5E4]">Health & Warning Thresholds</h2>
           </div>
 
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
@@ -196,7 +196,7 @@ export const SettingsScreen: React.FC<SettingsScreenProps> = ({
                 <label htmlFor="low-cap" className="label-text mb-0">
                   Low Capacity Alert Trigger
                 </label>
-                <span className="text-xs font-semibold text-[#FF6542]">{lowCapThreshold}%</span>
+                <span className="text-xs font-semibold text-[#D4F268]">{lowCapThreshold}%</span>
               </div>
               <input
                 id="low-cap"
@@ -206,9 +206,9 @@ export const SettingsScreen: React.FC<SettingsScreenProps> = ({
                 step="5"
                 value={lowCapThreshold}
                 onChange={(e) => setLowCapThreshold(Number(e.target.value))}
-                className="w-full accent-[#FF6542] cursor-pointer"
+                className="w-full accent-[#D4F268] cursor-pointer"
               />
-              <p className="text-[10px] text-[#898580] mt-1">
+              <p className="text-[10px] text-[#A8A29E] mt-1">
                 Flags limit windows when used capacity reaches or exceeds {lowCapThreshold}% (i.e. &le;{100 - lowCapThreshold}% remaining).
               </p>
             </div>
@@ -231,7 +231,7 @@ export const SettingsScreen: React.FC<SettingsScreenProps> = ({
                 onChange={(e) => setStaleHours(Number(e.target.value))}
                 className="input-control text-xs"
               />
-              <p className="text-[10px] text-[#898580] mt-1">
+              <p className="text-[10px] text-[#A8A29E] mt-1">
                 Flags windows that have not received an update or balance check in over {staleHours} hours.
               </p>
             </div>
@@ -249,13 +249,13 @@ export const SettingsScreen: React.FC<SettingsScreenProps> = ({
       </form>
 
       {/* JSON Backup & Restore */}
-      <section className="card-panel p-5 bg-[#201f1d] border border-[#2e2c29] rounded-xl space-y-4">
-        <div className="flex items-center gap-2 border-b border-[#252422] pb-2">
-          <Database className="w-4 h-4 text-[#FF6542]" />
-          <h2 className="text-sm font-semibold text-[#FBFAF9]">State Backup & Migration</h2>
+      <section className="card-panel p-5 bg-[#1C1917] border border-[rgba(255,255,255,0.1)] rounded-xl space-y-4">
+        <div className="flex items-center gap-2 border-b border-[#1C1917] pb-2">
+          <Database className="w-4 h-4 text-[#D4F268]" />
+          <h2 className="text-sm font-semibold text-[#E7E5E4]">State Backup & Migration</h2>
         </div>
 
-        <p className="text-xs text-[#898580] leading-relaxed">
+        <p className="text-xs text-[#A8A29E] leading-relaxed">
           Export your complete accounts, limit windows, projects, and history into a validated JSON snapshot.
           Restoring allows transferring your configuration across browsers or reverting to previous points in time.
         </p>
@@ -266,7 +266,7 @@ export const SettingsScreen: React.FC<SettingsScreenProps> = ({
             onClick={handleExportBackup}
             className="btn-dark-solid text-xs"
           >
-            <Download className="w-3.5 h-3.5 text-[#FF6542]" />
+            <Download className="w-3.5 h-3.5 text-[#D4F268]" />
             <span>Export Backup (JSON)</span>
           </button>
 
@@ -290,7 +290,7 @@ export const SettingsScreen: React.FC<SettingsScreenProps> = ({
       </section>
 
       {/* Browser Storage Advisory Notice */}
-      <section className="card-panel-deep p-5 border border-[#2e2c29] rounded-xl space-y-3">
+      <section className="card-panel-deep p-5 border border-[rgba(255,255,255,0.1)] rounded-xl space-y-3">
         <div className="flex items-center gap-2 text-[#f59e0b]">
           <ShieldAlert className="w-4 h-4" />
           <h3 className="text-xs font-semibold uppercase tracking-wider">
@@ -298,9 +298,9 @@ export const SettingsScreen: React.FC<SettingsScreenProps> = ({
           </h3>
         </div>
 
-        <div className="text-xs text-[#898580] space-y-2 leading-relaxed">
+        <div className="text-xs text-[#A8A29E] space-y-2 leading-relaxed">
           <p>
-            Quota Ember stores 100% of its data in client-side <span className="text-[#FBFAF9]">localStorage</span> within this specific browser profile.
+            Quota Ember stores 100% of its data in client-side <span className="text-[#E7E5E4]">localStorage</span> within this specific browser profile.
             No data is transmitted to remote cloud databases, telemetry analytics, or third-party servers.
           </p>
           <p className="text-[11px] text-[#66635f]">
@@ -309,7 +309,7 @@ export const SettingsScreen: React.FC<SettingsScreenProps> = ({
           </p>
         </div>
 
-        <div className="pt-3 border-t border-[#252422] flex items-center justify-between">
+        <div className="pt-3 border-t border-[#1C1917] flex items-center justify-between">
           <span className="text-[11px] text-[#ef4444]">
             Destructive: Wipe all local state
           </span>

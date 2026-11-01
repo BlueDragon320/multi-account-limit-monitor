@@ -30,18 +30,18 @@ export const Navbar: React.FC<NavbarProps> = ({
         {/* Brand / Logo */}
         <button
           onClick={() => onSelectTab('overview')}
-          className="flex items-center gap-2.5 text-left border-0 bg-transparent cursor-pointer p-1 group focus:outline-none"
+          className="flex items-center gap-3 text-left border-0 bg-transparent cursor-pointer p-1 group focus:outline-none"
           aria-label="Quota Ember Home"
         >
-          <div className="w-7 h-7 rounded-full bg-[#201f1d] border border-[#FF6543] flex items-center justify-center text-[#FF6542] shadow-[0_0_12px_rgba(255,101,66,0.3)] transition-transform group-hover:scale-105">
-            <Flame className="w-4 h-4 fill-[#FF6542]" />
+          <div className="w-8 h-8 rounded-full bg-[#1C1917] border border-[#D4F268] flex items-center justify-center text-[#D4F268] shadow-[0_0_14px_rgba(212,242,104,0.25)] transition-all group-hover:scale-105">
+            <Flame className="w-4 h-4 fill-[#D4F268]" />
           </div>
           <div className="flex flex-col">
-            <span className="font-medium text-[13px] tracking-tight text-[#FBFAF9] flex items-center gap-1.5 font-mono">
-              QUOTA<span className="text-[#FF6542] font-semibold">EMBER</span>
+            <span className="font-sans font-semibold text-[14px] tracking-tight text-[#E7E5E4] flex items-center gap-1">
+              QUOTA<span className="text-[#D4F268] font-normal italic font-serif text-[17px]">EMBER</span>
             </span>
-            <span className="text-[10px] text-[#898580] tracking-widest uppercase font-mono leading-none">
-              Control Panel
+            <span className="tech-tag text-[10px] text-[#A8A29E] leading-none">
+              Fig. 01 • Control Panel
             </span>
           </div>
         </button>
@@ -49,7 +49,7 @@ export const Navbar: React.FC<NavbarProps> = ({
         {/* Tab Navigation */}
         <div
           role="tablist"
-          className="flex items-center gap-1 bg-[#181818] p-1 rounded-full border border-[#2e2c29]"
+          className="flex items-center gap-1 bg-[#141210] p-1 rounded-full border border-[rgba(255,255,255,0.08)]"
         >
           {TABS.map((tab) => {
             const isActive = activeTab === tab.id;
@@ -60,19 +60,19 @@ export const Navbar: React.FC<NavbarProps> = ({
                 role="tab"
                 aria-selected={isActive}
                 onClick={() => onSelectTab(tab.id)}
-                className={`relative flex items-center gap-2 px-3 py-1.5 rounded-full text-[12px] font-mono transition-all border-0 cursor-pointer ${
+                className={`relative flex items-center gap-2 px-3.5 py-1.5 rounded-full text-[13px] font-sans transition-all border-0 cursor-pointer ${
                   isActive
-                    ? 'bg-[#252422] text-[#FBFAF9] font-medium shadow-sm'
-                    : 'text-[#898580] hover:text-[#FBFAF9] hover:bg-[#201f1d] bg-transparent'
+                    ? 'bg-[#1C1917] text-[#E7E5E4] font-medium shadow-sm border border-[rgba(255,255,255,0.12)]'
+                    : 'text-[#A8A29E] hover:text-[#E7E5E4] hover:bg-[#1C1917] bg-transparent'
                 }`}
               >
                 {isActive && (
                   <span
-                    className="w-1.5 h-1.5 rounded-full bg-[#FF6542] inline-block shadow-[0_0_6px_#FF6542]"
+                    className="w-1.5 h-1.5 rounded-full bg-[#D4F268] inline-block shadow-[0_0_6px_#D4F268]"
                     aria-hidden="true"
                   />
                 )}
-                <Icon className={`w-3.5 h-3.5 ${isActive ? 'text-[#FF6542]' : 'text-[#898580]'}`} />
+                <Icon className={`w-3.5 h-3.5 ${isActive ? 'text-[#D4F268]' : 'text-[#A8A29E]'}`} />
                 <span>{tab.label}</span>
               </button>
             );
@@ -83,10 +83,10 @@ export const Navbar: React.FC<NavbarProps> = ({
         <div className="flex items-center gap-2">
           <button
             onClick={onOpenLogUsage}
-            className="btn-nav-coral focus:outline-none focus:ring-2 focus:ring-[#FF6542] focus:ring-offset-2 focus:ring-offset-[#181818]"
+            className="btn-primary-lime text-[13px] font-sans font-semibold focus:outline-none focus:ring-2 focus:ring-[#D4F268] focus:ring-offset-2 focus:ring-offset-[#0C0A09]"
             title="Log usage against one or more limit windows"
           >
-            <Plus className="w-3.5 h-3.5 stroke-[2.5]" />
+            <Plus className="w-4 h-4 stroke-[2.5]" />
             <span>Log Usage</span>
           </button>
         </div>

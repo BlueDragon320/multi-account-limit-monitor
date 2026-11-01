@@ -183,27 +183,27 @@ export const ServiceModal: React.FC<ServiceModalProps> = ({
       onClick={onClose}
     >
       <div
-        className="modal-window max-w-2xl p-6 bg-[#252422] border border-[#2e2c29] text-[#FBFAF9]"
+        className="modal-window max-w-2xl p-6 bg-[#1C1917] border border-[rgba(255,255,255,0.1)] text-[#E7E5E4]"
         onClick={(e) => e.stopPropagation()}
       >
         {/* Header */}
-        <div className="flex items-center justify-between pb-4 mb-4 border-b border-[#2e2c29]">
+        <div className="flex items-center justify-between pb-4 mb-4 border-b border-[rgba(255,255,255,0.1)]">
           <div className="flex items-center gap-2">
-            <div className="p-1.5 rounded-md bg-[#181818] border border-[#2e2c29] text-[#FF6542]">
+            <div className="p-1.5 rounded-md bg-[#141210] border border-[rgba(255,255,255,0.1)] text-[#D4F268]">
               <Server className="w-4 h-4" />
             </div>
             <div>
-              <h3 id="service-modal-title" className="text-sm font-semibold text-[#FBFAF9]">
+              <h3 id="service-modal-title" className="text-sm font-semibold text-[#E7E5E4]">
                 {service ? 'Edit Service' : 'Add Service & Limit Windows'}
               </h3>
-              <p className="text-[11px] text-[#898580] font-mono">
+              <p className="text-[11px] text-[#A8A29E] font-mono">
                 {service ? 'Update service metadata' : 'Select a preset or configure custom tracking windows'}
               </p>
             </div>
           </div>
           <button
             onClick={onClose}
-            className="text-[#898580] hover:text-[#FBFAF9] bg-transparent border-0 cursor-pointer p-1 rounded hover:bg-[#2e2c29]"
+            className="text-[#A8A29E] hover:text-[#E7E5E4] bg-transparent border-0 cursor-pointer p-1 rounded hover:bg-[rgba(255,255,255,0.1)]"
             aria-label="Close"
           >
             <X className="w-4 h-4" />
@@ -220,7 +220,7 @@ export const ServiceModal: React.FC<ServiceModalProps> = ({
           {/* Account Selection */}
           <div>
             <label htmlFor="svc-account" className="label-text">
-              Associated Account <span className="text-[#FF6542]">*</span>
+              Associated Account <span className="text-[#D4F268]">*</span>
             </label>
             <select
               id="svc-account"
@@ -246,7 +246,7 @@ export const ServiceModal: React.FC<ServiceModalProps> = ({
           {!service && (
             <div>
               <label className="label-text flex items-center gap-1.5 mb-2">
-                <Sparkles className="w-3.5 h-3.5 text-[#FF6542]" />
+                <Sparkles className="w-3.5 h-3.5 text-[#D4F268]" />
                 <span>Quick-Fill Service Preset</span>
               </label>
               <div className="grid grid-cols-2 sm:grid-cols-5 gap-2">
@@ -259,8 +259,8 @@ export const ServiceModal: React.FC<ServiceModalProps> = ({
                       onClick={() => applyPreset(preset.name, defaultTimeZone)}
                       className={`px-2.5 py-2 rounded-md text-[11px] font-mono text-center border transition-all cursor-pointer ${
                         isSelected
-                          ? 'bg-[#181818] border-[#FF6542] text-[#FBFAF9] shadow-[0_0_8px_rgba(255,101,66,0.2)]'
-                          : 'bg-[#1c1b19] border-[#2e2c29] text-[#898580] hover:text-[#FBFAF9] hover:bg-[#252422]'
+                          ? 'bg-[#141210] border-[#D4F268] text-[#E7E5E4] shadow-[0_0_8px_rgba(212,242,104,0.2)]'
+                          : 'bg-[#1c1b19] border-[rgba(255,255,255,0.1)] text-[#A8A29E] hover:text-[#E7E5E4] hover:bg-[#1C1917]'
                       }`}
                     >
                       <div className="font-semibold truncate">{preset.name}</div>
@@ -277,7 +277,7 @@ export const ServiceModal: React.FC<ServiceModalProps> = ({
           {/* Service Name */}
           <div>
             <label htmlFor="svc-name" className="label-text">
-              Service Name <span className="text-[#FF6542]">*</span>
+              Service Name <span className="text-[#D4F268]">*</span>
             </label>
             <input
               id="svc-name"
@@ -307,12 +307,12 @@ export const ServiceModal: React.FC<ServiceModalProps> = ({
 
           {service && (
             <div className="pt-2">
-              <label className="flex items-center gap-2 cursor-pointer text-xs font-mono text-[#FBFAF9]">
+              <label className="flex items-center gap-2 cursor-pointer text-xs font-mono text-[#E7E5E4]">
                 <input
                   type="checkbox"
                   checked={archived}
                   onChange={(e) => setArchived(e.target.checked)}
-                  className="rounded bg-[#030302] border-[#2e2c29] text-[#FF6542]"
+                  className="rounded bg-[#0C0A09] border-[rgba(255,255,255,0.1)] text-[#D4F268]"
                 />
                 <span>Archive this service (hides associated windows)</span>
               </label>
@@ -324,10 +324,10 @@ export const ServiceModal: React.FC<ServiceModalProps> = ({
             <div className="pt-2">
               <div className="flex items-center justify-between mb-2">
                 <div>
-                  <h4 className="text-xs font-semibold uppercase tracking-wider text-[#FBFAF9] font-mono">
+                  <h4 className="text-xs font-semibold uppercase tracking-wider text-[#E7E5E4] font-mono">
                     Limit Windows ({windows.length})
                   </h4>
-                  <p className="text-[10px] text-[#898580] font-mono">
+                  <p className="text-[10px] text-[#A8A29E] font-mono">
                     Multiple windows (e.g. hourly burst + weekly allotment) can coexist and reset independently.
                   </p>
                 </div>
@@ -345,10 +345,10 @@ export const ServiceModal: React.FC<ServiceModalProps> = ({
                 {windows.map((win, idx) => (
                   <div
                     key={idx}
-                    className="p-3 bg-[#181818] border border-[#2e2c29] rounded-lg text-xs space-y-3 relative group"
+                    className="p-3 bg-[#141210] border border-[rgba(255,255,255,0.1)] rounded-lg text-xs space-y-3 relative group"
                   >
                     <div className="flex items-center justify-between">
-                      <span className="font-mono text-[11px] text-[#FF6542] font-semibold">
+                      <span className="font-mono text-[11px] text-[#D4F268] font-semibold">
                         Window #{idx + 1}
                       </span>
                       {windows.length > 1 && (
@@ -497,7 +497,7 @@ export const ServiceModal: React.FC<ServiceModalProps> = ({
           )}
 
           {/* Action Buttons */}
-          <div className="flex items-center justify-end gap-3 pt-4 border-t border-[#2e2c29]">
+          <div className="flex items-center justify-end gap-3 pt-4 border-t border-[rgba(255,255,255,0.1)]">
             <button
               type="button"
               onClick={onClose}

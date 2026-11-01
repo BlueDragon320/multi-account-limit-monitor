@@ -351,7 +351,10 @@ export const App: React.FC = () => {
   };
 
   return (
-    <div className="min-h-screen bg-[#181818] text-[#FBFAF9] flex flex-col font-mono selection:bg-[#FF6542] selection:text-white">
+    <div className="min-h-screen bg-[#0C0A09] text-[#E7E5E4] flex flex-col font-sans selection:bg-[#D4F268] selection:text-[#0C0A09] relative">
+      {/* 4% Fixed Noise Overlay */}
+      <div className="noise-overlay" aria-hidden="true" />
+
       {/* Top Navbar */}
       <Navbar
         activeTab={activeTab}
@@ -407,16 +410,16 @@ export const App: React.FC = () => {
         )}
       </div>
 
-      {/* Footer */}
-      <footer className="border-t border-[#252422] py-6 px-4 text-center text-xs text-[#898580] font-mono">
-        <div className="max-w-[1200px] mx-auto flex flex-col sm:flex-row items-center justify-between gap-2">
-          <div className="flex items-center gap-2">
-            <span className="w-2 h-2 rounded-full bg-[#FF6542]" />
-            <span className="text-[#FBFAF9] font-medium">Quota Ember</span>
-            <span className="text-[#66635f]">— Local-First Developer Tool</span>
+      {/* Footer with Serrated Divider */}
+      <footer className="border-t border-[rgba(255,255,255,0.08)] py-8 px-4 text-center text-xs text-[#A8A29E] font-sans">
+        <div className="max-w-[1200px] mx-auto flex flex-col sm:flex-row items-center justify-between gap-3">
+          <div className="flex items-center gap-2.5">
+            <span className="w-2 h-2 rounded-full bg-[#D4F268] shadow-[0_0_8px_#D4F268]" />
+            <span className="text-[#E7E5E4] font-medium tracking-tight">Quota Ember</span>
+            <span className="text-[#78716C]">— Digital Naturalism & Brutalist Technicality</span>
           </div>
-          <div className="text-[11px] text-[#66635f]">
-            Client-side state • Zero remote telemetry • Independent reset anchors
+          <div className="tech-tag text-[11px] text-[#78716C]">
+            Client-Side State • Fig. 00-SYS • Zero Telemetry
           </div>
         </div>
       </footer>

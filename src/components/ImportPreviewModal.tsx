@@ -48,27 +48,27 @@ export const ImportPreviewModal: React.FC<ImportPreviewModalProps> = ({
       onClick={onClose}
     >
       <div
-        className="modal-window max-w-xl p-6 bg-[#252422] border border-[#2e2c29] text-[#FBFAF9]"
+        className="modal-window max-w-xl p-6 bg-[#1C1917] border border-[rgba(255,255,255,0.1)] text-[#E7E5E4]"
         onClick={(e) => e.stopPropagation()}
       >
         {/* Header */}
-        <div className="flex items-center justify-between pb-4 mb-4 border-b border-[#2e2c29]">
+        <div className="flex items-center justify-between pb-4 mb-4 border-b border-[rgba(255,255,255,0.1)]">
           <div className="flex items-center gap-2">
-            <div className="p-1.5 rounded-md bg-[#181818] border border-[#FF6543] text-[#FF6542]">
+            <div className="p-1.5 rounded-md bg-[#141210] border border-[#D4F268] text-[#D4F268]">
               <Database className="w-4 h-4" />
             </div>
             <div>
-              <h3 id="import-preview-title" className="text-sm font-semibold text-[#FBFAF9]">
+              <h3 id="import-preview-title" className="text-sm font-semibold text-[#E7E5E4]">
                 Backup Import Preview
               </h3>
-              <p className="text-[11px] text-[#898580] font-mono">
+              <p className="text-[11px] text-[#A8A29E] font-mono">
                 Inspect incoming data structure before replacing existing records
               </p>
             </div>
           </div>
           <button
             onClick={onClose}
-            className="text-[#898580] hover:text-[#FBFAF9] bg-transparent border-0 cursor-pointer p-1 rounded hover:bg-[#2e2c29]"
+            className="text-[#A8A29E] hover:text-[#E7E5E4] bg-transparent border-0 cursor-pointer p-1 rounded hover:bg-[rgba(255,255,255,0.1)]"
             aria-label="Close"
           >
             <X className="w-4 h-4" />
@@ -86,12 +86,12 @@ export const ImportPreviewModal: React.FC<ImportPreviewModalProps> = ({
               <p className="text-[11px] pl-6">{error || 'Invalid backup structure or unrecognized JSON format.'}</p>
             </div>
           ) : (
-            <div className="p-3 bg-[#181818] border border-[#2e2c29] rounded-lg space-y-1.5">
+            <div className="p-3 bg-[#141210] border border-[rgba(255,255,255,0.1)] rounded-lg space-y-1.5">
               <div className="flex items-center gap-2 text-[#10b981] font-semibold text-xs">
                 <CheckCircle2 className="w-4 h-4" />
                 <span>Schema Valid</span>
               </div>
-              <p className="text-[11px] text-[#898580]">
+              <p className="text-[11px] text-[#A8A29E]">
                 {summary
                   ? `Incoming payload contains ${summary.accountsCount} accounts, ${summary.servicesCount} services, ${summary.windowsCount} windows, and ${summary.eventsCount} events.`
                   : 'Valid Quota Ember JSON backup file'}
@@ -112,12 +112,12 @@ export const ImportPreviewModal: React.FC<ImportPreviewModalProps> = ({
           {/* Diff Metrics Table */}
           {importDiff && valid && (
             <div className="space-y-2">
-              <div className="text-[11px] uppercase tracking-wider text-[#898580] font-semibold">
+              <div className="text-[11px] uppercase tracking-wider text-[#A8A29E] font-semibold">
                 State Comparison Summary
               </div>
-              <div className="bg-[#181818] border border-[#2e2c29] rounded-lg overflow-hidden">
+              <div className="bg-[#141210] border border-[rgba(255,255,255,0.1)] rounded-lg overflow-hidden">
                 <table className="w-full text-left text-[11px]">
-                  <thead className="bg-[#201f1d] text-[#898580] border-b border-[#2e2c29]">
+                  <thead className="bg-[#1C1917] text-[#A8A29E] border-b border-[rgba(255,255,255,0.1)]">
                     <tr>
                       <th className="py-2 px-3 font-medium">Record Type</th>
                       <th className="py-2 px-3 font-medium text-right">Current</th>
@@ -126,15 +126,15 @@ export const ImportPreviewModal: React.FC<ImportPreviewModalProps> = ({
                       <th className="py-2 px-3 font-medium text-right">Net Change</th>
                     </tr>
                   </thead>
-                  <tbody className="divide-y divide-[#2e2c29]">
+                  <tbody className="divide-y divide-[rgba(255,255,255,0.1)]">
                     {diffRows.map((row) => (
-                      <tr key={row.label} className="hover:bg-[#201f1d]">
-                        <td className="py-2 px-3 text-[#FBFAF9]">{row.label}</td>
-                        <td className="py-2 px-3 text-right text-[#898580]">{row.metric.current}</td>
+                      <tr key={row.label} className="hover:bg-[#1C1917]">
+                        <td className="py-2 px-3 text-[#E7E5E4]">{row.label}</td>
+                        <td className="py-2 px-3 text-right text-[#A8A29E]">{row.metric.current}</td>
                         <td className="py-2 px-1 text-center text-[#66635f]">
                           <ArrowRight className="w-3 h-3 inline" />
                         </td>
-                        <td className="py-2 px-3 text-right text-[#FBFAF9] font-medium">
+                        <td className="py-2 px-3 text-right text-[#E7E5E4] font-medium">
                           {row.metric.incoming}
                         </td>
                         <td
@@ -143,7 +143,7 @@ export const ImportPreviewModal: React.FC<ImportPreviewModalProps> = ({
                               ? 'text-[#10b981]'
                               : row.metric.delta < 0
                               ? 'text-[#ef4444]'
-                              : 'text-[#898580]'
+                              : 'text-[#A8A29E]'
                           }`}
                         >
                           {row.metric.delta > 0 ? `+${row.metric.delta}` : row.metric.delta}
@@ -157,7 +157,7 @@ export const ImportPreviewModal: React.FC<ImportPreviewModalProps> = ({
           )}
 
           {/* Buttons */}
-          <div className="flex items-center justify-end gap-3 pt-4 border-t border-[#2e2c29]">
+          <div className="flex items-center justify-end gap-3 pt-4 border-t border-[rgba(255,255,255,0.1)]">
             <button
               type="button"
               onClick={onClose}

@@ -81,30 +81,30 @@ export const AccountsScreen: React.FC<AccountsScreenProps> = ({
   return (
     <div className="max-w-[1200px] mx-auto px-4 py-6 space-y-6">
       {/* Top Action Bar */}
-      <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 border-b border-[#2e2c29] pb-4">
+      <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 border-b border-[rgba(255,255,255,0.1)] pb-4">
         <div>
-          <h1 className="text-xl sm:text-2xl font-semibold tracking-tight text-[#FBFAF9]">
-            Accounts & Service Limits
+          <h1 className="text-3xl sm:text-4xl font-serif font-light tracking-tight text-[#E7E5E4]">
+            Accounts & <em>Service Limits</em>
           </h1>
-          <p className="text-xs text-[#898580] font-mono mt-0.5">
+          <p className="text-sm text-[#A8A29E] font-sans mt-1">
             Manage provider accounts, services, and multi-tier limit windows independently.
           </p>
         </div>
 
         <div className="flex items-center gap-3">
-          <label className="flex items-center gap-2 cursor-pointer text-xs font-mono text-[#898580] hover:text-[#FBFAF9]">
+          <label className="flex items-center gap-2 cursor-pointer text-xs font-sans text-[#A8A29E] hover:text-[#E7E5E4]">
             <input
               type="checkbox"
               checked={showArchived}
               onChange={(e) => setShowArchived(e.target.checked)}
-              className="rounded bg-[#030302] border-[#2e2c29] text-[#FF6542]"
+              className="rounded bg-[#0C0A09] border-[rgba(255,255,255,0.1)] text-[#D4F268]"
             />
             <span>Show Archived</span>
           </label>
 
           <button
             onClick={onOpenAddAccount}
-            className="btn-nav-coral text-xs"
+            className="btn-primary-lime text-xs"
           >
             <Plus className="w-3.5 h-3.5" />
             <span>Add Account</span>
@@ -114,12 +114,12 @@ export const AccountsScreen: React.FC<AccountsScreenProps> = ({
 
       {/* Account List */}
       {visibleAccounts.length === 0 ? (
-        <div className="card-panel-deep p-12 text-center border border-[#2e2c29] rounded-xl space-y-3 font-mono">
-          <div className="w-10 h-10 rounded-full bg-[#181818] border border-[#2e2c29] text-[#FF6542] mx-auto flex items-center justify-center">
+        <div className="card-panel-deep p-12 text-center border border-[rgba(255,255,255,0.1)] rounded-xl space-y-3 font-mono">
+          <div className="w-10 h-10 rounded-full bg-[#141210] border border-[rgba(255,255,255,0.1)] text-[#D4F268] mx-auto flex items-center justify-center">
             <User className="w-5 h-5" />
           </div>
-          <h3 className="text-sm font-semibold text-[#FBFAF9]">No accounts available</h3>
-          <p className="text-xs text-[#898580] max-w-sm mx-auto">
+          <h3 className="text-sm font-semibold text-[#E7E5E4]">No accounts available</h3>
+          <p className="text-xs text-[#A8A29E] max-w-sm mx-auto">
             Add an account representing a Google Workspace, GCP project, or developer identity to begin tracking limits.
           </p>
           <div className="pt-2">
@@ -143,19 +143,19 @@ export const AccountsScreen: React.FC<AccountsScreenProps> = ({
             return (
               <div
                 key={account.id}
-                className={`card-panel bg-[#201f1d] border rounded-xl overflow-hidden transition-all ${
-                  account.archived ? 'border-[#2e2c29] opacity-75' : 'border-[#2e2c29]'
+                className={`card-panel bg-[#1C1917] border rounded-xl overflow-hidden transition-all ${
+                  account.archived ? 'border-[rgba(255,255,255,0.1)] opacity-75' : 'border-[rgba(255,255,255,0.1)]'
                 }`}
               >
                 {/* Account Header */}
-                <div className="p-4 bg-[#252422] flex items-center justify-between border-b border-[#2e2c29]">
+                <div className="p-4 bg-[#1C1917] flex items-center justify-between border-b border-[rgba(255,255,255,0.1)]">
                   <div
                     className="flex items-center gap-3 cursor-pointer select-none flex-1 min-w-0"
                     onClick={() => toggleAccount(account.id)}
                   >
                     <button
                       type="button"
-                      className="text-[#898580] hover:text-[#FBFAF9] bg-transparent border-0 p-1"
+                      className="text-[#A8A29E] hover:text-[#E7E5E4] bg-transparent border-0 p-1"
                       aria-label={isExpanded ? 'Collapse account' : 'Expand account'}
                     >
                       {isExpanded ? (
@@ -165,20 +165,20 @@ export const AccountsScreen: React.FC<AccountsScreenProps> = ({
                       )}
                     </button>
 
-                    <div className="w-7 h-7 rounded-full bg-[#181818] border border-[#2e2c29] flex items-center justify-center text-[#FF6542] shrink-0">
+                    <div className="w-7 h-7 rounded-full bg-[#141210] border border-[rgba(255,255,255,0.1)] flex items-center justify-center text-[#D4F268] shrink-0">
                       <User className="w-3.5 h-3.5" />
                     </div>
 
                     <div className="min-w-0">
                       <div className="flex items-center gap-2">
-                        <span className="font-semibold text-sm text-[#FBFAF9] truncate font-mono">
+                        <span className="font-semibold text-sm text-[#E7E5E4] truncate font-mono">
                           {account.name}
                         </span>
                         {account.archived && (
                           <span className="badge badge-muted text-[10px]">Archived</span>
                         )}
                       </div>
-                      <div className="text-[11px] text-[#898580] font-mono flex items-center gap-3">
+                      <div className="text-[11px] text-[#A8A29E] font-mono flex items-center gap-3">
                         {account.email && <span>{account.email}</span>}
                         <span>Created {new Date(account.createdAt).toLocaleDateString()}</span>
                         <span>{accountServices.length} service(s)</span>
@@ -193,19 +193,19 @@ export const AccountsScreen: React.FC<AccountsScreenProps> = ({
                       className="btn-dark-solid text-[11px] h-7 px-2.5"
                       title="Add a service under this account"
                     >
-                      <Plus className="w-3 h-3 text-[#FF6542]" />
+                      <Plus className="w-3 h-3 text-[#D4F268]" />
                       <span>Add Service</span>
                     </button>
                     <button
                       onClick={() => onOpenEditAccount(account)}
-                      className="text-[#898580] hover:text-[#FBFAF9] p-1.5 rounded hover:bg-[#2e2c29] bg-transparent border-0 cursor-pointer"
+                      className="text-[#A8A29E] hover:text-[#E7E5E4] p-1.5 rounded hover:bg-[rgba(255,255,255,0.1)] bg-transparent border-0 cursor-pointer"
                       title="Edit account details"
                     >
                       <Edit2 className="w-3.5 h-3.5" />
                     </button>
                     <button
                       onClick={() => onArchiveAccount(account.id, !account.archived)}
-                      className="text-[#898580] hover:text-[#FF6542] p-1.5 rounded hover:bg-[#2e2c29] bg-transparent border-0 cursor-pointer"
+                      className="text-[#A8A29E] hover:text-[#D4F268] p-1.5 rounded hover:bg-[rgba(255,255,255,0.1)] bg-transparent border-0 cursor-pointer"
                       title={account.archived ? 'Restore account' : 'Archive account'}
                     >
                       {account.archived ? (
@@ -221,7 +221,7 @@ export const AccountsScreen: React.FC<AccountsScreenProps> = ({
                 {isExpanded && (
                   <div className="p-4 space-y-4">
                     {account.notes && (
-                      <div className="p-2.5 rounded bg-[#181818] border border-[#2e2c29] text-xs text-[#898580] font-mono">
+                      <div className="p-2.5 rounded bg-[#141210] border border-[rgba(255,255,255,0.1)] text-xs text-[#A8A29E] font-mono">
                         <span className="text-[#66635f] uppercase tracking-wider text-[10px] block mb-0.5">
                           Notes:
                         </span>
@@ -230,8 +230,8 @@ export const AccountsScreen: React.FC<AccountsScreenProps> = ({
                     )}
 
                     {accountServices.length === 0 ? (
-                      <div className="p-6 bg-[#181818] border border-dashed border-[#2e2c29] rounded-lg text-center space-y-2 font-mono">
-                        <p className="text-xs text-[#898580]">
+                      <div className="p-6 bg-[#141210] border border-dashed border-[rgba(255,255,255,0.1)] rounded-lg text-center space-y-2 font-mono">
+                        <p className="text-xs text-[#A8A29E]">
                           No services added to this account yet.
                         </p>
                         <button
@@ -252,15 +252,15 @@ export const AccountsScreen: React.FC<AccountsScreenProps> = ({
                           return (
                             <div
                               key={service.id}
-                              className={`p-3 bg-[#181818] border rounded-lg space-y-3 ${
-                                service.archived ? 'border-[#2e2c29] opacity-75' : 'border-[#2e2c29]'
+                              className={`p-3 bg-[#141210] border rounded-lg space-y-3 ${
+                                service.archived ? 'border-[rgba(255,255,255,0.1)] opacity-75' : 'border-[rgba(255,255,255,0.1)]'
                               }`}
                             >
                               {/* Service Sub-Header */}
-                              <div className="flex items-center justify-between border-b border-[#252422] pb-2">
+                              <div className="flex items-center justify-between border-b border-[#1C1917] pb-2">
                                 <div className="flex items-center gap-2">
-                                  <Server className="w-3.5 h-3.5 text-[#FF6542]" />
-                                  <span className="font-semibold text-xs text-[#FBFAF9] font-mono">
+                                  <Server className="w-3.5 h-3.5 text-[#D4F268]" />
+                                  <span className="font-semibold text-xs text-[#E7E5E4] font-mono">
                                     {service.name}
                                   </span>
                                   {service.archived && (
@@ -278,7 +278,7 @@ export const AccountsScreen: React.FC<AccountsScreenProps> = ({
                                     onClick={() =>
                                       onOpenAddWindow(service.id, account.id, service.name)
                                     }
-                                    className="text-[11px] text-[#FF6542] hover:underline flex items-center gap-1 bg-transparent border-0 cursor-pointer px-1 py-0.5"
+                                    className="text-[11px] text-[#D4F268] hover:underline flex items-center gap-1 bg-transparent border-0 cursor-pointer px-1 py-0.5"
                                     title="Add another limit window to this service"
                                   >
                                     <Plus className="w-3 h-3" />
@@ -286,14 +286,14 @@ export const AccountsScreen: React.FC<AccountsScreenProps> = ({
                                   </button>
                                   <button
                                     onClick={() => onOpenEditService(service)}
-                                    className="text-[#898580] hover:text-[#FBFAF9] p-1 rounded hover:bg-[#252422] bg-transparent border-0 cursor-pointer"
+                                    className="text-[#A8A29E] hover:text-[#E7E5E4] p-1 rounded hover:bg-[#1C1917] bg-transparent border-0 cursor-pointer"
                                     title="Edit service"
                                   >
                                     <Edit2 className="w-3 h-3" />
                                   </button>
                                   <button
                                     onClick={() => onArchiveService(service.id, !service.archived)}
-                                    className="text-[#898580] hover:text-[#FF6542] p-1 rounded hover:bg-[#252422] bg-transparent border-0 cursor-pointer"
+                                    className="text-[#A8A29E] hover:text-[#D4F268] p-1 rounded hover:bg-[#1C1917] bg-transparent border-0 cursor-pointer"
                                     title={service.archived ? 'Restore service' : 'Archive service'}
                                   >
                                     {service.archived ? (
@@ -325,13 +325,13 @@ export const AccountsScreen: React.FC<AccountsScreenProps> = ({
                                     return (
                                       <div
                                         key={w.id}
-                                        className={`p-2.5 bg-[#201f1d] border rounded text-xs font-mono space-y-1.5 ${
-                                          w.archived ? 'border-[#2e2c29] opacity-75' : 'border-[#2e2c29]'
+                                        className={`p-2.5 bg-[#1C1917] border rounded text-xs font-mono space-y-1.5 ${
+                                          w.archived ? 'border-[rgba(255,255,255,0.1)] opacity-75' : 'border-[rgba(255,255,255,0.1)]'
                                         }`}
                                       >
                                         <div className="flex items-center justify-between">
                                           <div className="flex items-center gap-1.5 min-w-0">
-                                            <span className="font-medium text-[#FBFAF9] truncate">
+                                            <span className="font-medium text-[#E7E5E4] truncate">
                                               {w.name}
                                             </span>
                                             {w.archived && (
@@ -343,14 +343,14 @@ export const AccountsScreen: React.FC<AccountsScreenProps> = ({
                                           <div className="flex items-center gap-1 shrink-0">
                                             <button
                                               onClick={() => onOpenEditWindow(w, service.name)}
-                                              className="text-[#898580] hover:text-[#FBFAF9] p-1 rounded hover:bg-[#252422] bg-transparent border-0 cursor-pointer"
+                                              className="text-[#A8A29E] hover:text-[#E7E5E4] p-1 rounded hover:bg-[#1C1917] bg-transparent border-0 cursor-pointer"
                                               title="Edit limit window"
                                             >
                                               <Edit2 className="w-3 h-3" />
                                             </button>
                                             <button
                                               onClick={() => onArchiveWindow(w.id, !w.archived)}
-                                              className="text-[#898580] hover:text-[#FF6542] p-1 rounded hover:bg-[#252422] bg-transparent border-0 cursor-pointer"
+                                              className="text-[#A8A29E] hover:text-[#D4F268] p-1 rounded hover:bg-[#1C1917] bg-transparent border-0 cursor-pointer"
                                               title={w.archived ? 'Restore window' : 'Archive window'}
                                             >
                                               {w.archived ? (
@@ -362,23 +362,23 @@ export const AccountsScreen: React.FC<AccountsScreenProps> = ({
                                           </div>
                                         </div>
 
-                                        <div className="grid grid-cols-2 gap-1 text-[11px] text-[#898580]">
+                                        <div className="grid grid-cols-2 gap-1 text-[11px] text-[#A8A29E]">
                                           <div>
                                             Capacity:{' '}
-                                            <span className="text-[#FBFAF9]">
+                                            <span className="text-[#E7E5E4]">
                                               {formatNumber(w.capacity)} {unitDisplay}
                                             </span>
                                           </div>
                                           <div>
                                             Cadence:{' '}
-                                            <span className="text-[#FF6542]">{w.cadence}</span>
+                                            <span className="text-[#D4F268]">{w.cadence}</span>
                                           </div>
                                         </div>
 
-                                        <div className="pt-1 border-t border-[#252422] text-[10px] text-[#66635f] space-y-0.5">
+                                        <div className="pt-1 border-t border-[#1C1917] text-[10px] text-[#66635f] space-y-0.5">
                                           <div className="flex items-center justify-between">
                                             <span>Next Reset:</span>
-                                            <span className="text-[#FBFAF9]">in {countdown}</span>
+                                            <span className="text-[#E7E5E4]">in {countdown}</span>
                                           </div>
                                           <div className="truncate" title={nextResetStr}>
                                             {nextResetStr} ({w.timeZone})

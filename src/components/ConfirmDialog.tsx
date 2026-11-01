@@ -43,7 +43,7 @@ export const ConfirmDialog: React.FC<ConfirmDialogProps> = ({
       onClick={onCancel}
     >
       <div
-        className="modal-window max-w-md p-6 bg-[#252422] border border-[#2e2c29] text-[#FBFAF9]"
+        className="modal-window max-w-md p-6 bg-[#1C1917] border border-[rgba(255,255,255,0.1)] text-[#E7E5E4]"
         onClick={(e) => e.stopPropagation()}
       >
         <div className="flex items-start gap-4">
@@ -59,18 +59,18 @@ export const ConfirmDialog: React.FC<ConfirmDialogProps> = ({
 
           <div className="flex-1 min-w-0">
             <div className="flex items-center justify-between mb-2">
-              <h3 id="confirm-dialog-title" className="text-base font-semibold text-[#FBFAF9]">
+              <h3 id="confirm-dialog-title" className="text-base font-semibold text-[#E7E5E4]">
                 {title}
               </h3>
               <button
                 onClick={onCancel}
-                className="text-[#898580] hover:text-[#FBFAF9] bg-transparent border-0 cursor-pointer p-1 rounded hover:bg-[#2e2c29]"
+                className="text-[#A8A29E] hover:text-[#E7E5E4] bg-transparent border-0 cursor-pointer p-1 rounded hover:bg-[rgba(255,255,255,0.1)]"
                 aria-label="Close dialog"
               >
                 <X className="w-4 h-4" />
               </button>
             </div>
-            <p className="text-xs text-[#898580] leading-relaxed mb-6 font-mono whitespace-pre-wrap">
+            <p className="text-xs text-[#A8A29E] leading-relaxed mb-6 font-mono whitespace-pre-wrap">
               {message}
             </p>
 

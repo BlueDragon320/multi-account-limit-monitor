@@ -93,32 +93,32 @@ export const ProjectsScreen: React.FC<ProjectsScreenProps> = ({
   }, [usageEvents, selectedProjectId, filterAccountId, filterServiceId, filterType, startDate, endDate]);
 
   return (
-    <div className="max-w-[1200px] mx-auto px-4 py-6 space-y-8 font-mono">
+    <div className="max-w-[1200px] mx-auto px-4 py-6 space-y-8 font-sans">
       {/* Top Header */}
-      <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 border-b border-[#2e2c29] pb-4">
+      <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 border-b border-[rgba(255,255,255,0.1)] pb-4">
         <div>
-          <h1 className="text-xl sm:text-2xl font-semibold tracking-tight text-[#FBFAF9]">
-            Projects & Usage History
+          <h1 className="text-3xl sm:text-4xl font-serif font-light tracking-tight text-[#E7E5E4]">
+            Projects & <em>Usage History</em>
           </h1>
-          <p className="text-xs text-[#898580] mt-0.5">
+          <p className="text-sm text-[#A8A29E] mt-1 font-sans">
             Audit trail of quota consumption and balance calibrations with strict unit segregation.
           </p>
         </div>
 
         <div className="flex items-center gap-3">
-          <label className="flex items-center gap-2 cursor-pointer text-xs text-[#898580] hover:text-[#FBFAF9]">
+          <label className="flex items-center gap-2 cursor-pointer text-xs text-[#A8A29E] hover:text-[#E7E5E4] font-sans">
             <input
               type="checkbox"
               checked={showArchivedProjects}
               onChange={(e) => setShowArchivedProjects(e.target.checked)}
-              className="rounded bg-[#030302] border-[#2e2c29] text-[#FF6542]"
+              className="rounded bg-[#0C0A09] border-[rgba(255,255,255,0.1)] text-[#D4F268]"
             />
             <span>Show Archived Projects</span>
           </label>
 
           <button
             onClick={onOpenAddProject}
-            className="btn-nav-coral text-xs"
+            className="btn-primary-lime text-xs"
           >
             <Plus className="w-3.5 h-3.5" />
             <span>Add Project</span>
@@ -129,14 +129,14 @@ export const ProjectsScreen: React.FC<ProjectsScreenProps> = ({
       {/* Projects Grid / Selector */}
       <section aria-label="Projects Management" className="space-y-3">
         <div className="flex items-center justify-between">
-          <span className="text-xs uppercase tracking-wider text-[#898580] font-semibold flex items-center gap-2">
-            <Folder className="w-3.5 h-3.5 text-[#FF6542]" />
+          <span className="text-xs uppercase tracking-wider text-[#A8A29E] font-semibold flex items-center gap-2">
+            <Folder className="w-3.5 h-3.5 text-[#D4F268]" />
             <span>Projects ({visibleProjects.length})</span>
           </span>
           {selectedProjectId !== 'all' && (
             <button
               onClick={() => setSelectedProjectId('all')}
-              className="text-[11px] text-[#FF6542] hover:underline bg-transparent border-0 cursor-pointer"
+              className="text-[11px] text-[#D4F268] hover:underline bg-transparent border-0 cursor-pointer"
             >
               Show All Projects Overview
             </button>
@@ -144,8 +144,8 @@ export const ProjectsScreen: React.FC<ProjectsScreenProps> = ({
         </div>
 
         {visibleProjects.length === 0 ? (
-          <div className="card-panel-deep p-8 text-center border border-[#2e2c29] rounded-xl space-y-2">
-            <p className="text-xs text-[#898580]">No projects created yet.</p>
+          <div className="card-panel-deep p-8 text-center border border-[rgba(255,255,255,0.1)] rounded-xl space-y-2">
+            <p className="text-xs text-[#A8A29E]">No projects created yet.</p>
             <button
               onClick={onOpenAddProject}
               className="btn-primary-cream text-xs h-7 px-3"
@@ -161,17 +161,17 @@ export const ProjectsScreen: React.FC<ProjectsScreenProps> = ({
               onClick={() => setSelectedProjectId('all')}
               className={`p-3 rounded-lg border cursor-pointer transition-all ${
                 selectedProjectId === 'all'
-                  ? 'bg-[#252422] border-[#FF6542] shadow-[0_0_8px_rgba(255,101,66,0.2)]'
-                  : 'bg-[#1c1b19] border-[#2e2c29] hover:bg-[#201f1d]'
+                  ? 'bg-[#1C1917] border-[#D4F268] shadow-[0_0_8px_rgba(212,242,104,0.2)]'
+                  : 'bg-[#1c1b19] border-[rgba(255,255,255,0.1)] hover:bg-[#1C1917]'
               }`}
             >
               <div className="flex items-center justify-between mb-1">
-                <span className="font-semibold text-xs text-[#FBFAF9]">All Projects</span>
-                <span className="text-[10px] text-[#898580]">
+                <span className="font-semibold text-xs text-[#E7E5E4]">All Projects</span>
+                <span className="text-[10px] text-[#A8A29E]">
                   {usageEvents.filter((e) => e.type === 'usage').length} events
                 </span>
               </div>
-              <div className="text-[11px] text-[#898580] truncate">
+              <div className="text-[11px] text-[#A8A29E] truncate">
                 Aggregated breakdown view
               </div>
             </div>
@@ -187,13 +187,13 @@ export const ProjectsScreen: React.FC<ProjectsScreenProps> = ({
                   onClick={() => setSelectedProjectId(project.id)}
                   className={`p-3 rounded-lg border cursor-pointer transition-all flex flex-col justify-between ${
                     isSelected
-                      ? 'bg-[#252422] border-[#FF6542] shadow-[0_0_8px_rgba(255,101,66,0.2)]'
-                      : 'bg-[#1c1b19] border-[#2e2c29] hover:bg-[#201f1d]'
+                      ? 'bg-[#1C1917] border-[#D4F268] shadow-[0_0_8px_rgba(212,242,104,0.2)]'
+                      : 'bg-[#1c1b19] border-[rgba(255,255,255,0.1)] hover:bg-[#1C1917]'
                   } ${project.archived ? 'opacity-60' : ''}`}
                 >
                   <div>
                     <div className="flex items-center justify-between mb-1">
-                      <span className="font-semibold text-xs text-[#FBFAF9] truncate" title={project.name}>
+                      <span className="font-semibold text-xs text-[#E7E5E4] truncate" title={project.name}>
                         {project.name}
                       </span>
                       {project.archived && (
@@ -201,25 +201,25 @@ export const ProjectsScreen: React.FC<ProjectsScreenProps> = ({
                       )}
                     </div>
                     {project.notes && (
-                      <p className="text-[10px] text-[#898580] line-clamp-1 mb-2">
+                      <p className="text-[10px] text-[#A8A29E] line-clamp-1 mb-2">
                         {project.notes}
                       </p>
                     )}
                   </div>
 
-                  <div className="flex items-center justify-between pt-2 border-t border-[#252422] text-[10px] text-[#898580]">
+                  <div className="flex items-center justify-between pt-2 border-t border-[#1C1917] text-[10px] text-[#A8A29E]">
                     <span>{projectEvts.length} log event(s)</span>
                     <div className="flex items-center gap-1" onClick={(e) => e.stopPropagation()}>
                       <button
                         onClick={() => onOpenEditProject(project)}
-                        className="text-[#898580] hover:text-[#FBFAF9] p-1 bg-transparent border-0 cursor-pointer"
+                        className="text-[#A8A29E] hover:text-[#E7E5E4] p-1 bg-transparent border-0 cursor-pointer"
                         title="Edit project"
                       >
                         <Edit2 className="w-3 h-3" />
                       </button>
                       <button
                         onClick={() => onArchiveProject(project.id, !project.archived)}
-                        className="text-[#898580] hover:text-[#FF6542] p-1 bg-transparent border-0 cursor-pointer"
+                        className="text-[#A8A29E] hover:text-[#D4F268] p-1 bg-transparent border-0 cursor-pointer"
                         title={project.archived ? 'Restore project' : 'Archive project'}
                       >
                         {project.archived ? (
@@ -241,25 +241,25 @@ export const ProjectsScreen: React.FC<ProjectsScreenProps> = ({
       <section aria-label="Segregated Project Totals" className="space-y-3">
         <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2">
           <div>
-            <h2 className="text-sm font-semibold text-[#FBFAF9] flex items-center gap-2">
-              <Layers className="w-4 h-4 text-[#FF6542]" />
+            <h2 className="text-sm font-semibold text-[#E7E5E4] flex items-center gap-2">
+              <Layers className="w-4 h-4 text-[#D4F268]" />
               <span>
                 {selectedProjectId === 'all'
                   ? 'All Projects — Segregated Totals Breakdown'
                   : `Project Totals: ${projectMap.get(selectedProjectId)?.name || 'Selected Project'}`}
               </span>
             </h2>
-            <p className="text-[11px] text-[#898580] mt-0.5">
+            <p className="text-[11px] text-[#A8A29E] mt-0.5">
               Strictly keeps units and capacities isolated to avoid misleading arithmetic sums.
             </p>
           </div>
         </div>
 
         {/* Dimension Segregation Disclaimer Banner */}
-        <div className="p-3 bg-[#181818] border border-[#2e2c29] rounded-lg text-xs text-[#898580] flex items-start gap-2.5">
-          <Info className="w-4 h-4 text-[#FF6542] shrink-0 mt-0.5" />
+        <div className="p-3 bg-[#141210] border border-[rgba(255,255,255,0.1)] rounded-lg text-xs text-[#A8A29E] flex items-start gap-2.5">
+          <Info className="w-4 h-4 text-[#D4F268] shrink-0 mt-0.5" />
           <div className="leading-relaxed">
-            <span className="text-[#FBFAF9] font-medium">Dimensional Integrity Notice:</span>{' '}
+            <span className="text-[#E7E5E4] font-medium">Dimensional Integrity Notice:</span>{' '}
             Requests, credits, tokens, and percentages cannot be summed together. Furthermore, percentages across differing capacities represent entirely different quantities (e.g. 50% of 100 &ne; 50% of 1,000). Quota Ember preserves each window bucket independently.
           </div>
         </div>
@@ -269,7 +269,7 @@ export const ProjectsScreen: React.FC<ProjectsScreenProps> = ({
           /* Multi-project breakdown view */
           <div className="space-y-3">
             {allProjectReports.length === 0 ? (
-              <div className="card-panel-deep p-6 text-center text-xs text-[#898580]">
+              <div className="card-panel-deep p-6 text-center text-xs text-[#A8A29E]">
                 No project usage has been logged yet.
               </div>
             ) : (
@@ -278,13 +278,13 @@ export const ProjectsScreen: React.FC<ProjectsScreenProps> = ({
                 return (
                   <div
                     key={report.projectId}
-                    className="card-panel p-4 bg-[#201f1d] border border-[#2e2c29] rounded-xl space-y-3"
+                    className="card-panel p-4 bg-[#1C1917] border border-[rgba(255,255,255,0.1)] rounded-xl space-y-3"
                   >
-                    <div className="flex items-center justify-between border-b border-[#252422] pb-2">
-                      <span className="font-semibold text-xs text-[#FBFAF9]">
+                    <div className="flex items-center justify-between border-b border-[#1C1917] pb-2">
+                      <span className="font-semibold text-xs text-[#E7E5E4]">
                         {proj ? proj.name : 'Unknown Project'}
                       </span>
-                      <span className="text-[11px] text-[#898580]">
+                      <span className="text-[11px] text-[#A8A29E]">
                         {report.segregatedTotals.length} active quota bucket(s)
                       </span>
                     </div>
@@ -299,12 +299,12 @@ export const ProjectsScreen: React.FC<ProjectsScreenProps> = ({
                         return (
                           <div
                             key={bucket.bucketKey}
-                            className="p-3 bg-[#181818] border border-[#2e2c29] rounded-lg text-xs space-y-1"
+                            className="p-3 bg-[#141210] border border-[rgba(255,255,255,0.1)] rounded-lg text-xs space-y-1"
                           >
-                            <div className="text-[11px] text-[#898580] truncate font-medium">
+                            <div className="text-[11px] text-[#A8A29E] truncate font-medium">
                               {bucket.windowName}
                             </div>
-                            <div className="text-base font-bold text-[#FF6542]">
+                            <div className="text-base font-bold text-[#D4F268]">
                               {formatNumber(bucket.totalAmount)} {unitName}
                             </div>
                             <div className="text-[10px] text-[#66635f]">
@@ -321,7 +321,7 @@ export const ProjectsScreen: React.FC<ProjectsScreenProps> = ({
           </div>
         ) : (
           /* Selected single project breakdown */
-          <div className="card-panel p-4 bg-[#201f1d] border border-[#2e2c29] rounded-xl space-y-3">
+          <div className="card-panel p-4 bg-[#1C1917] border border-[rgba(255,255,255,0.1)] rounded-xl space-y-3">
             {selectedProjectReport && selectedProjectReport.segregatedTotals.length > 0 ? (
               <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-3">
                 {selectedProjectReport.segregatedTotals.map((bucket) => {
@@ -333,12 +333,12 @@ export const ProjectsScreen: React.FC<ProjectsScreenProps> = ({
                   return (
                     <div
                       key={bucket.bucketKey}
-                      className="p-3 bg-[#181818] border border-[#2e2c29] rounded-lg text-xs space-y-1"
+                      className="p-3 bg-[#141210] border border-[rgba(255,255,255,0.1)] rounded-lg text-xs space-y-1"
                     >
-                      <div className="text-[11px] text-[#898580] truncate font-medium">
+                      <div className="text-[11px] text-[#A8A29E] truncate font-medium">
                         {bucket.windowName}
                       </div>
-                      <div className="text-lg font-bold text-[#FF6542]">
+                      <div className="text-lg font-bold text-[#D4F268]">
                         {formatNumber(bucket.totalAmount)} {unitName}
                       </div>
                       <div className="text-[10px] text-[#66635f]">
@@ -349,7 +349,7 @@ export const ProjectsScreen: React.FC<ProjectsScreenProps> = ({
                 })}
               </div>
             ) : (
-              <div className="text-center text-xs text-[#898580] py-4">
+              <div className="text-center text-xs text-[#A8A29E] py-4">
                 No recorded usage for this project yet.
               </div>
             )}
@@ -360,13 +360,13 @@ export const ProjectsScreen: React.FC<ProjectsScreenProps> = ({
       {/* USAGE HISTORY TABLE / LIST */}
       <section aria-label="Usage History Table" className="space-y-4">
         {/* Filter Bar */}
-        <div className="card-panel p-3 bg-[#201f1d] border border-[#2e2c29] rounded-xl space-y-3">
+        <div className="card-panel p-3 bg-[#1C1917] border border-[rgba(255,255,255,0.1)] rounded-xl space-y-3">
           <div className="flex items-center justify-between">
-            <span className="text-xs uppercase tracking-wider text-[#898580] font-semibold flex items-center gap-1.5">
-              <History className="w-3.5 h-3.5 text-[#FF6542]" />
+            <span className="text-xs uppercase tracking-wider text-[#A8A29E] font-semibold flex items-center gap-1.5">
+              <History className="w-3.5 h-3.5 text-[#D4F268]" />
               <span>Usage & Correction History ({filteredHistory.length})</span>
             </span>
-            <div className="text-[11px] text-[#898580]">
+            <div className="text-[11px] text-[#A8A29E]">
               Showing all recorded events
             </div>
           </div>
@@ -446,14 +446,14 @@ export const ProjectsScreen: React.FC<ProjectsScreenProps> = ({
 
         {/* History Table */}
         {filteredHistory.length === 0 ? (
-          <div className="card-panel-deep p-10 text-center border border-[#2e2c29] rounded-xl text-xs text-[#898580]">
+          <div className="card-panel-deep p-10 text-center border border-[rgba(255,255,255,0.1)] rounded-xl text-xs text-[#A8A29E]">
             No usage or correction records found matching the active filters.
           </div>
         ) : (
-          <div className="card-panel p-0 bg-[#201f1d] border border-[#2e2c29] rounded-xl overflow-hidden">
+          <div className="card-panel p-0 bg-[#1C1917] border border-[rgba(255,255,255,0.1)] rounded-xl overflow-hidden">
             <div className="overflow-x-auto">
               <table className="w-full text-left text-xs">
-                <thead className="bg-[#181818] text-[#898580] border-b border-[#2e2c29] text-[11px] uppercase tracking-wider">
+                <thead className="bg-[#141210] text-[#A8A29E] border-b border-[rgba(255,255,255,0.1)] text-[11px] uppercase tracking-wider">
                   <tr>
                     <th className="py-2.5 px-3 font-medium">Type</th>
                     <th className="py-2.5 px-3 font-medium">Timestamp</th>
@@ -463,7 +463,7 @@ export const ProjectsScreen: React.FC<ProjectsScreenProps> = ({
                     <th className="py-2.5 px-3 font-medium text-right">Actions</th>
                   </tr>
                 </thead>
-                <tbody className="divide-y divide-[#2e2c29]">
+                <tbody className="divide-y divide-[rgba(255,255,255,0.1)]">
                   {filteredHistory.map((evt) => {
                     const isCorrection = evt.type === 'correction';
                     const proj = evt.projectId ? projectMap.get(evt.projectId) : null;
@@ -471,7 +471,7 @@ export const ProjectsScreen: React.FC<ProjectsScreenProps> = ({
                     const svc = serviceMap.get(evt.serviceId);
 
                     return (
-                      <tr key={evt.id} className="hover:bg-[#252422] transition-colors">
+                      <tr key={evt.id} className="hover:bg-[#1C1917] transition-colors">
                         {/* Type Badge */}
                         <td className="py-3 px-3 align-top whitespace-nowrap">
                           {isCorrection ? (
@@ -487,7 +487,7 @@ export const ProjectsScreen: React.FC<ProjectsScreenProps> = ({
                         </td>
 
                         {/* Timestamp */}
-                        <td className="py-3 px-3 align-top whitespace-nowrap text-[#FBFAF9]">
+                        <td className="py-3 px-3 align-top whitespace-nowrap text-[#E7E5E4]">
                           <div>{new Date(evt.timestamp).toLocaleString()}</div>
                           <div className="text-[10px] text-[#66635f]">
                             {formatRelativeTime(evt.timestamp)}
@@ -497,11 +497,11 @@ export const ProjectsScreen: React.FC<ProjectsScreenProps> = ({
                         {/* Project / Identity */}
                         <td className="py-3 px-3 align-top">
                           {isCorrection ? (
-                            <span className="text-[#898580] italic">
+                            <span className="text-[#A8A29E] italic">
                               Console Calibration
                             </span>
                           ) : (
-                            <span className="font-semibold text-[#FBFAF9]">
+                            <span className="font-semibold text-[#E7E5E4]">
                               {proj ? proj.name : 'Unknown Project'}
                             </span>
                           )}
@@ -522,12 +522,12 @@ export const ProjectsScreen: React.FC<ProjectsScreenProps> = ({
                                 : '';
                               return (
                                 <div key={i} className="text-[11px] leading-tight">
-                                  <span className="text-[#898580]">
+                                  <span className="text-[#A8A29E]">
                                     {win ? win.name : 'Window'}:
                                   </span>{' '}
                                   <span
                                     className={`font-semibold ${
-                                      eff.amount > 0 ? 'text-[#FF6542]' : 'text-[#10b981]'
+                                      eff.amount > 0 ? 'text-[#D4F268]' : 'text-[#10b981]'
                                     }`}
                                   >
                                     {eff.amount > 0 ? `+${formatNumber(eff.amount)}` : formatNumber(eff.amount)} {unitName}
@@ -544,7 +544,7 @@ export const ProjectsScreen: React.FC<ProjectsScreenProps> = ({
                         {/* Notes / Reason */}
                         <td className="py-3 px-3 align-top max-w-xs">
                           {evt.note ? (
-                            <span className="text-[#FBFAF9] text-xs break-words">
+                            <span className="text-[#E7E5E4] text-xs break-words">
                               {evt.note}
                             </span>
                           ) : (
@@ -557,14 +557,14 @@ export const ProjectsScreen: React.FC<ProjectsScreenProps> = ({
                           <div className="flex items-center justify-end gap-1">
                             <button
                               onClick={() => onOpenEditHistory(evt)}
-                              className="text-[#898580] hover:text-[#FBFAF9] p-1 rounded hover:bg-[#181818] bg-transparent border-0 cursor-pointer"
+                              className="text-[#A8A29E] hover:text-[#E7E5E4] p-1 rounded hover:bg-[#141210] bg-transparent border-0 cursor-pointer"
                               title="Edit timestamp or note"
                             >
                               <Edit2 className="w-3.5 h-3.5" />
                             </button>
                             <button
                               onClick={() => onOpenDeleteHistory(evt)}
-                              className="text-[#898580] hover:text-[#ef4444] p-1 rounded hover:bg-[#181818] bg-transparent border-0 cursor-pointer"
+                              className="text-[#A8A29E] hover:text-[#ef4444] p-1 rounded hover:bg-[#141210] bg-transparent border-0 cursor-pointer"
                               title="Delete history record"
                             >
                               <Trash2 className="w-3.5 h-3.5" />

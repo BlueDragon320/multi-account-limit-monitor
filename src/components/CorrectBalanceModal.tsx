@@ -120,27 +120,27 @@ export const CorrectBalanceModal: React.FC<CorrectBalanceModalProps> = ({
       onClick={onClose}
     >
       <div
-        className="modal-window max-w-lg p-6 bg-[#252422] border border-[#2e2c29] text-[#FBFAF9]"
+        className="modal-window max-w-lg p-6 bg-[#1C1917] border border-[rgba(255,255,255,0.1)] text-[#E7E5E4]"
         onClick={(e) => e.stopPropagation()}
       >
         {/* Header */}
-        <div className="flex items-center justify-between pb-4 mb-4 border-b border-[#2e2c29]">
+        <div className="flex items-center justify-between pb-4 mb-4 border-b border-[rgba(255,255,255,0.1)]">
           <div className="flex items-center gap-2">
-            <div className="p-1.5 rounded-md bg-[#181818] border border-[#f59e0b] text-[#f59e0b]">
+            <div className="p-1.5 rounded-md bg-[#141210] border border-[#f59e0b] text-[#f59e0b]">
               <RotateCcw className="w-4 h-4" />
             </div>
             <div>
-              <h3 id="correct-balance-modal-title" className="text-sm font-semibold text-[#FBFAF9]">
+              <h3 id="correct-balance-modal-title" className="text-sm font-semibold text-[#E7E5E4]">
                 Manual Balance Correction
               </h3>
-              <p className="text-[11px] text-[#898580] font-mono">
+              <p className="text-[11px] text-[#A8A29E] font-mono">
                 Calibrates tracker to external provider console reality with an audit trail
               </p>
             </div>
           </div>
           <button
             onClick={onClose}
-            className="text-[#898580] hover:text-[#FBFAF9] bg-transparent border-0 cursor-pointer p-1 rounded hover:bg-[#2e2c29]"
+            className="text-[#A8A29E] hover:text-[#E7E5E4] bg-transparent border-0 cursor-pointer p-1 rounded hover:bg-[rgba(255,255,255,0.1)]"
             aria-label="Close"
           >
             <X className="w-4 h-4" />
@@ -158,7 +158,7 @@ export const CorrectBalanceModal: React.FC<CorrectBalanceModalProps> = ({
           {/* Window Selector */}
           <div>
             <label htmlFor="corr-window" className="label-text">
-              Limit Window <span className="text-[#FF6542]">*</span>
+              Limit Window <span className="text-[#D4F268]">*</span>
             </label>
             <select
               id="corr-window"
@@ -190,14 +190,14 @@ export const CorrectBalanceModal: React.FC<CorrectBalanceModalProps> = ({
           <div className="grid grid-cols-2 gap-3">
             <div>
               <label className="label-text">Current Recorded Used</label>
-              <div className="input-control bg-[#181818] border-[#2e2c29] text-[#898580] cursor-not-allowed text-xs py-2">
+              <div className="input-control bg-[#141210] border-[rgba(255,255,255,0.1)] text-[#A8A29E] cursor-not-allowed text-xs py-2">
                 {selectedWindow ? `${formatNumber(selectedWindow.currentUsed)} ${unit}` : '—'}
               </div>
             </div>
 
             <div>
               <label htmlFor="corr-new-value" className="label-text">
-                Observed Used Value <span className="text-[#FF6542]">*</span>
+                Observed Used Value <span className="text-[#D4F268]">*</span>
               </label>
               <input
                 id="corr-new-value"
@@ -232,8 +232,8 @@ export const CorrectBalanceModal: React.FC<CorrectBalanceModalProps> = ({
           {/* Mandatory Correction Reason */}
           <div>
             <label htmlFor="corr-reason" className="label-text flex items-center justify-between">
-              <span>Correction Reason (Mandatory Audit Trail) <span className="text-[#FF6542]">*</span></span>
-              <span className="text-[10px] text-[#898580] normal-case">Preserves history</span>
+              <span>Correction Reason (Mandatory Audit Trail) <span className="text-[#D4F268]">*</span></span>
+              <span className="text-[10px] text-[#A8A29E] normal-case">Preserves history</span>
             </label>
             <textarea
               id="corr-reason"
@@ -247,8 +247,8 @@ export const CorrectBalanceModal: React.FC<CorrectBalanceModalProps> = ({
 
           {/* Comparison Preview Box */}
           {selectedWindow && !isNaN(parsedNewValue) && (
-            <div className="p-3 bg-[#181818] border border-[#2e2c29] rounded-lg space-y-2 text-xs font-mono">
-              <div className="flex items-center justify-between text-[#898580] border-b border-[#2e2c29] pb-1.5">
+            <div className="p-3 bg-[#141210] border border-[rgba(255,255,255,0.1)] rounded-lg space-y-2 text-xs font-mono">
+              <div className="flex items-center justify-between text-[#A8A29E] border-b border-[rgba(255,255,255,0.1)] pb-1.5">
                 <span className="text-[11px] uppercase tracking-wider text-[#f59e0b] font-semibold flex items-center gap-1.5">
                   <ShieldCheck className="w-3.5 h-3.5" />
                   Audit Trail Preview
@@ -257,7 +257,7 @@ export const CorrectBalanceModal: React.FC<CorrectBalanceModalProps> = ({
                   Delta:{' '}
                   <span
                     className={
-                      delta > 0 ? 'text-[#ef4444]' : delta < 0 ? 'text-[#10b981]' : 'text-[#898580]'
+                      delta > 0 ? 'text-[#ef4444]' : delta < 0 ? 'text-[#10b981]' : 'text-[#A8A29E]'
                     }
                   >
                     {delta > 0 ? `+${formatNumber(delta)}` : formatNumber(delta)} {unit}
@@ -266,16 +266,16 @@ export const CorrectBalanceModal: React.FC<CorrectBalanceModalProps> = ({
               </div>
 
               <div className="flex items-center justify-between text-[11px]">
-                <span className="text-[#898580]">Balance Adjustment:</span>
+                <span className="text-[#A8A29E]">Balance Adjustment:</span>
                 <div className="flex items-center gap-1.5 font-medium">
-                  <span className="text-[#898580] line-through">{formatNumber(currentUsed)}</span>
+                  <span className="text-[#A8A29E] line-through">{formatNumber(currentUsed)}</span>
                   <ArrowRight className="w-3 h-3 text-[#f59e0b]" />
-                  <span className="text-[#FBFAF9] font-semibold">{formatNumber(parsedNewValue)} {unit}</span>
+                  <span className="text-[#E7E5E4] font-semibold">{formatNumber(parsedNewValue)} {unit}</span>
                 </div>
               </div>
 
               <div className="flex items-center justify-between text-[11px]">
-                <span className="text-[#898580]">New Remaining:</span>
+                <span className="text-[#A8A29E]">New Remaining:</span>
                 <span className={newRemaining <= 0 ? 'text-[#ef4444] font-semibold' : 'text-[#10b981] font-semibold'}>
                   {formatNumber(newRemaining)} {unit} ({Math.max(0, Math.round(100 - newPercent))}% remaining)
                 </span>
@@ -284,7 +284,7 @@ export const CorrectBalanceModal: React.FC<CorrectBalanceModalProps> = ({
           )}
 
           {/* Buttons */}
-          <div className="flex items-center justify-end gap-3 pt-4 border-t border-[#2e2c29]">
+          <div className="flex items-center justify-end gap-3 pt-4 border-t border-[rgba(255,255,255,0.1)]">
             <button
               type="button"
               onClick={onClose}

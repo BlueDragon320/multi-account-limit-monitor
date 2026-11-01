@@ -48,21 +48,21 @@ export const EditHistoryModal: React.FC<EditHistoryModalProps> = ({
       onClick={onClose}
     >
       <div
-        className="modal-window max-w-md p-6 bg-[#252422] border border-[#2e2c29] text-[#FBFAF9]"
+        className="modal-window max-w-md p-6 bg-[#1C1917] border border-[rgba(255,255,255,0.1)] text-[#E7E5E4]"
         onClick={(e) => e.stopPropagation()}
       >
-        <div className="flex items-center justify-between pb-4 mb-4 border-b border-[#2e2c29]">
+        <div className="flex items-center justify-between pb-4 mb-4 border-b border-[rgba(255,255,255,0.1)]">
           <div className="flex items-center gap-2">
-            <div className="p-1.5 rounded-md bg-[#181818] border border-[#2e2c29] text-[#FF6542]">
+            <div className="p-1.5 rounded-md bg-[#141210] border border-[rgba(255,255,255,0.1)] text-[#D4F268]">
               <History className="w-4 h-4" />
             </div>
-            <h3 id="edit-history-modal-title" className="text-sm font-semibold text-[#FBFAF9]">
+            <h3 id="edit-history-modal-title" className="text-sm font-semibold text-[#E7E5E4]">
               Edit History Entry
             </h3>
           </div>
           <button
             onClick={onClose}
-            className="text-[#898580] hover:text-[#FBFAF9] bg-transparent border-0 cursor-pointer p-1 rounded hover:bg-[#2e2c29]"
+            className="text-[#A8A29E] hover:text-[#E7E5E4] bg-transparent border-0 cursor-pointer p-1 rounded hover:bg-[rgba(255,255,255,0.1)]"
             aria-label="Close"
           >
             <X className="w-4 h-4" />
@@ -72,7 +72,7 @@ export const EditHistoryModal: React.FC<EditHistoryModalProps> = ({
         <form onSubmit={handleSubmit} className="space-y-4 font-mono text-xs">
           <div>
             <label className="label-text">Entry Type</label>
-            <div className="p-2 bg-[#181818] border border-[#2e2c29] rounded text-[#898580] uppercase">
+            <div className="p-2 bg-[#141210] border border-[rgba(255,255,255,0.1)] rounded text-[#A8A29E] uppercase">
               {event.type === 'correction' ? 'Manual Balance Correction' : 'Project Usage Event'}
             </div>
           </div>
@@ -103,7 +103,7 @@ export const EditHistoryModal: React.FC<EditHistoryModalProps> = ({
             />
           </div>
 
-          <div className="flex items-center justify-end gap-3 pt-4 border-t border-[#2e2c29]">
+          <div className="flex items-center justify-end gap-3 pt-4 border-t border-[rgba(255,255,255,0.1)]">
             <button
               type="button"
               onClick={onClose}

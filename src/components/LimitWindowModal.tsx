@@ -137,27 +137,27 @@ export const LimitWindowModal: React.FC<LimitWindowModalProps> = ({
       onClick={onClose}
     >
       <div
-        className="modal-window max-w-lg p-6 bg-[#252422] border border-[#2e2c29] text-[#FBFAF9]"
+        className="modal-window max-w-lg p-6 bg-[#1C1917] border border-[rgba(255,255,255,0.1)] text-[#E7E5E4]"
         onClick={(e) => e.stopPropagation()}
       >
         {/* Header */}
-        <div className="flex items-center justify-between pb-4 mb-4 border-b border-[#2e2c29]">
+        <div className="flex items-center justify-between pb-4 mb-4 border-b border-[rgba(255,255,255,0.1)]">
           <div className="flex items-center gap-2">
-            <div className="p-1.5 rounded-md bg-[#181818] border border-[#2e2c29] text-[#FF6542]">
+            <div className="p-1.5 rounded-md bg-[#141210] border border-[rgba(255,255,255,0.1)] text-[#D4F268]">
               <Clock className="w-4 h-4" />
             </div>
             <div>
-              <h3 id="window-modal-title" className="text-sm font-semibold text-[#FBFAF9]">
+              <h3 id="window-modal-title" className="text-sm font-semibold text-[#E7E5E4]">
                 {windowItem ? 'Edit Limit Window' : 'Add Limit Window'}
               </h3>
-              <p className="text-[11px] text-[#898580] font-mono">
-                Service: <span className="text-[#FBFAF9] font-medium">{serviceName}</span>
+              <p className="text-[11px] text-[#A8A29E] font-mono">
+                Service: <span className="text-[#E7E5E4] font-medium">{serviceName}</span>
               </p>
             </div>
           </div>
           <button
             onClick={onClose}
-            className="text-[#898580] hover:text-[#FBFAF9] bg-transparent border-0 cursor-pointer p-1 rounded hover:bg-[#2e2c29]"
+            className="text-[#A8A29E] hover:text-[#E7E5E4] bg-transparent border-0 cursor-pointer p-1 rounded hover:bg-[rgba(255,255,255,0.1)]"
             aria-label="Close"
           >
             <X className="w-4 h-4" />
@@ -173,7 +173,7 @@ export const LimitWindowModal: React.FC<LimitWindowModalProps> = ({
 
           <div>
             <label htmlFor="win-name" className="label-text">
-              Window Name <span className="text-[#FF6542]">*</span>
+              Window Name <span className="text-[#D4F268]">*</span>
             </label>
             <input
               id="win-name"
@@ -190,7 +190,7 @@ export const LimitWindowModal: React.FC<LimitWindowModalProps> = ({
           <div className="grid grid-cols-2 gap-3">
             <div>
               <label htmlFor="win-cap" className="label-text">
-                Capacity <span className="text-[#FF6542]">*</span>
+                Capacity <span className="text-[#D4F268]">*</span>
               </label>
               <input
                 id="win-cap"
@@ -225,7 +225,7 @@ export const LimitWindowModal: React.FC<LimitWindowModalProps> = ({
           {unit === 'custom' && (
             <div>
               <label htmlFor="win-custom-unit" className="label-text">
-                Custom Unit Name <span className="text-[#FF6542]">*</span>
+                Custom Unit Name <span className="text-[#D4F268]">*</span>
               </label>
               <input
                 id="win-custom-unit"
@@ -261,7 +261,7 @@ export const LimitWindowModal: React.FC<LimitWindowModalProps> = ({
             {cadence === 'custom' ? (
               <div>
                 <label htmlFor="win-interval" className="label-text">
-                  Interval Hours <span className="text-[#FF6542]">*</span>
+                  Interval Hours <span className="text-[#D4F268]">*</span>
                 </label>
                 <input
                   id="win-interval"
@@ -314,26 +314,26 @@ export const LimitWindowModal: React.FC<LimitWindowModalProps> = ({
                 </option>
               ))}
             </select>
-            <p className="text-[10px] text-[#898580] mt-1 font-mono">
+            <p className="text-[10px] text-[#A8A29E] mt-1 font-mono">
               Wall-clock time and DST transitions will be preserved in this zone.
             </p>
           </div>
 
           {windowItem && (
             <div className="pt-2">
-              <label className="flex items-center gap-2 cursor-pointer text-xs font-mono text-[#FBFAF9]">
+              <label className="flex items-center gap-2 cursor-pointer text-xs font-mono text-[#E7E5E4]">
                 <input
                   type="checkbox"
                   checked={archived}
                   onChange={(e) => setArchived(e.target.checked)}
-                  className="rounded bg-[#030302] border-[#2e2c29] text-[#FF6542]"
+                  className="rounded bg-[#0C0A09] border-[rgba(255,255,255,0.1)] text-[#D4F268]"
                 />
                 <span>Archive this window (hides from overview calculations)</span>
               </label>
             </div>
           )}
 
-          <div className="flex items-center justify-end gap-3 pt-4 border-t border-[#2e2c29]">
+          <div className="flex items-center justify-end gap-3 pt-4 border-t border-[rgba(255,255,255,0.1)]">
             <button
               type="button"
               onClick={onClose}

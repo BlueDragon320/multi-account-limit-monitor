@@ -64,21 +64,21 @@ export const AccountModal: React.FC<AccountModalProps> = ({
       onClick={onClose}
     >
       <div
-        className="modal-window max-w-lg p-6 bg-[#252422] border border-[#2e2c29] text-[#FBFAF9]"
+        className="modal-window max-w-lg p-6 bg-[#1C1917] border border-[rgba(255,255,255,0.1)] text-[#E7E5E4]"
         onClick={(e) => e.stopPropagation()}
       >
-        <div className="flex items-center justify-between pb-4 mb-4 border-b border-[#2e2c29]">
+        <div className="flex items-center justify-between pb-4 mb-4 border-b border-[rgba(255,255,255,0.1)]">
           <div className="flex items-center gap-2">
-            <div className="p-1.5 rounded-md bg-[#181818] border border-[#2e2c29] text-[#FF6542]">
+            <div className="p-1.5 rounded-md bg-[#141210] border border-[rgba(255,255,255,0.1)] text-[#D4F268]">
               <User className="w-4 h-4" />
             </div>
-            <h3 id="account-modal-title" className="text-sm font-semibold text-[#FBFAF9]">
+            <h3 id="account-modal-title" className="text-sm font-semibold text-[#E7E5E4]">
               {account ? 'Edit Account' : 'Add New Account'}
             </h3>
           </div>
           <button
             onClick={onClose}
-            className="text-[#898580] hover:text-[#FBFAF9] bg-transparent border-0 cursor-pointer p-1 rounded hover:bg-[#2e2c29]"
+            className="text-[#A8A29E] hover:text-[#E7E5E4] bg-transparent border-0 cursor-pointer p-1 rounded hover:bg-[rgba(255,255,255,0.1)]"
             aria-label="Close"
           >
             <X className="w-4 h-4" />
@@ -94,7 +94,7 @@ export const AccountModal: React.FC<AccountModalProps> = ({
 
           <div>
             <label htmlFor="acc-name" className="label-text">
-              Account Display Name <span className="text-[#FF6542]">*</span>
+              Account Display Name <span className="text-[#D4F268]">*</span>
             </label>
             <input
               id="acc-name"
@@ -106,7 +106,7 @@ export const AccountModal: React.FC<AccountModalProps> = ({
               autoFocus
               required
             />
-            <p className="text-[11px] text-[#898580] mt-1 font-mono">
+            <p className="text-[11px] text-[#A8A29E] mt-1 font-mono">
               A friendly label to distinguish this account across limit windows.
             </p>
           </div>
@@ -123,7 +123,7 @@ export const AccountModal: React.FC<AccountModalProps> = ({
               value={email}
               onChange={(e) => setEmail(e.target.value)}
             />
-            <p className="text-[11px] text-[#898580] mt-1 font-mono">
+            <p className="text-[11px] text-[#A8A29E] mt-1 font-mono">
               Never used for authentication. Strictly an offline reference identifier.
             </p>
           </div>
@@ -143,19 +143,19 @@ export const AccountModal: React.FC<AccountModalProps> = ({
 
           {account && (
             <div className="pt-2">
-              <label className="flex items-center gap-2 cursor-pointer text-xs font-mono text-[#FBFAF9]">
+              <label className="flex items-center gap-2 cursor-pointer text-xs font-mono text-[#E7E5E4]">
                 <input
                   type="checkbox"
                   checked={archived}
                   onChange={(e) => setArchived(e.target.checked)}
-                  className="rounded bg-[#030302] border-[#2e2c29] text-[#FF6542] focus:ring-0"
+                  className="rounded bg-[#0C0A09] border-[rgba(255,255,255,0.1)] text-[#D4F268] focus:ring-0"
                 />
                 <span>Archive this account (hides from active overview)</span>
               </label>
             </div>
           )}
 
-          <div className="flex items-center justify-end gap-3 pt-4 border-t border-[#2e2c29]">
+          <div className="flex items-center justify-end gap-3 pt-4 border-t border-[rgba(255,255,255,0.1)]">
             <button
               type="button"
               onClick={onClose}
