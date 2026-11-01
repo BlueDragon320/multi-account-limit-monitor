@@ -9,11 +9,11 @@ interface NavbarProps {
   onOpenLogUsage: () => void;
 }
 
-const TABS: { id: NavTab; label: string; icon: React.FC<{ className?: string }> }[] = [
-  { id: 'overview', label: 'Overview', icon: Layers },
-  { id: 'accounts', label: 'Accounts & Limits', icon: Database },
-  { id: 'projects', label: 'Projects & History', icon: History },
-  { id: 'settings', label: 'Settings & Data', icon: Sliders },
+const TABS: { id: NavTab; label: string; shortLabel: string; icon: React.FC<{ className?: string }> }[] = [
+  { id: 'overview', label: 'Overview', shortLabel: 'Overview', icon: Layers },
+  { id: 'accounts', label: 'Accounts & Limits', shortLabel: 'Accounts', icon: Database },
+  { id: 'projects', label: 'Projects & History', shortLabel: 'Projects', icon: History },
+  { id: 'settings', label: 'Settings & Data', shortLabel: 'Settings', icon: Sliders },
 ];
 
 export const Navbar: React.FC<NavbarProps> = ({
@@ -22,15 +22,15 @@ export const Navbar: React.FC<NavbarProps> = ({
   onOpenLogUsage,
 }) => {
   return (
-    <header className="px-4 w-full">
+    <header className="w-full max-w-[1200px] mx-auto px-4 sm:px-6 lg:px-8 pt-4">
       <nav
-        className="navbar-bounded"
+        className="navbar-bounded w-full flex flex-wrap lg:flex-nowrap items-center justify-between gap-3 p-2.5 sm:px-5 sm:py-3"
         aria-label="Main Navigation"
       >
         {/* Brand / Logo */}
         <button
           onClick={() => onSelectTab('overview')}
-          className="flex items-center gap-3 text-left border-0 bg-transparent cursor-pointer p-1 group outline-none focus:outline-none appearance-none"
+          className="flex items-center gap-3 text-left border-0 bg-transparent cursor-pointer p-1 group outline-none focus:outline-none appearance-none shrink-0"
           aria-label="Quota Ember Home"
         >
           <div className="w-8 h-8 rounded-full bg-[#1C1917] border border-[#D4F268] flex items-center justify-center text-[#D4F268] shadow-[0_0_14px_rgba(212,242,104,0.25)] transition-all group-hover:scale-105">
@@ -49,7 +49,7 @@ export const Navbar: React.FC<NavbarProps> = ({
         {/* Tab Navigation */}
         <div
           role="tablist"
-          className="flex items-center gap-1 bg-[#141210] p-1 rounded-full border border-[rgba(255,255,255,0.08)] overflow-x-auto"
+          className="order-3 lg:order-2 w-full lg:w-auto flex items-center justify-around lg:justify-center gap-1 bg-[#141210] p-1 rounded-full border border-[rgba(255,255,255,0.08)]"
         >
           {TABS.map((tab) => {
             const isActive = activeTab === tab.id;
@@ -60,10 +60,10 @@ export const Navbar: React.FC<NavbarProps> = ({
                 role="tab"
                 aria-selected={isActive}
                 onClick={() => onSelectTab(tab.id)}
-                className={`relative flex items-center gap-2 text-[13px] font-sans cursor-pointer ${
+                className={`relative flex items-center justify-center gap-1.5 sm:gap-2 text-xs sm:text-[13px] font-sans cursor-pointer flex-1 lg:flex-initial transition-all ${
                   isActive
-                    ? 'bg-[#292524] text-[#E7E5E4] border border-[rgba(212,242,104,0.4)] shadow-[0_0_10px_rgba(212,242,104,0.15)] font-medium px-4 py-2 rounded-full'
-                    : 'text-[#A8A29E] hover:text-[#E7E5E4] hover:bg-[#1C1917] px-3.5 py-1.5 rounded-full transition-all border border-transparent bg-transparent'
+                    ? 'bg-[#292524] text-[#E7E5E4] border border-[rgba(212,242,104,0.4)] shadow-[0_0_10px_rgba(212,242,104,0.15)] font-medium px-3 sm:px-4 py-1.5 sm:py-2 rounded-full'
+                    : 'text-[#A8A29E] hover:text-[#E7E5E4] hover:bg-[#1C1917] px-2.5 sm:px-3.5 py-1.5 rounded-full border border-transparent bg-transparent'
                 }`}
               >
                 {isActive && (
@@ -72,18 +72,19 @@ export const Navbar: React.FC<NavbarProps> = ({
                     aria-hidden="true"
                   />
                 )}
-                <Icon className={`w-3.5 h-3.5 ${isActive ? 'text-[#D4F268]' : 'text-[#A8A29E]'}`} />
-                <span>{tab.label}</span>
+                <Icon className={`w-3.5 h-3.5 shrink-0 ${isActive ? 'text-[#D4F268]' : 'text-[#A8A29E]'}`} />
+                <span className="hidden lg:inline">{tab.label}</span>
+                <span className="inline lg:hidden">{tab.shortLabel}</span>
               </button>
             );
           })}
         </div>
 
         {/* Action Button */}
-        <div className="flex items-center gap-2">
+        <div className="order-2 lg:order-3 flex items-center gap-2 shrink-0">
           <button
             onClick={onOpenLogUsage}
-            className="btn-primary-lime text-[13px] font-sans font-semibold focus:outline-none focus:ring-2 focus:ring-[#D4F268] focus:ring-offset-2 focus:ring-offset-[#0C0A09]"
+            className="btn-primary-lime text-xs sm:text-[13px] font-sans font-semibold focus:outline-none focus:ring-2 focus:ring-[#D4F268] focus:ring-offset-2 focus:ring-offset-[#0C0A09]"
             title="Log usage against one or more limit windows"
           >
             <Plus className="w-4 h-4 stroke-[2.5]" />

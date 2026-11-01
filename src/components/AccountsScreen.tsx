@@ -101,7 +101,7 @@ export const AccountsScreen: React.FC<AccountsScreenProps> = ({
   };
 
   return (
-    <div className="max-w-[1200px] mx-auto px-4 py-8 space-y-8 font-sans">
+    <div className="max-w-[1200px] w-full mx-auto px-4 sm:px-6 lg:px-8 py-8 space-y-8 font-sans">
       {/* Top Action & Header Bar */}
       <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 border-b border-[rgba(255,255,255,0.1)] pb-6">
         <div>

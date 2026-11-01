@@ -147,9 +147,9 @@ export const OverviewScreen: React.FC<OverviewScreenProps> = ({
       {/* Background Radial Glow */}
       <div className="hero-radial-glow" aria-hidden="true" />
 
-      <main className="max-w-[1200px] mx-auto px-4 pt-6 space-y-8 relative z-10">
+      <main className="max-w-[1200px] w-full mx-auto px-4 sm:px-6 lg:px-8 pt-6 pb-24 space-y-8 relative z-10">
         {/* Top Hero / Header Section */}
-        <section className="text-center space-y-3 pt-2">
+        <section className="text-center space-y-3 pt-2 w-full">
           <div className="inline-flex items-center gap-2 px-3.5 py-1 rounded-full bg-[#1C1917] border border-[rgba(255,255,255,0.1)] text-[12px] font-sans text-[#A8A29E] mb-1">
             <span className="w-2 h-2 rounded-full bg-[#D4F268] shadow-[0_0_8px_#D4F268] animate-pulse" />
             <span className="tech-tag">Fig. 01 • Cadence Intelligence</span>
@@ -165,66 +165,86 @@ export const OverviewScreen: React.FC<OverviewScreenProps> = ({
         {/* Top Stats Summary */}
         <section
           aria-label="Quota Summary Metrics"
-          className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4"
+          className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 sm:gap-5 w-full"
         >
-          <div className="bg-[#141210] border border-[rgba(255,255,255,0.08)] rounded-[24px] p-5 flex flex-col justify-between">
-            <div className="text-[11px] text-[#A8A29E] font-medium tracking-wider uppercase font-sans">
-              Active Accounts
+          <div className="bg-[#141210] border border-[rgba(255,255,255,0.08)] hover:border-[rgba(255,255,255,0.16)] rounded-[24px] p-6 sm:p-7 min-h-[145px] flex flex-col justify-between transition-all">
+            <div className="flex items-center justify-between">
+              <span className="text-[11px] sm:text-xs text-[#A8A29E] font-medium tracking-wider uppercase font-mono">
+                Active Accounts
+              </span>
+              <span className="tech-tag text-[10px] text-[#78716C]">Fig. 01A</span>
             </div>
-            <div className="text-3xl font-light font-mono text-[#E7E5E4] mt-2">
-              {activeAccountsCount}
+            <div className="my-3">
+              <span className="text-3xl sm:text-4xl font-light font-mono text-[#E7E5E4] tracking-tight">
+                {activeAccountsCount}
+              </span>
             </div>
-            <div className="text-[12px] text-[#78716C] mt-1 font-sans">
+            <div className="text-xs sm:text-[13px] text-[#A8A29E] font-sans">
               Independent identities tracked
             </div>
           </div>
 
-          <div className="bg-[#141210] border border-[rgba(255,255,255,0.08)] rounded-[24px] p-5 flex flex-col justify-between">
-            <div className="text-[11px] text-[#A8A29E] font-medium tracking-wider uppercase font-sans">
-              Active Windows
+          <div className="bg-[#141210] border border-[rgba(255,255,255,0.08)] hover:border-[rgba(255,255,255,0.16)] rounded-[24px] p-6 sm:p-7 min-h-[145px] flex flex-col justify-between transition-all">
+            <div className="flex items-center justify-between">
+              <span className="text-[11px] sm:text-xs text-[#A8A29E] font-medium tracking-wider uppercase font-mono">
+                Active Windows
+              </span>
+              <span className="tech-tag text-[10px] text-[#78716C]">Fig. 01B</span>
             </div>
-            <div className="text-3xl font-light font-mono text-[#E7E5E4] mt-2">
-              {activeWindowsCount}
+            <div className="my-3">
+              <span className="text-3xl sm:text-4xl font-light font-mono text-[#E7E5E4] tracking-tight">
+                {activeWindowsCount}
+              </span>
             </div>
-            <div className="text-[12px] text-[#78716C] mt-1 font-sans">
+            <div className="text-xs sm:text-[13px] text-[#A8A29E] font-sans">
               Independent reset cadences
             </div>
           </div>
 
-          <div className="bg-[#141210] border border-[rgba(255,255,255,0.08)] rounded-[24px] p-5 flex flex-col justify-between">
-            <div className="text-[11px] text-[#A8A29E] font-medium tracking-wider uppercase font-sans flex items-center justify-between">
-              <span>Near Limit (&ge;{settings.lowCapacityThresholdPercent}%)</span>
-              {lowCapacityWindows.length > 0 && (
-                <span className="w-2 h-2 rounded-full bg-[#f87171] shadow-[0_0_6px_#f87171]" />
-              )}
+          <div className="bg-[#141210] border border-[rgba(255,255,255,0.08)] hover:border-[rgba(255,255,255,0.16)] rounded-[24px] p-6 sm:p-7 min-h-[145px] flex flex-col justify-between transition-all">
+            <div className="flex items-center justify-between">
+              <span className="text-[11px] sm:text-xs text-[#A8A29E] font-medium tracking-wider uppercase font-mono flex items-center gap-1.5">
+                <span>Near Limit (&ge;{settings.lowCapacityThresholdPercent}%)</span>
+                {lowCapacityWindows.length > 0 && (
+                  <span className="w-2 h-2 rounded-full bg-[#f87171] shadow-[0_0_6px_#f87171] animate-pulse" />
+                )}
+              </span>
+              <span className="tech-tag text-[10px] text-[#78716C]">Fig. 01C</span>
             </div>
-            <div
-              className={`text-3xl font-light font-mono mt-2 ${
-                lowCapacityWindows.length > 0 ? 'text-[#f87171]' : 'text-[#E7E5E4]'
-              }`}
-            >
-              {lowCapacityWindows.length}
+            <div className="my-3">
+              <span
+                className={`text-3xl sm:text-4xl font-light font-mono tracking-tight ${
+                  lowCapacityWindows.length > 0 ? 'text-[#f87171]' : 'text-[#E7E5E4]'
+                }`}
+              >
+                {lowCapacityWindows.length}
+              </span>
             </div>
-            <div className="text-[12px] text-[#78716C] mt-1 font-sans">
+            <div className="text-xs sm:text-[13px] text-[#A8A29E] font-sans">
               Requires attention or switch
             </div>
           </div>
 
-          <div className="bg-[#141210] border border-[rgba(255,255,255,0.08)] rounded-[24px] p-5 flex flex-col justify-between">
-            <div className="text-[11px] text-[#A8A29E] font-medium tracking-wider uppercase font-sans flex items-center justify-between">
-              <span>Stale (&gt;{settings.staleDataThresholdHours}h)</span>
-              {staleWindows.length > 0 && (
-                <span className="w-2 h-2 rounded-full bg-[#fbbf24] shadow-[0_0_6px_#fbbf24]" />
-              )}
+          <div className="bg-[#141210] border border-[rgba(255,255,255,0.08)] hover:border-[rgba(255,255,255,0.16)] rounded-[24px] p-6 sm:p-7 min-h-[145px] flex flex-col justify-between transition-all">
+            <div className="flex items-center justify-between">
+              <span className="text-[11px] sm:text-xs text-[#A8A29E] font-medium tracking-wider uppercase font-mono flex items-center gap-1.5">
+                <span>Stale (&gt;{settings.staleDataThresholdHours}h)</span>
+                {staleWindows.length > 0 && (
+                  <span className="w-2 h-2 rounded-full bg-[#fbbf24] shadow-[0_0_6px_#fbbf24] animate-pulse" />
+                )}
+              </span>
+              <span className="tech-tag text-[10px] text-[#78716C]">Fig. 01D</span>
             </div>
-            <div
-              className={`text-3xl font-light font-mono mt-2 ${
-                staleWindows.length > 0 ? 'text-[#fbbf24]' : 'text-[#E7E5E4]'
-              }`}
-            >
-              {staleWindows.length}
+            <div className="my-3">
+              <span
+                className={`text-3xl sm:text-4xl font-light font-mono tracking-tight ${
+                  staleWindows.length > 0 ? 'text-[#fbbf24]' : 'text-[#E7E5E4]'
+                }`}
+              >
+                {staleWindows.length}
+              </span>
             </div>
-            <div className="text-[12px] text-[#78716C] mt-1 font-sans">
+            <div className="text-xs sm:text-[13px] text-[#A8A29E] font-sans">
               Needs console balance check
             </div>
           </div>
@@ -236,12 +256,12 @@ export const OverviewScreen: React.FC<OverviewScreenProps> = ({
         {/* Filter and Sort Toolbar */}
         <section
           aria-label="Filter and Sort Toolbar"
-          className="card-panel p-4 bg-[#1C1917] border border-[rgba(255,255,255,0.1)] rounded-[24px] flex flex-wrap items-center justify-between gap-3 text-xs font-sans"
+          className="card-panel p-4 sm:p-5 bg-[#1C1917] border border-[rgba(255,255,255,0.1)] rounded-[24px] flex flex-wrap items-center justify-between gap-4 text-xs font-sans w-full"
         >
-          <div className="flex flex-wrap items-center gap-3">
-            <div className="flex items-center gap-1.5 text-[#A8A29E]">
-              <Filter className="w-3.5 h-3.5 text-[#D4F268]" />
-              <span className="text-[11px] uppercase tracking-wider">Filters:</span>
+          <div className="flex flex-wrap items-center gap-3 flex-1 min-w-0">
+            <div className="flex items-center gap-2 text-[#A8A29E] font-mono text-xs uppercase tracking-wider shrink-0">
+              <Filter className="w-4 h-4 text-[#D4F268]" />
+              <span>Filters:</span>
             </div>
 
             {/* Filter Account */}
@@ -251,7 +271,7 @@ export const OverviewScreen: React.FC<OverviewScreenProps> = ({
                 setSelectedAccountId(e.target.value);
                 setSelectedServiceId('all');
               }}
-              className="bg-[#141210] text-[#E7E5E4] border border-[rgba(255,255,255,0.12)] rounded-full px-3.5 py-1.5 text-xs font-sans outline-none focus:border-[#D4F268] focus:ring-1 focus:ring-[#D4F268] cursor-pointer"
+              className="bg-[#141210] text-[#E7E5E4] border border-[rgba(255,255,255,0.12)] rounded-full px-4 py-2 text-xs font-sans outline-none focus:border-[#D4F268] focus:ring-1 focus:ring-[#D4F268] cursor-pointer hover:border-[rgba(255,255,255,0.2)] transition-all"
               aria-label="Filter by account"
             >
               <option value="all">All Accounts ({accounts.filter((a) => !a.archived).length})</option>
@@ -268,10 +288,14 @@ export const OverviewScreen: React.FC<OverviewScreenProps> = ({
             <select
               value={selectedServiceId}
               onChange={(e) => setSelectedServiceId(e.target.value)}
-              className="bg-[#141210] text-[#E7E5E4] border border-[rgba(255,255,255,0.12)] rounded-full px-3.5 py-1.5 text-xs font-sans outline-none focus:border-[#D4F268] focus:ring-1 focus:ring-[#D4F268] cursor-pointer"
+              className="bg-[#141210] text-[#E7E5E4] border border-[rgba(255,255,255,0.12)] rounded-full px-4 py-2 text-xs font-sans outline-none focus:border-[#D4F268] focus:ring-1 focus:ring-[#D4F268] cursor-pointer hover:border-[rgba(255,255,255,0.2)] transition-all"
               aria-label="Filter by service"
             >
-              <option value="all">All Services</option>
+              <option value="all">
+                {selectedAccountId === 'all'
+                  ? `All Services (${filteredServicesList.length})`
+                  : `Services for Account (${filteredServicesList.length})`}
+              </option>
               {filteredServicesList.map((svc) => (
                 <option key={svc.id} value={svc.id}>
                   {svc.name}
@@ -280,14 +304,14 @@ export const OverviewScreen: React.FC<OverviewScreenProps> = ({
             </select>
 
             {/* Filter Status */}
-            <div className="flex items-center gap-1 bg-[#141210] p-1 rounded-full border border-[rgba(255,255,255,0.08)]">
+            <div className="flex items-center gap-1 bg-[#141210] p-1 rounded-full border border-[rgba(255,255,255,0.08)] flex-wrap sm:flex-nowrap">
               <button
                 type="button"
                 onClick={() => setStatusFilter('all')}
-                className={`cursor-pointer ${
+                className={`cursor-pointer px-3.5 py-1.5 rounded-full text-xs font-sans transition-all border ${
                   statusFilter === 'all'
-                    ? 'bg-[#292524] text-[#E7E5E4] border border-[rgba(255,255,255,0.2)] px-3 py-1 rounded-full text-xs font-medium'
-                    : 'bg-transparent text-[#A8A29E] hover:text-[#E7E5E4] px-3 py-1 rounded-full text-xs font-medium transition-all border border-transparent'
+                    ? 'bg-[#292524] text-[#E7E5E4] border-[rgba(255,255,255,0.2)] font-medium'
+                    : 'bg-transparent text-[#A8A29E] hover:text-[#E7E5E4] border-transparent'
                 }`}
               >
                 All
@@ -295,10 +319,10 @@ export const OverviewScreen: React.FC<OverviewScreenProps> = ({
               <button
                 type="button"
                 onClick={() => setStatusFilter('low')}
-                className={`cursor-pointer ${
+                className={`cursor-pointer px-3.5 py-1.5 rounded-full text-xs font-sans transition-all border ${
                   statusFilter === 'low'
-                    ? 'bg-[rgba(248,113,113,0.18)] text-[#f87171] border border-[rgba(248,113,113,0.4)] px-3 py-1 rounded-full text-xs font-semibold'
-                    : 'bg-transparent text-[#A8A29E] hover:text-[#f87171] px-3 py-1 rounded-full text-xs font-medium transition-all border border-transparent'
+                    ? 'bg-[rgba(248,113,113,0.18)] text-[#f87171] border-[rgba(248,113,113,0.4)] font-semibold'
+                    : 'bg-transparent text-[#A8A29E] hover:text-[#f87171] border-transparent'
                 }`}
               >
                 Near Limit ({lowCapacityWindows.length})
@@ -306,10 +330,10 @@ export const OverviewScreen: React.FC<OverviewScreenProps> = ({
               <button
                 type="button"
                 onClick={() => setStatusFilter('stale')}
-                className={`cursor-pointer ${
+                className={`cursor-pointer px-3.5 py-1.5 rounded-full text-xs font-sans transition-all border ${
                   statusFilter === 'stale'
-                    ? 'bg-[rgba(251,191,36,0.18)] text-[#fbbf24] border border-[rgba(251,191,36,0.4)] px-3 py-1 rounded-full text-xs font-semibold'
-                    : 'bg-transparent text-[#A8A29E] hover:text-[#fbbf24] px-3 py-1 rounded-full text-xs font-medium transition-all border border-transparent'
+                    ? 'bg-[rgba(251,191,36,0.18)] text-[#fbbf24] border-[rgba(251,191,36,0.4)] font-semibold'
+                    : 'bg-transparent text-[#A8A29E] hover:text-[#fbbf24] border-transparent'
                 }`}
               >
                 Stale ({staleWindows.length})
@@ -318,15 +342,15 @@ export const OverviewScreen: React.FC<OverviewScreenProps> = ({
           </div>
 
           {/* Sort By */}
-          <div className="flex items-center gap-2">
-            <span className="text-[12px] text-[#A8A29E] flex items-center gap-1.5 font-sans">
+          <div className="flex items-center gap-2.5 shrink-0">
+            <span className="text-xs text-[#A8A29E] flex items-center gap-1.5 font-sans">
               <ArrowUpDown className="w-3.5 h-3.5" />
               <span>Sort:</span>
             </span>
             <select
               value={sortBy}
               onChange={(e) => setSortBy(e.target.value as any)}
-              className="bg-[#141210] text-[#E7E5E4] border border-[rgba(255,255,255,0.12)] rounded-full px-3.5 py-1.5 text-xs font-sans outline-none focus:border-[#D4F268] focus:ring-1 focus:ring-[#D4F268] cursor-pointer"
+              className="bg-[#141210] text-[#E7E5E4] border border-[rgba(255,255,255,0.12)] rounded-full px-4 py-2 text-xs font-sans outline-none focus:border-[#D4F268] cursor-pointer hover:border-[rgba(255,255,255,0.2)] transition-all"
               aria-label="Sort limit windows"
             >
               <option value="reset">Next Reset (Soonest first)</option>
@@ -338,10 +362,10 @@ export const OverviewScreen: React.FC<OverviewScreenProps> = ({
         </section>
 
         {/* Limit Windows Card Grid */}
-        <section aria-label="Limit Windows" className="space-y-6">
+        <section aria-label="Limit Windows" className="space-y-6 w-full">
           {processedItems.length === 0 ? (
             /* Clean polite sample-free empty state */
-            <div className="card-panel-deep bg-[#141210] p-12 text-center border border-[rgba(255,255,255,0.08)] rounded-[24px] flex flex-col items-center justify-center space-y-4">
+            <div className="card-panel-deep bg-[#141210] p-12 sm:p-16 text-center border border-[rgba(255,255,255,0.08)] rounded-[24px] flex flex-col items-center justify-center space-y-4 w-full">
               <div className="w-14 h-14 rounded-full bg-[#1C1917] border border-[#D4F268] text-[#D4F268] shadow-[0_0_16px_rgba(212,242,104,0.2)] flex items-center justify-center">
                 <Sparkles className="w-7 h-7" />
               </div>
@@ -377,7 +401,7 @@ export const OverviewScreen: React.FC<OverviewScreenProps> = ({
               )}
             </div>
           ) : (
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5 w-full">
               {processedItems.map(
                 ({
                   window: win,
@@ -546,7 +570,7 @@ export const OverviewScreen: React.FC<OverviewScreenProps> = ({
         {/* Editorial Founder / Owner Note Card */}
         <section
           aria-label="Owner Advisory Card"
-          className="founder-note-card relative overflow-hidden bg-[#1C1917] border border-[rgba(255,255,255,0.1)] rounded-[24px] p-8"
+          className="founder-note-card relative overflow-hidden bg-[#1C1917] border border-[rgba(255,255,255,0.1)] rounded-[24px] p-6 sm:p-8 w-full"
         >
           <div className="flex flex-col sm:flex-row items-start justify-between gap-6">
             <div className="space-y-3 max-w-2xl">

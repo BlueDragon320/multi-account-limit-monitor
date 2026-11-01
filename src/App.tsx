@@ -351,7 +351,7 @@ export const App: React.FC = () => {
   };
 
   return (
-    <div className="min-h-screen bg-[#0C0A09] text-[#E7E5E4] flex flex-col font-sans selection:bg-[#D4F268] selection:text-[#0C0A09] relative">
+    <div className="min-h-screen bg-[#0C0A09] text-[#E7E5E4] flex flex-col font-sans selection:bg-[#D4F268] selection:text-[#0C0A09] relative overflow-x-hidden">
       {/* 4% Fixed Noise Overlay */}
       <div className="noise-overlay" aria-hidden="true" />
 
@@ -411,8 +411,8 @@ export const App: React.FC = () => {
       </div>
 
       {/* Footer with Serrated Divider */}
-      <footer className="border-t border-[rgba(255,255,255,0.08)] py-8 px-4 text-center text-xs text-[#A8A29E] font-sans">
-        <div className="max-w-[1200px] mx-auto flex flex-col sm:flex-row items-center justify-between gap-3">
+      <footer className="border-t border-[rgba(255,255,255,0.08)] py-8 px-4 sm:px-6 lg:px-8 text-center text-xs text-[#A8A29E] font-sans">
+        <div className="max-w-[1200px] w-full mx-auto flex flex-col sm:flex-row items-center justify-between gap-3">
           <div className="flex items-center gap-2.5">
             <span className="w-2 h-2 rounded-full bg-[#D4F268] shadow-[0_0_8px_#D4F268]" />
             <span className="text-[#E7E5E4] font-medium tracking-tight">Quota Ember</span>

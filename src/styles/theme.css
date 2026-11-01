@@ -42,22 +42,18 @@
   --transition-base: 300ms cubic-bezier(0.4, 0, 0.2, 1);
 }
 
-* {
-  box-sizing: border-box;
-  margin: 0;
-  padding: 0;
-}
-
-body {
-  background-color: var(--bg-main);
-  color: var(--text-primary);
-  font-family: var(--font-sans);
-  font-size: 16px;
-  line-height: 1.6;
-  min-height: 100vh;
-  -webkit-font-smoothing: antialiased;
-  -moz-osx-font-smoothing: grayscale;
-  position: relative;
+@layer base {
+  body {
+    background-color: var(--bg-main);
+    color: var(--text-primary);
+    font-family: var(--font-sans);
+    font-size: 16px;
+    line-height: 1.6;
+    min-height: 100vh;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+    position: relative;
+  }
 }
 
 /* 4% Noise Overlay (Fixed Position SVG Fractal Noise) */
@@ -157,8 +153,8 @@ h1 em, h2 em, h3 em, h4 em {
 
 /* Bounded Floating Navbar */
 .navbar-bounded {
-  max-width: 1200px;
-  margin: 16px auto;
+  width: 100%;
+  margin: 0 auto;
   padding: 8px 18px;
   background-color: rgba(28, 25, 23, 0.88);
   backdrop-filter: blur(16px);

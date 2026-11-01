@@ -164,7 +164,7 @@ export const SettingsScreen: React.FC<SettingsScreenProps> = ({
   };
 
   return (
-    <div className="max-w-[1000px] mx-auto px-4 py-8 space-y-8 font-sans">
+    <div className="max-w-[1200px] w-full mx-auto px-4 sm:px-6 lg:px-8 py-8 space-y-8 font-sans">
       {/* Header */}
       <div className="border-b border-[rgba(255,255,255,0.1)] pb-6">
         <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-[#1C1917] border border-[rgba(255,255,255,0.1)] text-[11px] font-mono text-[#A8A29E] mb-2">
