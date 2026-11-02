@@ -34,13 +34,36 @@ export function useAppState() {
   const stateRef = useRef(state);
   stateRef.current = state;
 
+  const isInternalUpdateRef = useRef(false);
+  const isInitialMount = useRef(true);
+
   // Subscribe to external storage changes (e.g. multi-tab sync)
   useEffect(() => {
     const unsubscribe = subscribeToAppState((newState) => {
-      setState(newState);
+      if (isInternalUpdateRef.current) return;
+      setState((prev) => {
+        if (prev === newState || JSON.stringify(prev) === JSON.stringify(newState)) {
+          return prev;
+        }
+        return newState;
+      });
     });
     return unsubscribe;
   }, []);
+
+  // Persist state updates outside of setState updater to avoid cyclic listener calls and double execution
+  useEffect(() => {
+    if (isInitialMount.current) {
+      isInitialMount.current = false;
+      return;
+    }
+    isInternalUpdateRef.current = true;
+    try {
+      saveAppState(state);
+    } finally {
+      isInternalUpdateRef.current = false;
+    }
+  }, [state]);
 
   // Periodic reset check every 30 seconds
   useEffect(() => {
@@ -48,38 +71,61 @@ export function useAppState() {
       const currentWindows = stateRef.current.limitWindows;
       const { windows: advancedWindows, advancedCount } = advanceAllStateWindows(currentWindows, new Date());
       if (advancedCount > 0) {
-        setState((prev) => {
-          const updated = { ...prev, limitWindows: advancedWindows };
-          saveAppState(updated);
-          return updated;
-        });
+        setState((prev) => ({
+          ...prev,
+          limitWindows: advancedWindows,
+        }));
       }
     }, 30000);
 
     return () => clearInterval(interval);
   }, []);
 
-  // Save helper
+  // Pure state updater helper without side-effects inside setState
   const updateState = useCallback((updater: (prev: AppState) => AppState) => {
+    let nextState: AppState | null = null;
     setState((prev) => {
       const next = updater(prev);
-      saveAppState(next);
+      if (next === prev) return prev;
+      nextState = next;
       return next;
     });
+    // In environments where setState updater is deferred or no-op (such as SSR / test runners),
+    // compute nextState from stateRef if setState did not execute synchronously
+    if (!nextState) {
+      const next = updater(stateRef.current);
+      if (next !== stateRef.current) {
+        nextState = next;
+      }
+    }
+    if (nextState) {
+      stateRef.current = nextState;
+      isInternalUpdateRef.current = true;
+      try {
+        saveAppState(nextState);
+      } finally {
+        isInternalUpdateRef.current = false;
+      }
+    }
   }, []);
 
   // Account actions
-  const addAccount = useCallback((account: Omit<Account, 'id' | 'createdAt' | 'updatedAt'>) => {
+  const addAccount = useCallback((account: Omit<Account, 'id' | 'createdAt' | 'updatedAt'> & { id?: string }) => {
     const newAccount: Account = {
       ...account,
-      id: `acc_${Date.now()}_${Math.random().toString(36).substring(2, 7)}`,
+      id: account.id || `acc_${Date.now()}_${Math.random().toString(36).substring(2, 7)}`,
       createdAt: new Date().toISOString(),
       updatedAt: new Date().toISOString(),
     };
-    updateState((prev) => ({
-      ...prev,
-      accounts: [...prev.accounts, newAccount],
-    }));
+    updateState((prev) => {
+      if (prev.accounts.some((a) => a.id === newAccount.id)) {
+        return prev;
+      }
+      return {
+        ...prev,
+        accounts: [...prev.accounts, newAccount],
+      };
+    });
     return newAccount;
   }, [updateState]);
 
@@ -96,12 +142,46 @@ export function useAppState() {
     updateAccount(id, { archived });
   }, [updateAccount]);
 
+  const deleteAccount = useCallback((id: string) => {
+    updateState((prev) => {
+      const targetAccount = prev.accounts.find((a) => a.id === id);
+      if (!targetAccount) {
+        return prev;
+      }
+      const accountName = targetAccount.name;
+
+      const serviceNameMap = new Map<string, string>();
+      prev.services.forEach((s) => {
+        if (s.accountId === id) {
+          serviceNameMap.set(s.id, s.name);
+        }
+      });
+
+      return {
+        ...prev,
+        accounts: prev.accounts.filter((a) => a.id !== id),
+        services: prev.services.filter((s) => s.accountId !== id),
+        limitWindows: prev.limitWindows.filter((w) => w.accountId !== id),
+        usageEvents: prev.usageEvents.map((evt) => {
+          if (evt.accountId === id) {
+            return {
+              ...evt,
+              accountName: evt.accountName || accountName,
+              serviceName: evt.serviceName || serviceNameMap.get(evt.serviceId) || (prev.services.find((s) => s.id === evt.serviceId)?.name),
+            };
+          }
+          return evt;
+        }),
+      };
+    });
+  }, [updateState]);
+
   // Service actions
   const addService = useCallback((
-    service: Omit<Service, 'id' | 'createdAt'>,
-    initialWindows?: Omit<LimitWindow, 'id' | 'serviceId' | 'accountId' | 'currentUsed' | 'lastUpdated' | 'archived'>[]
+    service: Omit<Service, 'id' | 'createdAt'> & { id?: string },
+    initialWindows?: (Omit<LimitWindow, 'id' | 'serviceId' | 'accountId' | 'currentUsed' | 'lastUpdated' | 'archived'> & { id?: string })[]
   ) => {
-    const serviceId = `srv_${Date.now()}_${Math.random().toString(36).substring(2, 7)}`;
+    const serviceId = service.id || `srv_${Date.now()}_${Math.random().toString(36).substring(2, 7)}`;
     const newService: Service = {
       ...service,
       id: serviceId,
@@ -110,7 +190,7 @@ export function useAppState() {
 
     const newWindows: LimitWindow[] = (initialWindows || []).map((w, idx) => ({
       ...w,
-      id: `win_${Date.now()}_${idx}_${Math.random().toString(36).substring(2, 7)}`,
+      id: w.id || `win_${Date.now()}_${idx}_${Math.random().toString(36).substring(2, 7)}`,
       serviceId,
       accountId: service.accountId,
       currentUsed: 0,
@@ -118,11 +198,18 @@ export function useAppState() {
       archived: false,
     }));
 
-    updateState((prev) => ({
-      ...prev,
-      services: [...prev.services, newService],
-      limitWindows: [...prev.limitWindows, ...newWindows],
-    }));
+    updateState((prev) => {
+      if (prev.services.some((s) => s.id === newService.id)) {
+        return prev;
+      }
+      const existingWinIds = new Set(prev.limitWindows.map((w) => w.id));
+      const windowsToAdd = newWindows.filter((w) => !existingWinIds.has(w.id));
+      return {
+        ...prev,
+        services: [...prev.services, newService],
+        limitWindows: [...prev.limitWindows, ...windowsToAdd],
+      };
+    });
 
     return { service: newService, windows: newWindows };
   }, [updateState]);
@@ -140,19 +227,24 @@ export function useAppState() {
 
   // Window actions
   const addLimitWindow = useCallback((
-    windowData: Omit<LimitWindow, 'id' | 'currentUsed' | 'lastUpdated' | 'archived'>
+    windowData: Omit<LimitWindow, 'id' | 'currentUsed' | 'lastUpdated' | 'archived'> & { id?: string }
   ) => {
     const newWindow: LimitWindow = {
       ...windowData,
-      id: `win_${Date.now()}_${Math.random().toString(36).substring(2, 7)}`,
+      id: windowData.id || `win_${Date.now()}_${Math.random().toString(36).substring(2, 7)}`,
       currentUsed: 0,
       lastUpdated: new Date().toISOString(),
       archived: false,
     };
-    updateState((prev) => ({
-      ...prev,
-      limitWindows: [...prev.limitWindows, newWindow],
-    }));
+    updateState((prev) => {
+      if (prev.limitWindows.some((w) => w.id === newWindow.id)) {
+        return prev;
+      }
+      return {
+        ...prev,
+        limitWindows: [...prev.limitWindows, newWindow],
+      };
+    });
     return newWindow;
   }, [updateState]);
 
@@ -170,16 +262,21 @@ export function useAppState() {
   }, [updateLimitWindow]);
 
   // Project actions
-  const addProject = useCallback((project: Omit<Project, 'id' | 'createdAt'>) => {
+  const addProject = useCallback((project: Omit<Project, 'id' | 'createdAt'> & { id?: string }) => {
     const newProject: Project = {
       ...project,
-      id: `proj_${Date.now()}_${Math.random().toString(36).substring(2, 7)}`,
+      id: project.id || `proj_${Date.now()}_${Math.random().toString(36).substring(2, 7)}`,
       createdAt: new Date().toISOString(),
     };
-    updateState((prev) => ({
-      ...prev,
-      projects: [...prev.projects, newProject],
-    }));
+    updateState((prev) => {
+      if (prev.projects.some((p) => p.id === newProject.id)) {
+        return prev;
+      }
+      return {
+        ...prev,
+        projects: [...prev.projects, newProject],
+      };
+    });
     return newProject;
   }, [updateState]);
 
@@ -235,15 +332,25 @@ export function useAppState() {
 
   // Restore/Replace entire state (e.g. from JSON import)
   const replaceAllState = useCallback((newState: AppState) => {
-    setState(newState);
-    saveAppState(newState);
+    isInternalUpdateRef.current = true;
+    try {
+      setState(newState);
+      saveAppState(newState);
+    } finally {
+      isInternalUpdateRef.current = false;
+    }
   }, []);
 
   // Reset to initial clean state
   const resetAllData = useCallback(() => {
     const fresh = getInitialState();
-    setState(fresh);
-    saveAppState(fresh);
+    isInternalUpdateRef.current = true;
+    try {
+      setState(fresh);
+      saveAppState(fresh);
+    } finally {
+      isInternalUpdateRef.current = false;
+    }
   }, []);
 
   return {
@@ -251,6 +358,7 @@ export function useAppState() {
     addAccount,
     updateAccount,
     archiveAccount,
+    deleteAccount,
     addService,
     updateService,
     archiveService,

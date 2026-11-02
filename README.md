@@ -118,11 +118,88 @@ npm run build
 ```
 
 ### Test Coverage
-Quota Ember includes 77 unit tests covering:
+Quota Ember includes 92 unit tests covering:
 - **`tests/resetEngine.test.ts`**: DST shifts (New York EST/EDT, London GMT/BST), month-end clamping (Feb 28/29, Mar 31, Apr 30), multiple missed reset intervals, custom cadence, and countdown formatting.
 - **`tests/calculations.test.ts`**: Multi-window usage events without double counting, balance preview calculation, manual correction audits, project totals unit segregation, and capacity thresholds.
 - **`tests/storage.test.ts`**: LocalStorage save/load roundtrips, corrupted JSON recovery, reactive multi-tab subscriptions, and clear operations.
 - **`tests/exportImport.test.ts`**: Versioned JSON serialization, structural and referential schema validation, duplicate ID rejection, and import replacement diff summaries.
+- **`tests/components.test.tsx`**: UI rendering, modal workflows, quick balance actions, and settings import/export flows.
+
+---
+
+## Production Hosting & Docker
+
+Quota Ember is fully containerized and production-ready with a multi-stage Docker build served via a high-performance, secure Nginx Alpine server.
+
+### Architecture Overview
+- **Stage 1 (Builder)**: Uses `node:22-alpine` to install dependencies via `npm ci` and compile static assets with Vite and TypeScript.
+- **Stage 2 (Runner)**: Uses `nginx:alpine` to serve optimized static HTML/CSS/JS with gzip compression enabled, client-side SPA routing (`try_files $uri $uri/ /index.html;`), immutable asset caching for `/assets/`, security headers (`X-Frame-Options`, `X-Content-Type-Options`, `Referrer-Policy`), and an embedded healthcheck endpoint at `/health`.
+- **Zero Backend Dependencies**: By design, no external database (PostgreSQL, Redis, MySQL), backend runtime, or authentication server is required.
+
+### Prerequisites
+- [Docker](https://docs.docker.com/get-docker/) (v20.10+) or [Docker Desktop](https://www.docker.com/products/docker-desktop/)
+- [Docker Compose](https://docs.docker.com/compose/) (v2.0+)
+
+### Running with Docker Compose (Recommended)
+
+Start the production container in detached mode:
+```bash
+docker compose up -d
+```
+The application will be accessible at: **`http://localhost:5173`**
+
+#### Customizing the Host Port
+You can specify a custom host port using the `PORT` environment variable:
+```bash
+PORT=8080 docker compose up -d
+```
+Access the application at: **`http://localhost:8080`**
+
+### Running Standalone with Docker CLI
+
+1. **Build the Docker image**:
+   ```bash
+   docker build -t quota-ember .
+   ```
+
+2. **Run the container**:
+   ```bash
+   docker run -d \
+     -p 5173:80 \
+     --name quota-ember \
+     --restart unless-stopped \
+     quota-ember
+   ```
+
+3. **Verify the container is running and healthy**:
+   ```bash
+   docker ps -f name=quota-ember
+   ```
+
+### Stopping and Updating the Container
+
+- **Stop Docker Compose**:
+  ```bash
+  docker compose down
+  ```
+- **Rebuild and restart after updates**:
+  ```bash
+  docker compose up -d --build
+  ```
+- **Stop and remove standalone container**:
+  ```bash
+  docker stop quota-ember
+  docker rm quota-ember
+  ```
+
+### Local Storage & Data Persistence Notice
+
+> [!IMPORTANT]
+> **Quota Ember is a local-first application storing state directly in the user's browser `localStorage`.**
+>
+> - **Container Role**: Running Quota Ember in Docker provides a static web server delivering compiled HTML, JavaScript, and CSS to your web browser. The Docker container itself does **not** store your quota balances, account limits, or project events.
+> - **Multi-Device / Multi-Browser Isolation**: Browsing to `http://localhost:5173` from different browsers (e.g. Chrome vs. Firefox) or different client machines will each maintain their own independent, isolated `localStorage`. Docker does **not** synchronize or share state across clients.
+> - **Backup & Migration**: To transfer data between browsers or preserve data across browser cache purges, navigate to the **Settings** screen and click **Export Backup (JSON)**. You can restore your data at any time via **Import Backup (JSON)**.
 
 ---
 

@@ -161,24 +161,34 @@ export function subscribeToAppState(listener: StorageListener): () => void {
   };
 }
 
+let isNotifying = false;
+
 /**
  * Notifies all subscribers and dispatches a window event if running in a browser.
  */
 export function notifyListeners(state: AppState): void {
-  listeners.forEach((listener) => {
-    try {
-      listener(state);
-    } catch (err) {
-      console.error('Storage listener execution error:', err);
-    }
-  });
+  if (isNotifying) {
+    return;
+  }
+  isNotifying = true;
+  try {
+    listeners.forEach((listener) => {
+      try {
+        listener(state);
+      } catch (err) {
+        console.error('Storage listener execution error:', err);
+      }
+    });
 
-  if (typeof window !== 'undefined' && typeof window.dispatchEvent === 'function') {
-    try {
-      window.dispatchEvent(new CustomEvent('quota_ember_state_change', { detail: state }));
-    } catch {
-      // Ignore in non-standard environments
+    if (typeof window !== 'undefined' && typeof window.dispatchEvent === 'function') {
+      try {
+        window.dispatchEvent(new CustomEvent('quota_ember_state_change', { detail: state }));
+      } catch {
+        // Ignore in non-standard environments
+      }
     }
+  } finally {
+    isNotifying = false;
   }
 }
 

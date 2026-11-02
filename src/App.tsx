@@ -26,6 +26,7 @@ export const App: React.FC = () => {
     addAccount,
     updateAccount,
     archiveAccount,
+    deleteAccount,
     addService,
     updateService,
     archiveService,
@@ -156,6 +157,21 @@ export const App: React.FC = () => {
     } else {
       archiveAccount(accountId, false);
     }
+  };
+
+  const handleDeleteAccount = (accountId: string) => {
+    const acc = state.accounts.find((a) => a.id === accountId);
+    const accName = acc?.name || 'Account';
+    openConfirm({
+      title: `Delete Account "${accName}"`,
+      message: `Deleting this account will permanently remove it along with its active services and limit windows from your dashboard. All historical usage and calibration records will be safely preserved in your Project History under '${accName}'.`,
+      confirmLabel: 'Delete Account',
+      isDestructive: true,
+      onConfirm: () => {
+        deleteAccount(accountId);
+        setConfirmOpen(false);
+      },
+    });
   };
 
   // Service actions
@@ -380,6 +396,7 @@ export const App: React.FC = () => {
             onOpenAddAccount={handleOpenAddAccount}
             onOpenEditAccount={handleOpenEditAccount}
             onArchiveAccount={handleArchiveAccount}
+            onDeleteAccount={handleDeleteAccount}
             onOpenAddService={handleOpenAddService}
             onOpenEditService={handleOpenEditService}
             onArchiveService={handleArchiveService}

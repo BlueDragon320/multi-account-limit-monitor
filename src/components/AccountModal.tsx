@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import { X, User } from 'lucide-react';
 import { Account } from '../domain/types';
 
@@ -20,39 +20,58 @@ export const AccountModal: React.FC<AccountModalProps> = ({
   const [notes, setNotes] = useState(() => (account ? account.notes || '' : ''));
   const [archived, setArchived] = useState(() => (account ? !!account.archived : false));
   const [error, setError] = useState<string | null>(null);
+  const [isSubmitting, setIsSubmitting] = useState(false);
+  const submittingRef = useRef(false);
 
   useEffect(() => {
-    if (account) {
-      setName(account.name);
-      setEmail(account.email || '');
-      setNotes(account.notes || '');
-      setArchived(!!account.archived);
-    } else {
-      setName('');
-      setEmail('');
-      setNotes('');
-      setArchived(false);
+    if (isOpen) {
+      setIsSubmitting(false);
+      submittingRef.current = false;
+      if (account) {
+        setName(account.name);
+        setEmail(account.email || '');
+        setNotes(account.notes || '');
+        setArchived(!!account.archived);
+      } else {
+        setName('');
+        setEmail('');
+        setNotes('');
+        setArchived(false);
+      }
+      setError(null);
     }
-    setError(null);
   }, [account, isOpen]);
 
   if (!isOpen) return null;
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
+    if (submittingRef.current || isSubmitting) {
+      return;
+    }
+
     const trimmedName = name.trim();
     if (!trimmedName) {
       setError('Account name is required.');
       return;
     }
 
-    onSave({
-      name: trimmedName,
-      email: email.trim() || undefined,
-      notes: notes.trim() || undefined,
-      archived,
-    });
-    onClose();
+    submittingRef.current = true;
+    setIsSubmitting(true);
+
+    try {
+      onSave({
+        name: trimmedName,
+        email: email.trim() || undefined,
+        notes: notes.trim() || undefined,
+        archived,
+      });
+      onClose();
+    } catch (err) {
+      submittingRef.current = false;
+      setIsSubmitting(false);
+      throw err;
+    }
   };
 
   return (
@@ -61,7 +80,7 @@ export const AccountModal: React.FC<AccountModalProps> = ({
       role="dialog"
       aria-modal="true"
       aria-labelledby="account-modal-title"
-      onClick={onClose}
+      onClick={isSubmitting ? undefined : onClose}
     >
       <div
         className="bg-[#1C1917] border border-[rgba(255,255,255,0.12)] rounded-[24px] p-6 sm:p-8 max-w-lg w-full max-h-[90vh] overflow-y-auto shadow-[0_25px_50px_-12px_rgba(0,0,0,0.85)] text-[#E7E5E4]"
@@ -83,7 +102,8 @@ export const AccountModal: React.FC<AccountModalProps> = ({
           </div>
           <button
             onClick={onClose}
-            className="p-1.5 rounded-full text-[#A8A29E] hover:text-[#E7E5E4] hover:bg-[#292524] transition-all cursor-pointer border-0 bg-transparent shrink-0"
+            disabled={isSubmitting}
+            className="p-1.5 rounded-full text-[#A8A29E] hover:text-[#E7E5E4] hover:bg-[#292524] transition-all cursor-pointer border-0 bg-transparent shrink-0 disabled:opacity-40 disabled:cursor-not-allowed"
             aria-label="Close"
           >
             <X className="w-4 h-4" />
@@ -104,7 +124,8 @@ export const AccountModal: React.FC<AccountModalProps> = ({
             <input
               id="acc-name"
               type="text"
-              className="w-full bg-[#141210] border border-[rgba(255,255,255,0.12)] text-[#E7E5E4] rounded-xl px-3.5 py-2.5 text-sm font-sans outline-none focus:border-[#D4F268] focus:ring-1 focus:ring-[#D4F268] transition-all"
+              disabled={isSubmitting}
+              className="w-full bg-[#141210] border border-[rgba(255,255,255,0.12)] text-[#E7E5E4] rounded-xl px-3.5 py-2.5 text-sm font-sans outline-none focus:border-[#D4F268] focus:ring-1 focus:ring-[#D4F268] transition-all disabled:opacity-50 disabled:cursor-not-allowed"
               placeholder="e.g., Personal Google Workspace, Production Cloud"
               value={name}
               onChange={(e) => setName(e.target.value)}
@@ -123,7 +144,8 @@ export const AccountModal: React.FC<AccountModalProps> = ({
             <input
               id="acc-email"
               type="email"
-              className="w-full bg-[#141210] border border-[rgba(255,255,255,0.12)] text-[#E7E5E4] rounded-xl px-3.5 py-2.5 text-sm font-sans outline-none focus:border-[#D4F268] focus:ring-1 focus:ring-[#D4F268] transition-all"
+              disabled={isSubmitting}
+              className="w-full bg-[#141210] border border-[rgba(255,255,255,0.12)] text-[#E7E5E4] rounded-xl px-3.5 py-2.5 text-sm font-sans outline-none focus:border-[#D4F268] focus:ring-1 focus:ring-[#D4F268] transition-all disabled:opacity-50 disabled:cursor-not-allowed"
               placeholder="e.g., developer@example.com"
               value={email}
               onChange={(e) => setEmail(e.target.value)}
@@ -139,7 +161,8 @@ export const AccountModal: React.FC<AccountModalProps> = ({
             </label>
             <textarea
               id="acc-notes"
-              className="w-full bg-[#141210] border border-[rgba(255,255,255,0.12)] text-[#E7E5E4] rounded-xl px-3.5 py-2.5 text-sm font-sans outline-none focus:border-[#D4F268] focus:ring-1 focus:ring-[#D4F268] transition-all min-h-[85px] resize-y"
+              disabled={isSubmitting}
+              className="w-full bg-[#141210] border border-[rgba(255,255,255,0.12)] text-[#E7E5E4] rounded-xl px-3.5 py-2.5 text-sm font-sans outline-none focus:border-[#D4F268] focus:ring-1 focus:ring-[#D4F268] transition-all min-h-[85px] resize-y disabled:opacity-50 disabled:cursor-not-allowed"
               placeholder="Tier details, billing dates, or specific quota notes..."
               value={notes}
               onChange={(e) => setNotes(e.target.value)}
@@ -151,9 +174,10 @@ export const AccountModal: React.FC<AccountModalProps> = ({
               <label className="flex items-center gap-3 cursor-pointer text-xs font-mono text-[#E7E5E4]">
                 <input
                   type="checkbox"
+                  disabled={isSubmitting}
                   checked={archived}
                   onChange={(e) => setArchived(e.target.checked)}
-                  className="w-4 h-4 rounded bg-[#0C0A09] border border-[rgba(255,255,255,0.2)] text-[#D4F268] accent-[#D4F268] focus:ring-0 cursor-pointer"
+                  className="w-4 h-4 rounded bg-[#0C0A09] border border-[rgba(255,255,255,0.2)] text-[#D4F268] accent-[#D4F268] focus:ring-0 cursor-pointer disabled:opacity-50 disabled:cursor-not-allowed"
                 />
                 <span>Archive this account (hides from active overview)</span>
               </label>
@@ -164,15 +188,17 @@ export const AccountModal: React.FC<AccountModalProps> = ({
             <button
               type="button"
               onClick={onClose}
-              className="btn-dark-solid bg-[#292524] text-[#E7E5E4] px-4 py-2 rounded-full text-sm border border-[rgba(255,255,255,0.1)] hover:bg-[#383431] transition-all font-sans cursor-pointer"
+              disabled={isSubmitting}
+              className="btn-dark-solid bg-[#292524] text-[#E7E5E4] px-4 py-2 rounded-full text-sm border border-[rgba(255,255,255,0.1)] hover:bg-[#383431] transition-all font-sans cursor-pointer disabled:opacity-50 disabled:cursor-not-allowed"
             >
               Cancel
             </button>
             <button
               type="submit"
-              className="btn-primary-lime bg-[#D4F268] text-[#0C0A09] font-semibold px-5 py-2 rounded-full text-sm hover:bg-[#c4e450] transition-all shadow-[0_0_12px_rgba(212,242,104,0.2)] font-sans cursor-pointer"
+              disabled={isSubmitting}
+              className="btn-primary-lime bg-[#D4F268] text-[#0C0A09] font-semibold px-5 py-2 rounded-full text-sm hover:bg-[#c4e450] transition-all shadow-[0_0_12px_rgba(212,242,104,0.2)] font-sans cursor-pointer disabled:opacity-50 disabled:cursor-not-allowed"
             >
-              {account ? 'Save Changes' : 'Create Account'}
+              {isSubmitting ? 'Saving...' : account ? 'Save Changes' : 'Create Account'}
             </button>
           </div>
         </form>

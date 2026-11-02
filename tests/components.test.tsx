@@ -176,6 +176,7 @@ describe('React UI Components Smoke & Accessibility Tests', () => {
         onOpenAddAccount={() => {}}
         onOpenEditAccount={() => {}}
         onArchiveAccount={() => {}}
+        onDeleteAccount={() => {}}
         onOpenAddService={() => {}}
         onOpenEditService={() => {}}
         onArchiveService={() => {}}
@@ -188,6 +189,7 @@ describe('React UI Components Smoke & Accessibility Tests', () => {
     expect(html).toContain('Antigravity');
     expect(html).toContain('Hourly Request Limit');
     expect(html).toContain('Weekly Quota');
+    expect(html).toContain('Delete account');
   });
 
   it('renders ProjectsScreen with segregated totals and history records', () => {

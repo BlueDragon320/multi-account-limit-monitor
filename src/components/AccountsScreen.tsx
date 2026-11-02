@@ -25,6 +25,7 @@ interface AccountsScreenProps {
   onOpenAddAccount: () => void;
   onOpenEditAccount: (account: Account) => void;
   onArchiveAccount: (accountId: string, archive: boolean) => void;
+  onDeleteAccount: (accountId: string) => void;
   onOpenAddService: (accountId: string) => void;
   onOpenEditService: (service: Service) => void;
   onArchiveService: (serviceId: string, archive: boolean) => void;
@@ -38,6 +39,7 @@ export const AccountsScreen: React.FC<AccountsScreenProps> = ({
   onOpenAddAccount,
   onOpenEditAccount,
   onArchiveAccount,
+  onDeleteAccount,
   onOpenAddService,
   onOpenEditService,
   onArchiveService,
@@ -278,6 +280,14 @@ export const AccountsScreen: React.FC<AccountsScreenProps> = ({
                       ) : (
                         <Archive className="w-3.5 h-3.5" />
                       )}
+                    </button>
+                    <button
+                      onClick={() => onDeleteAccount(account.id)}
+                      className="w-8 h-8 rounded-full bg-[#141210] hover:bg-[rgba(239,68,68,0.15)] text-[#A8A29E] hover:text-[#ef4444] border border-[rgba(255,255,255,0.08)] hover:border-[rgba(239,68,68,0.3)] flex items-center justify-center transition-colors cursor-pointer"
+                      title="Delete account"
+                      aria-label={`Delete account ${account.name}`}
+                    >
+                      <Trash2 className="w-3.5 h-3.5" />
                     </button>
                   </div>
                 </div>

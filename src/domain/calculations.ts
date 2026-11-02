@@ -132,12 +132,17 @@ export function applyUsageEvent(
     };
   }
 
+  const account = state.accounts?.find((a) => a.id === input.accountId);
+  const service = state.services?.find((s) => s.id === input.serviceId);
+
   const newEvent: UsageEvent = {
     id: generateId('evt'),
     timestamp,
     projectId: input.projectId,
     accountId: input.accountId,
+    accountName: account?.name,
     serviceId: input.serviceId,
+    serviceName: service?.name,
     type: 'usage',
     note: input.note,
     effects,
@@ -182,12 +187,17 @@ export function recordCorrection(
     lastUpdated: timestamp,
   };
 
+  const account = state.accounts?.find((a) => a.id === currentWin.accountId);
+  const service = state.services?.find((s) => s.id === currentWin.serviceId);
+
   const correctionEvent: UsageEvent = {
     id: generateId('corr'),
     timestamp,
     projectId: '', // Distinct from project usage
     accountId: currentWin.accountId,
+    accountName: account?.name,
     serviceId: currentWin.serviceId,
+    serviceName: service?.name,
     type: 'correction',
     note: input.reason,
     effects: [

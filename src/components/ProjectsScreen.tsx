@@ -50,6 +50,32 @@ export const ProjectsScreen: React.FC<ProjectsScreenProps> = ({
   const windowMap = useMemo(() => new Map(limitWindows.map((w) => [w.id, w])), [limitWindows]);
   const projectMap = useMemo(() => new Map(projects.map((p) => [p.id, p])), [projects]);
 
+  // Distinct account options for filter dropdown including deleted accounts with records
+  const accountFilterOptions = useMemo(() => {
+    const existingAccountIds = new Set(accounts.map((a) => a.id));
+    const list: Array<{ id: string; name: string }> = accounts.map((a) => ({
+      id: a.id,
+      name: a.name,
+    }));
+
+    // Find any deleted accounts referenced in usageEvents
+    const deletedAccountsMap = new Map<string, string>();
+    usageEvents.forEach((evt) => {
+      if (evt.accountId && !existingAccountIds.has(evt.accountId) && !deletedAccountsMap.has(evt.accountId)) {
+        deletedAccountsMap.set(evt.accountId, evt.accountName || 'Deleted Account');
+      }
+    });
+
+    deletedAccountsMap.forEach((name, id) => {
+      list.push({
+        id,
+        name: `${name} (Deleted)`,
+      });
+    });
+
+    return list;
+  }, [accounts, usageEvents]);
+
   const visibleProjects = useMemo(() => {
     return projects.filter((p) => (showArchivedProjects ? true : !p.archived));
   }, [projects, showArchivedProjects]);
@@ -513,9 +539,9 @@ export const ProjectsScreen: React.FC<ProjectsScreenProps> = ({
               aria-label="Filter by account"
             >
               <option value="all">All Accounts</option>
-              {accounts.map((a) => (
+              {accountFilterOptions.map((a) => (
                 <option key={a.id} value={a.id}>
-                  Account: {a.name}
+                  {`Account: ${a.name}`}
                 </option>
               ))}
             </select>
@@ -611,7 +637,7 @@ export const ProjectsScreen: React.FC<ProjectsScreenProps> = ({
                             </span>
                           )}
                           <div className="text-[10px] text-[#78716C] font-mono mt-0.5">
-                            {acc ? acc.name : ''} {svc ? `> ${svc.name}` : ''}
+                            {acc ? acc.name : (evt.accountName || 'Deleted Account')} {svc ? `> ${svc.name}` : evt.serviceName ? `> ${evt.serviceName}` : ''}
                           </div>
                         </td>
 

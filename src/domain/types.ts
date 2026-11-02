@@ -64,6 +64,8 @@ export interface UsageEvent {
   projectId: string; // Associated project
   accountId: string;
   serviceId: string;
+  accountName?: string; // Permanently retained name even if account is deleted
+  serviceName?: string; // Permanently retained name even if service is deleted
   type: 'usage' | 'correction';
   note?: string;
   effects: WindowEffect[];
