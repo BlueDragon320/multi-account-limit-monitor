@@ -24,8 +24,10 @@ RUN rm -rf /usr/share/nginx/html/*
 # Copy built static assets from the builder stage
 COPY --from=builder /app/dist /usr/share/nginx/html
 
-# Copy custom Nginx configuration
+# Copy custom Nginx configuration and entrypoint script
 COPY nginx.conf /etc/nginx/conf.d/default.conf
+COPY docker-entrypoint.sh /docker-entrypoint.sh
+RUN chmod +x /docker-entrypoint.sh
 
 # Ensure standard permissions for serving files
 RUN chown -R nginx:nginx /usr/share/nginx/html && \
@@ -37,6 +39,9 @@ EXPOSE 80
 # Health check to ensure web server is responding
 HEALTHCHECK --interval=30s --timeout=3s --start-period=5s --retries=3 \
   CMD wget --quiet --tries=1 --spider http://127.0.0.1/ || exit 1
+
+# Configure runtime entrypoint for dynamic environment variables
+ENTRYPOINT ["/docker-entrypoint.sh"]
 
 # Launch Nginx in the foreground
 CMD ["nginx", "-g", "daemon off;"]

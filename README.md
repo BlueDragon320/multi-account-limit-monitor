@@ -155,6 +155,13 @@ PORT=8080 docker compose up -d
 ```
 Access the application at: **`http://localhost:8080`**
 
+#### Access Password Protection (.env)
+Quota Ember includes a master password gate to protect your terminal against unauthorized access.
+- **Configured in `.env`**: Set `VITE_APP_PASSWORD=your_password` in `.env` (default is `password123`).
+- **Dynamic Docker Runtime Injection**: When running in Docker, `docker-entrypoint.sh` injects the password into the web client at container startup. Changing the password in `.env` or setting `-e VITE_APP_PASSWORD=newpassword` takes effect immediately on container restart without needing to rebuild the image!
+- **Session Locking**: Click the lock icon in the top header or **Lock Terminal Now** in Settings to lock your session anytime. "Remember this device" preserves unlock across browser reloads.
+
+
 ### Running Standalone with Docker CLI
 
 1. **Build the Docker image**:

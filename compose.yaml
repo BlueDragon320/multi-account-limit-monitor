@@ -6,4 +6,6 @@ services:
       dockerfile: Dockerfile
     ports:
       - "${PORT:-5190}:80"
+    environment:
+      - VITE_APP_PASSWORD=${VITE_APP_PASSWORD:-password123}
     restart: unless-stopped

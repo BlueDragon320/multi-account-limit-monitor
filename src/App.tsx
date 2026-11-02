@@ -46,8 +46,12 @@ export const App: React.FC = () => {
     resetAllData,
   } = useAppState();
 
-  // Environment password protection
-  const configuredPassword = (import.meta.env.VITE_APP_PASSWORD || '').trim();
+  // Environment password protection (supports Docker runtime window.__ENV__, Vite env, or default fallback)
+  const configuredPassword = (
+    (typeof window !== 'undefined' && window.__ENV__?.VITE_APP_PASSWORD) ||
+    import.meta.env.VITE_APP_PASSWORD ||
+    'password123'
+  ).trim();
   const [isUnlocked, setIsUnlocked] = useState<boolean>(() => {
     if (!configuredPassword) return true;
     return (
