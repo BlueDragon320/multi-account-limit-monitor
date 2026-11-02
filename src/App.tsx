@@ -450,6 +450,7 @@ export const App: React.FC = () => {
             onUpdateSettings={updateSettings}
             onTriggerImportModal={handleTriggerImportModal}
             onRequestClearAll={handleRequestClearAll}
+            onLock={configuredPassword ? handleLock : undefined}
           />
         )}
       </div>

@@ -11,6 +11,7 @@ import {
   ShieldAlert,
   Search,
   HardDrive,
+  Lock,
 } from 'lucide-react';
 import { AppState, UserSettings } from '../domain/types';
 import {
@@ -27,6 +28,7 @@ interface SettingsScreenProps {
   onUpdateSettings: (settings: Partial<UserSettings>) => void;
   onTriggerImportModal: (validation: ValidationResult, diff: ImportDiff) => void;
   onRequestClearAll: () => void;
+  onLock?: () => void;
 }
 
 const COMMON_TIMEZONES = [
@@ -50,6 +52,7 @@ export const SettingsScreen: React.FC<SettingsScreenProps> = ({
   onUpdateSettings,
   onTriggerImportModal,
   onRequestClearAll,
+  onLock,
 }) => {
   const { settings, accounts, services, limitWindows, projects, usageEvents } = state;
   const fileInputRef = useRef<HTMLInputElement>(null);
@@ -518,6 +521,34 @@ export const SettingsScreen: React.FC<SettingsScreenProps> = ({
           />
         </div>
       </section>
+
+      {/* TERMINAL ACCESS & SECURITY */}
+      {onLock && (
+        <section aria-label="Terminal Access" className="card-panel p-6 bg-[#1C1917] border border-[rgba(255,255,255,0.1)] rounded-[24px] space-y-4">
+          <div className="flex items-center gap-2.5 text-[#D4F268]">
+            <Lock className="w-5 h-5 shrink-0" />
+            <h3 className="text-xs font-semibold uppercase tracking-wider font-mono">
+              Terminal Access & Security
+            </h3>
+          </div>
+
+          <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 pt-1">
+            <div className="space-y-1">
+              <span className="text-sm font-medium text-[#E7E5E4] block">Master Passcode Protected</span>
+              <p className="text-xs text-[#A8A29E]">Access password is configured in your project's .env file.</p>
+            </div>
+
+            <button
+              type="button"
+              onClick={onLock}
+              className="btn-dark-solid text-xs h-9 px-5 rounded-full flex items-center gap-2 hover:border-[#D4F268] cursor-pointer shrink-0"
+            >
+              <Lock className="w-3.5 h-3.5 text-[#D4F268]" />
+              <span>Lock Terminal Now</span>
+            </button>
+          </div>
+        </section>
+      )}
 
       {/* BROWSER STORAGE & PRIVACY ARCHITECTURE */}
       <section aria-label="Browser Storage Advisory" className="card-panel-deep p-6 bg-[#141210] border border-[rgba(255,255,255,0.1)] rounded-[24px] space-y-4">
