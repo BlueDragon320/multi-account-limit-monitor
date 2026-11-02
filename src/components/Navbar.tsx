@@ -1,5 +1,5 @@
 import React from 'react';
-import { Flame, Plus, Layers, Database, History, Sliders } from 'lucide-react';
+import { Flame, Plus, Layers, Database, History, Sliders, Lock } from 'lucide-react';
 
 export type NavTab = 'overview' | 'accounts' | 'projects' | 'settings';
 
@@ -7,6 +7,7 @@ interface NavbarProps {
   activeTab: NavTab;
   onSelectTab: (tab: NavTab) => void;
   onOpenLogUsage: () => void;
+  onLock?: () => void;
 }
 
 const TABS: { id: NavTab; label: string; shortLabel: string; icon: React.FC<{ className?: string }> }[] = [
@@ -20,6 +21,7 @@ export const Navbar: React.FC<NavbarProps> = ({
   activeTab,
   onSelectTab,
   onOpenLogUsage,
+  onLock,
 }) => {
   return (
     <header className="w-full max-w-[1200px] mx-auto px-4 sm:px-6 lg:px-8 pt-4">
@@ -80,7 +82,7 @@ export const Navbar: React.FC<NavbarProps> = ({
           })}
         </div>
 
-        {/* Action Button */}
+        {/* Action Button & Session Lock */}
         <div className="order-2 lg:order-3 flex items-center gap-2 shrink-0">
           <button
             onClick={onOpenLogUsage}
@@ -90,6 +92,17 @@ export const Navbar: React.FC<NavbarProps> = ({
             <Plus className="w-4 h-4 stroke-[2.5]" />
             <span>Log Usage</span>
           </button>
+
+          {onLock && (
+            <button
+              onClick={onLock}
+              className="w-8 h-8 rounded-full bg-[#141210] hover:bg-[#292524] text-[#A8A29E] hover:text-[#D4F268] border border-[rgba(255,255,255,0.08)] flex items-center justify-center transition-colors cursor-pointer"
+              title="Lock Terminal"
+              aria-label="Lock Terminal"
+            >
+              <Lock className="w-3.5 h-3.5" />
+            </button>
+          )}
         </div>
       </nav>
     </header>

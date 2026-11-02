@@ -18,6 +18,7 @@ import {
   CorrectBalanceModal,
   ImportPreviewModal,
   EditHistoryModal,
+  PasswordGate,
 } from './components';
 
 export const App: React.FC = () => {
@@ -44,6 +45,22 @@ export const App: React.FC = () => {
     replaceAllState,
     resetAllData,
   } = useAppState();
+
+  // Environment password protection
+  const configuredPassword = (import.meta.env.VITE_APP_PASSWORD || '').trim();
+  const [isUnlocked, setIsUnlocked] = useState<boolean>(() => {
+    if (!configuredPassword) return true;
+    return (
+      sessionStorage.getItem('quota_ember_unlocked') === 'true' ||
+      localStorage.getItem('quota_ember_unlocked') === 'true'
+    );
+  });
+
+  const handleLock = () => {
+    sessionStorage.removeItem('quota_ember_unlocked');
+    localStorage.removeItem('quota_ember_unlocked');
+    setIsUnlocked(false);
+  };
 
   // Active navigation tab
   const [activeTab, setActiveTab] = useState<NavTab>('overview');
@@ -366,6 +383,15 @@ export const App: React.FC = () => {
     replaceAllState(incomingState);
   };
 
+  if (!isUnlocked && configuredPassword) {
+    return (
+      <PasswordGate
+        configuredPassword={configuredPassword}
+        onUnlock={() => setIsUnlocked(true)}
+      />
+    );
+  }
+
   return (
     <div className="min-h-screen bg-[#0C0A09] text-[#E7E5E4] flex flex-col font-sans selection:bg-[#D4F268] selection:text-[#0C0A09] relative overflow-x-hidden">
       {/* 4% Fixed Noise Overlay */}
@@ -376,6 +402,7 @@ export const App: React.FC = () => {
         activeTab={activeTab}
         onSelectTab={setActiveTab}
         onOpenLogUsage={() => handleOpenLogUsage()}
+        onLock={configuredPassword ? handleLock : undefined}
       />
 
       {/* Main Content Screen */}

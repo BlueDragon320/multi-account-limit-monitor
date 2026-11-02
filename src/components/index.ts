@@ -12,3 +12,4 @@ export * from './LogUsageModal';
 export * from './CorrectBalanceModal';
 export * from './ImportPreviewModal';
 export * from './EditHistoryModal';
+export * from './PasswordGate';
