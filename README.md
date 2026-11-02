@@ -146,7 +146,7 @@ Start the production container in detached mode:
 ```bash
 docker compose up -d
 ```
-The application will be accessible at: **`http://localhost:5173`**
+The application will be accessible at: **`http://localhost:5190`**
 
 #### Customizing the Host Port
 You can specify a custom host port using the `PORT` environment variable:
@@ -165,7 +165,7 @@ Access the application at: **`http://localhost:8080`**
 2. **Run the container**:
    ```bash
    docker run -d \
-     -p 5173:80 \
+     -p 5190:80 \
      --name quota-ember \
      --restart unless-stopped \
      quota-ember
@@ -198,7 +198,7 @@ Access the application at: **`http://localhost:8080`**
 > **Quota Ember is a local-first application storing state directly in the user's browser `localStorage`.**
 >
 > - **Container Role**: Running Quota Ember in Docker provides a static web server delivering compiled HTML, JavaScript, and CSS to your web browser. The Docker container itself does **not** store your quota balances, account limits, or project events.
-> - **Multi-Device / Multi-Browser Isolation**: Browsing to `http://localhost:5173` from different browsers (e.g. Chrome vs. Firefox) or different client machines will each maintain their own independent, isolated `localStorage`. Docker does **not** synchronize or share state across clients.
+> - **Multi-Device / Multi-Browser Isolation**: Browsing to `http://localhost:5190` from different browsers (e.g. Chrome vs. Firefox) or different client machines will each maintain their own independent, isolated `localStorage`. Docker does **not** synchronize or share state across clients.
 > - **Backup & Migration**: To transfer data between browsers or preserve data across browser cache purges, navigate to the **Settings** screen and click **Export Backup (JSON)**. You can restore your data at any time via **Import Backup (JSON)**.
 
 ---
