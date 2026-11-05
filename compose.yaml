@@ -7,5 +7,12 @@ services:
     ports:
       - "${PORT:-5190}:80"
     environment:
+      - PORT=80
       - VITE_APP_PASSWORD=${VITE_APP_PASSWORD:-password123}
+      - DATA_DIR=/app/data
+    volumes:
+      - quota-data:/app/data
     restart: unless-stopped
+
+volumes:
+  quota-data:

@@ -6,7 +6,7 @@ WORKDIR /app
 # Copy package manifests first for optimal layer caching
 COPY package.json package-lock.json ./
 
-# Install project dependencies deterministically
+# Install all dependencies including devDependencies for build
 RUN npm ci
 
 # Copy full application source code
@@ -15,33 +15,34 @@ COPY . .
 # Compile TypeScript and build production distribution with Vite
 RUN npm run build
 
-# Stage 2: Serve stage
-FROM nginx:alpine AS runner
+# Stage 2: Production runner stage
+FROM node:22-alpine AS runner
 
-# Remove default static welcome page
-RUN rm -rf /usr/share/nginx/html/*
+ENV NODE_ENV=production
+WORKDIR /app
 
-# Copy built static assets from the builder stage
-COPY --from=builder /app/dist /usr/share/nginx/html
+# Copy package manifests and install production-only dependencies
+COPY package.json package-lock.json ./
+RUN npm ci --omit=dev
 
-# Copy custom Nginx configuration and entrypoint script
-COPY nginx.conf /etc/nginx/conf.d/default.conf
-COPY docker-entrypoint.sh /docker-entrypoint.sh
-RUN chmod +x /docker-entrypoint.sh
+# Copy compiled frontend assets from builder stage
+COPY --from=builder /app/dist ./dist
 
-# Ensure standard permissions for serving files
-RUN chown -R nginx:nginx /usr/share/nginx/html && \
-    chmod -R 755 /usr/share/nginx/html
+# Copy production Express server
+COPY server.js ./
+
+# Prepare persistent data directory with proper ownership
+RUN mkdir -p /app/data && chown -R node:node /app
+
+# Run as non-privileged node user
+USER node
 
 # Expose standard HTTP port
 EXPOSE 80
 
-# Health check to ensure web server is responding
+# Health check against server /health endpoint
 HEALTHCHECK --interval=30s --timeout=3s --start-period=5s --retries=3 \
-  CMD wget --quiet --tries=1 --spider http://127.0.0.1/ || exit 1
+  CMD wget --quiet --tries=1 --spider http://127.0.0.1:80/health || exit 1
 
-# Configure runtime entrypoint for dynamic environment variables
-ENTRYPOINT ["/docker-entrypoint.sh"]
-
-# Launch Nginx in the foreground
-CMD ["nginx", "-g", "daemon off;"]
+# Start the Node.js production server
+CMD ["node", "server.js"]

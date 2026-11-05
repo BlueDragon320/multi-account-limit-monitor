@@ -158,7 +158,7 @@ Access the application at: **`http://localhost:8080`**
 #### Access Password Protection (.env)
 Quota Ember includes a master password gate to protect your terminal against unauthorized access.
 - **Configured in `.env`**: Set `VITE_APP_PASSWORD=your_password` in `.env` (default is `password123`).
-- **Dynamic Docker Runtime Injection**: When running in Docker, `docker-entrypoint.sh` injects the password into the web client at container startup. Changing the password in `.env` or setting `-e VITE_APP_PASSWORD=newpassword` takes effect immediately on container restart without needing to rebuild the image!
+- **Dynamic Docker Runtime Injection**: When running in Docker, `server.js` dynamically serves `/env-config.js` with the password from environment variables at runtime. Changing the password in `.env` or setting `-e VITE_APP_PASSWORD=newpassword` takes effect immediately on container restart without needing to rebuild the image!
 - **Session Locking**: Click the lock icon in the top header or **Lock Terminal Now** in Settings to lock your session anytime. "Remember this device" preserves unlock across browser reloads.
 
 
@@ -199,19 +199,22 @@ Quota Ember includes a master password gate to protect your terminal against una
   docker rm quota-ember
   ```
 
-### Local Storage & Data Persistence Notice
+### Shared Centralized Database & Multi-Device Sync
 
-> [!IMPORTANT]
-> **Quota Ember is a local-first application storing state directly in the user's browser `localStorage`.**
+> [!TIP]
+> **Quota Ember includes a persistent centralized database with multi-device synchronization.**
 >
-> - **Container Role**: Running Quota Ember in Docker provides a static web server delivering compiled HTML, JavaScript, and CSS to your web browser. The Docker container itself does **not** store your quota balances, account limits, or project events.
-> - **Multi-Device / Multi-Browser Isolation**: Browsing to `http://localhost:5190` from different browsers (e.g. Chrome vs. Firefox) or different client machines will each maintain their own independent, isolated `localStorage`. Docker does **not** synchronize or share state across clients.
-> - **Backup & Migration**: To transfer data between browsers or preserve data across browser cache purges, navigate to the **Settings** screen and click **Export Backup (JSON)**. You can restore your data at any time via **Import Backup (JSON)**.
+> - **Shared Server Database**: The application persists data on the server in `/app/data/quota-ember-state.json`.
+> - **Multi-Device & Multi-Browser Access**: When you access Quota Ember from any phone, laptop, desktop, or different browser, all devices share and edit the exact same centralized database.
+> - **Live Background Sync**: Any account creation, limit update, or usage logged on one device automatically synchronizes to the server and updates other connected devices in real-time.
+> - **Docker Volume Persistence**: Data is persisted in a named Docker volume (`quota-data:/app/data`), preserving all your records across container restarts, image rebuilds, and system reboots.
+> - **Offline Resilience & Instant Paint**: Each client uses browser storage as an optimistic cache so the dashboard renders instantly upon login, then immediately synchronizes with the server.
+> - **Backup & Migration**: Navigate to **Settings** and click **Export Backup (JSON)** at any time to download an offline backup, or **Import Backup (JSON)** to restore data across all devices.
 
 ---
 
-## Local-First Storage & Privacy
+## Data Privacy & Integrity
 
-- **No Remote Servers**: Quota Ember does not transmit any data over the network.
+- **Self-Hosted & Private**: Quota Ember runs entirely inside your own self-hosted Docker container or local server; no data is ever transmitted to external third-party servers.
 - **No Google Passwords or API Tokens**: Tracking is purely based on manual owner records; no credentials or Google Cloud tokens are ever requested or stored.
-- **Browser-Specific**: Data is saved to `window.localStorage` under key `quota_ember_app_state_v1`. To avoid data loss if browser storage is cleared, use the **Export Backup** feature in Settings regularly.
+- **Persistent Storage**: Data is saved to `/app/data/quota-ember-state.json` inside the container volume, with local browser caching under `quota_ember_app_state_v1`.

@@ -14,6 +14,9 @@ import {
   saveAppState,
   subscribeToAppState,
   getInitialState,
+  fetchRemoteState,
+  fetchRemoteMeta,
+  pushRemoteState,
 } from '../storage';
 import { advanceAllStateWindows } from './resetEngine';
 import { applyUsageEvent, recordCorrection } from './calculations';
@@ -34,8 +37,69 @@ export function useAppState() {
   const stateRef = useRef(state);
   stateRef.current = state;
 
+  // Track the current synchronized revision from the backend database
+  const revisionRef = useRef<number>(0);
+
+  // Sync and concurrency guards
   const isInternalUpdateRef = useRef(false);
   const isInitialMount = useRef(true);
+  const isPushingRef = useRef(false);
+  const isFetchingRemoteRef = useRef(false);
+  const debounceTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
+  const pendingPushStateRef = useRef<AppState | null>(null);
+
+  const isPushInProgressOrPending = useCallback(() => {
+    return (
+      isPushingRef.current ||
+      debounceTimerRef.current !== null ||
+      pendingPushStateRef.current !== null
+    );
+  }, []);
+
+  // Debounced/queued push to remote database
+  const queuePush = useCallback((stateToPush: AppState, immediate: boolean = false) => {
+    pendingPushStateRef.current = stateToPush;
+
+    if (debounceTimerRef.current) {
+      clearTimeout(debounceTimerRef.current);
+      debounceTimerRef.current = null;
+    }
+
+    const executePush = async () => {
+      if (isPushingRef.current) {
+        // A push is already in flight; when it finishes, it will pick up pendingPushStateRef
+        return;
+      }
+      const stateToSend = pendingPushStateRef.current;
+      if (!stateToSend) return;
+
+      pendingPushStateRef.current = null;
+      isPushingRef.current = true;
+      try {
+        const result = await pushRemoteState(stateToSend);
+        if (result && result.ok) {
+          revisionRef.current = result.revision;
+        }
+      } catch (err) {
+        console.warn('[useAppState] Failed to push state to remote server:', err);
+      } finally {
+        isPushingRef.current = false;
+        // If state changed while we were pushing, push the latest state immediately
+        if (pendingPushStateRef.current !== null) {
+          executePush();
+        }
+      }
+    };
+
+    if (immediate) {
+      executePush();
+    } else {
+      debounceTimerRef.current = setTimeout(() => {
+        debounceTimerRef.current = null;
+        executePush();
+      }, 300);
+    }
+  }, []);
 
   // Subscribe to external storage changes (e.g. multi-tab sync)
   useEffect(() => {
@@ -65,13 +129,182 @@ export function useAppState() {
     }
   }, [state]);
 
+  // Clean up debounce timer on unmount
+  useEffect(() => {
+    return () => {
+      if (debounceTimerRef.current) {
+        clearTimeout(debounceTimerRef.current);
+        debounceTimerRef.current = null;
+      }
+    };
+  }, []);
+
+  // Initial mount remote state synchronization and seeding
+  useEffect(() => {
+    let isCancelled = false;
+
+    async function initialSync() {
+      try {
+        const remote = await fetchRemoteState();
+        if (isCancelled || !remote) return;
+
+        // If local push is already queued or running, do not overwrite
+        if (isPushInProgressOrPending()) {
+          return;
+        }
+
+        const remoteAccounts = remote.state?.accounts || [];
+        const remoteEvents = remote.state?.usageEvents || [];
+        const remoteHasData = remoteAccounts.length > 0 || remoteEvents.length > 0;
+
+        const currentLocal = stateRef.current;
+        const localAccounts = currentLocal?.accounts || [];
+        const localHasAccounts = localAccounts.length > 0;
+
+        if (remoteHasData) {
+          // Case A: Remote has data
+          // Update local state with remote.state, save to localStorage, set revisionRef.current = remote.revision
+          revisionRef.current = remote.revision;
+          const { windows: advancedWindows } = advanceAllStateWindows(
+            remote.state.limitWindows || [],
+            new Date()
+          );
+          const finalRemoteState: AppState = {
+            ...remote.state,
+            limitWindows: advancedWindows,
+          };
+
+          isInternalUpdateRef.current = true;
+          try {
+            setState(finalRemoteState);
+            saveAppState(finalRemoteState);
+            stateRef.current = finalRemoteState;
+          } finally {
+            isInternalUpdateRef.current = false;
+          }
+        } else if (localHasAccounts) {
+          // Case B: Remote state is empty (0 accounts, 0 events) BUT local localStorage has existing accounts
+          // Automatically call pushRemoteState(localState) to seed the central server with this device's existing data
+          const pushRes = await pushRemoteState(currentLocal);
+          if (pushRes && pushRes.ok) {
+            revisionRef.current = pushRes.revision;
+          }
+        } else {
+          // Case C: Both are empty: keep initial state
+          if (typeof remote.revision === 'number') {
+            revisionRef.current = remote.revision;
+          }
+        }
+      } catch (err) {
+        console.warn('[useAppState] Initial remote sync error:', err);
+      }
+    }
+
+    initialSync();
+
+    return () => {
+      isCancelled = true;
+    };
+  }, [isPushInProgressOrPending]);
+
+  // Live Polling & Visibility Sync
+  useEffect(() => {
+    let isMounted = true;
+
+    const checkRemoteMetaAndSync = async () => {
+      if (!isMounted) return;
+      if (isPushInProgressOrPending() || isFetchingRemoteRef.current) {
+        return;
+      }
+      try {
+        const meta = await fetchRemoteMeta();
+        if (!isMounted || !meta) return;
+
+        if (meta.revision > revisionRef.current) {
+          if (isPushInProgressOrPending()) {
+            return;
+          }
+          isFetchingRemoteRef.current = true;
+          try {
+            const remote = await fetchRemoteState();
+            if (!isMounted || !remote) return;
+
+            // Check again if local edits arrived while fetching full state
+            if (isPushInProgressOrPending()) {
+              return;
+            }
+
+            if (remote.revision > revisionRef.current) {
+              revisionRef.current = remote.revision;
+              const { windows: advancedWindows } = advanceAllStateWindows(
+                remote.state.limitWindows || [],
+                new Date()
+              );
+              const finalRemoteState: AppState = {
+                ...remote.state,
+                limitWindows: advancedWindows,
+              };
+
+              isInternalUpdateRef.current = true;
+              try {
+                setState(finalRemoteState);
+                saveAppState(finalRemoteState);
+                stateRef.current = finalRemoteState;
+              } finally {
+                isInternalUpdateRef.current = false;
+              }
+            }
+          } finally {
+            isFetchingRemoteRef.current = false;
+          }
+        }
+      } catch (err) {
+        console.warn('[useAppState] Polling sync error:', err);
+      }
+    };
+
+    // Periodically (every 5 seconds) poll fetchRemoteMeta()
+    const pollInterval = setInterval(() => {
+      checkRemoteMetaAndSync();
+    }, 5000);
+
+    // Also check when user switches back to the tab or focuses the window
+    const handleFocusOrVisibility = () => {
+      if (typeof document !== 'undefined') {
+        if (document.visibilityState === 'visible') {
+          checkRemoteMetaAndSync();
+        }
+      } else {
+        checkRemoteMetaAndSync();
+      }
+    };
+
+    if (typeof document !== 'undefined' && typeof document.addEventListener === 'function') {
+      document.addEventListener('visibilitychange', handleFocusOrVisibility);
+    }
+    if (typeof window !== 'undefined' && typeof window.addEventListener === 'function') {
+      window.addEventListener('focus', handleFocusOrVisibility);
+    }
+
+    return () => {
+      isMounted = false;
+      clearInterval(pollInterval);
+      if (typeof document !== 'undefined' && typeof document.removeEventListener === 'function') {
+        document.removeEventListener('visibilitychange', handleFocusOrVisibility);
+      }
+      if (typeof window !== 'undefined' && typeof window.removeEventListener === 'function') {
+        window.removeEventListener('focus', handleFocusOrVisibility);
+      }
+    };
+  }, [isPushInProgressOrPending]);
+
   // Periodic reset check every 30 seconds
   useEffect(() => {
     const interval = setInterval(() => {
       const currentWindows = stateRef.current.limitWindows;
       const { windows: advancedWindows, advancedCount } = advanceAllStateWindows(currentWindows, new Date());
       if (advancedCount > 0) {
-        setState((prev) => ({
+        updateState((prev) => ({
           ...prev,
           limitWindows: advancedWindows,
         }));
@@ -106,8 +339,9 @@ export function useAppState() {
       } finally {
         isInternalUpdateRef.current = false;
       }
+      queuePush(nextState, false);
     }
-  }, []);
+  }, [queuePush]);
 
   // Account actions
   const addAccount = useCallback((account: Omit<Account, 'id' | 'createdAt' | 'updatedAt'> & { id?: string }) => {
@@ -336,10 +570,12 @@ export function useAppState() {
     try {
       setState(newState);
       saveAppState(newState);
+      stateRef.current = newState;
     } finally {
       isInternalUpdateRef.current = false;
     }
-  }, []);
+    queuePush(newState, true);
+  }, [queuePush]);
 
   // Reset to initial clean state
   const resetAllData = useCallback(() => {
@@ -348,13 +584,16 @@ export function useAppState() {
     try {
       setState(fresh);
       saveAppState(fresh);
+      stateRef.current = fresh;
     } finally {
       isInternalUpdateRef.current = false;
     }
-  }, []);
+    queuePush(fresh, true);
+  }, [queuePush]);
 
   return {
     state,
+    revision: revisionRef.current,
     addAccount,
     updateAccount,
     archiveAccount,
